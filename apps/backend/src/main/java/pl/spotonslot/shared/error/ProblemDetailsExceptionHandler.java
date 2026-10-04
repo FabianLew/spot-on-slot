@@ -73,7 +73,7 @@ public class ProblemDetailsExceptionHandler extends ResponseEntityExceptionHandl
         } else if (ex instanceof HttpMessageNotReadableException) {
             code = "MALFORMED_REQUEST";
         } else {
-            code = genericCode(status);
+            code = ErrorMessages.genericCode(status);
         }
         return respond(ex, status, code, null, errors, headers, request);
     }
@@ -123,18 +123,5 @@ public class ProblemDetailsExceptionHandler extends ResponseEntityExceptionHandl
     private static HttpStatus toStatus(HttpStatusCode code) {
         var status = HttpStatus.resolve(code.value());
         return status != null ? status : HttpStatus.INTERNAL_SERVER_ERROR;
-    }
-
-    private static String genericCode(HttpStatus status) {
-        return switch (status) {
-            case UNAUTHORIZED -> "UNAUTHORIZED";
-            case FORBIDDEN -> "FORBIDDEN";
-            case NOT_FOUND -> "NOT_FOUND";
-            case METHOD_NOT_ALLOWED -> "METHOD_NOT_ALLOWED";
-            case CONFLICT -> "CONFLICT";
-            case UNSUPPORTED_MEDIA_TYPE -> "UNSUPPORTED_MEDIA_TYPE";
-            case UNPROCESSABLE_ENTITY -> "BUSINESS_RULE_VIOLATED";
-            default -> status.is5xxServerError() ? "INTERNAL_ERROR" : "MALFORMED_REQUEST";
-        };
     }
 }

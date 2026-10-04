@@ -110,4 +110,15 @@ class ProblemDetailsIntegrationTest {
                         .content("x")),
                 415, "UNSUPPORTED_MEDIA_TYPE", "/test/errors/validated");
     }
+
+    @Test
+    void missingRequestParameter() throws Exception {
+        problem(mockMvc.perform(get("/test/errors/param")), 400, "VALIDATION_FAILED", "/test/errors/param");
+    }
+
+    @Test
+    void notAcceptable() throws Exception {
+        problem(mockMvc.perform(get("/test/errors/json-only").header("Accept", "application/xml")),
+                406, "INTERNAL_ERROR", "/test/errors/json-only");
+    }
 }

@@ -58,7 +58,7 @@ public class ErrorMessages {
         return LocaleConfig.POLISH;
     }
 
-    private static String genericCode(HttpStatus status) {
+    public static String genericCode(HttpStatus status) {
         return switch (status) {
             case BAD_REQUEST -> "VALIDATION_FAILED";
             case UNAUTHORIZED -> "UNAUTHORIZED";
