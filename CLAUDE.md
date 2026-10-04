@@ -11,7 +11,13 @@ Read `docs/architecture.md` before larger changes. Decisions there are agreed wi
 - `shared` is an open module for cross-cutting code only (security, errors, web config). No business logic there.
 - Schema changes only through Flyway migrations in `src/main/resources/db/migration`; JPA runs with `ddl-auto: validate`. Store times as `timestamptz` (UTC).
 - `./gradlew test` must pass, including `ModularityTest`. Integration tests use Testcontainers (`TestcontainersConfiguration`, PostGIS image).
-- REST endpoints live under `/api/v1/...`; errors use `ApiError`.
+- REST endpoints live under `/api/v1/...`.
+- Errors (`shared.error`): throw `DomainException` subclasses (`NotFoundException`, `ConflictException`, `BusinessRuleException`, `InvalidRequestException`) with a module-specific UPPER_SNAKE `code`. Responses are RFC 9457 `application/problem+json` with `code`, `requestId`, `errors` (validation only). Texts live in `messages_pl/en.properties` as `error.<CODE>.title|detail`; untranslated codes fall back to the generic text for the status.
+- Paging (`shared.paging`): `PageQuery` + `PageResponse`, 0-based, `size` <= 100, `sort=field,asc|desc` checked against a per-endpoint allowlist.
+- Entities (`shared.persistence`): extend `BaseEntity` (UUID v7 `id`, `createdAt`, `updatedAt`, `version`). Migration columns: `id uuid primary key, created_at timestamptz not null, updated_at timestamptz not null, version bigint not null`.
+- Web (`shared.web`): `RequestIdFilter` (`X-Request-Id`, echoed in logs and errors); CORS via `spotonslot.cors.allowed-origins`. OpenAPI documents the problem schema automatically.
+- Profiles: `dev` (default), `prod`, `test`.
+- Tests: use `@IntegrationTest`; test-only tables go in `src/test/resources/db/testmigration`; test controllers under `/test/...` must be `@Hidden`.
 
 ## Frontend (`apps/web`, `apps/landing`, `packages/*`)
 - pnpm workspaces + Turborepo. Internal packages are consumed as TypeScript source (`transpilePackages`).

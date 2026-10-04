@@ -4,8 +4,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.jayway.jsonpath.JsonPath;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -57,7 +59,13 @@ class SpotOnSlotApplicationTests {
         String spec = mockMvc.perform(get("/v3/api-docs"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.openapi").exists())
+                .andExpect(jsonPath("$.components.schemas.ProblemDetail.properties.code").exists())
+                .andExpect(jsonPath("$.components.schemas.ProblemDetail.properties.errors").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/system/info'].get.responses['500'].content['application/problem+json']").exists())
                 .andReturn().getResponse().getContentAsString();
+
+        assertThat(JsonPath.<Map<String, Object>>read(spec, "$.paths").keySet())
+                .noneMatch(path -> path.startsWith("/test/"));
 
         Path output = Path.of("build", "openapi", "openapi.json");
         Files.createDirectories(output.getParent());
