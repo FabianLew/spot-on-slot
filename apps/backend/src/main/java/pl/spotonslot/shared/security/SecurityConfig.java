@@ -1,5 +1,6 @@
 package pl.spotonslot.shared.security;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -29,6 +30,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // The container's error dispatch renders the problem for an already-rejected request.
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(PUBLIC_PATHS).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
