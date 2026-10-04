@@ -8,17 +8,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.spotonslot.support.IntegrationTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Import(TestcontainersConfiguration.class)
+@IntegrationTest
 class SpotOnSlotApplicationTests {
 
     @Autowired
@@ -31,6 +27,12 @@ class SpotOnSlotApplicationTests {
     void appliesMigrationsWithPostgis() {
         String version = jdbcTemplate.queryForObject("SELECT postgis_version()", String.class);
         assertThat(version).isNotBlank();
+    }
+
+    @Test
+    void appliesTestMigrations() {
+        Integer count = jdbcTemplate.queryForObject("SELECT count(*) FROM test_note", Integer.class);
+        assertThat(count).isZero();
     }
 
     @Test
