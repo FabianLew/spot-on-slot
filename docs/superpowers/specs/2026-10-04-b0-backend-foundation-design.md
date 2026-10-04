@@ -47,6 +47,7 @@ Przykład:
 - `NotFoundException` → 404, domyślny kod `NOT_FOUND`
 - `ConflictException` → 409, domyślny kod `CONFLICT`
 - `BusinessRuleException` → 422, kod podawany przez moduł
+- `InvalidRequestException` → 400, kod podawany przez wywołującego (np. `INVALID_SORT`)
 
 Każda podklasa przyjmuje opcjonalnie własny kod (np. `new NotFoundException("ARTIST_NOT_FOUND", artistId)`).
 
@@ -110,7 +111,7 @@ Konwencja migracji dla tabel encji: `id uuid primary key, created_at timestamptz
 
 - `@IntegrationTest`: meta-adnotacja (`@SpringBootTest`, `@AutoConfigureMockMvc`, `@ActiveProfiles("test")`, import konfiguracji Testcontainers). Jeden kontener PostGIS na kontekst, współdzielony dzięki cache kontekstu.
 - Testy kontrolerów jako `@WebMvcTest` tam, gdzie nie potrzeba bazy; testy modułów przez `@ApplicationModuleTest`.
-- Funkcje `shared` testowane przez testowy kontroler i testową encję w `src/test` (tabela z `db/testmigration`), bez dokładania kodu produkcyjnego tylko dla testów.
+- Funkcje `shared` testowane przez testowy kontroler i testową encję w `src/test` (tabela z `db/testmigration`), bez dokładania kodu produkcyjnego tylko dla testów. Testowe kontrolery mają `@Hidden`, żeby nie trafiły do specu OpenAPI i `schema.d.ts`.
 - `ModularityTest` dalej musi przechodzić.
 - Opis konwencji trafia do `CLAUDE.md`.
 
