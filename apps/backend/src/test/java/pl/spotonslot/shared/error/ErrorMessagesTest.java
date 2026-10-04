@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.servlet.LocaleResolver;
@@ -18,6 +19,9 @@ class ErrorMessagesTest {
 
     @Autowired
     ErrorMessages errorMessages;
+
+    @Autowired
+    MessageSource messageSource;
 
     @Autowired
     LocaleResolver localeResolver;
@@ -68,9 +72,10 @@ class ErrorMessagesTest {
         };
         for (var code : codes) {
             for (var locale : new Locale[] {PL, Locale.ENGLISH}) {
-                var text = errorMessages.resolve(code, HttpStatus.INTERNAL_SERVER_ERROR, NO_ARGS, locale);
-                assertThat(text.title()).as(code + " title " + locale).isNotBlank().doesNotContain("error.");
-                assertThat(text.detail()).as(code + " detail " + locale).isNotBlank().doesNotContain("error.");
+                var title = messageSource.getMessage("error." + code + ".title", null, locale);
+                var detail = messageSource.getMessage("error." + code + ".detail", null, locale);
+                assertThat(title).as(code + " title " + locale).isNotBlank();
+                assertThat(detail).as(code + " detail " + locale).isNotBlank();
             }
         }
     }
