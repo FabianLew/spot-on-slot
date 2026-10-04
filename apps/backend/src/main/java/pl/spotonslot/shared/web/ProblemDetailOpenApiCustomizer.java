@@ -10,8 +10,11 @@ import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,12 +28,14 @@ public class ProblemDetailOpenApiCustomizer {
 
     static final String PROBLEM_SCHEMA = "ProblemDetail";
     private static final String PROBLEM_JSON = "application/problem+json";
-    private static final Map<String, String> ERROR_RESPONSES = Map.of(
-            "400", "Invalid request",
-            "401", "Authentication required",
-            "403", "Access denied",
-            "404", "Resource not found",
-            "500", "Unexpected server error");
+    /** Sorted by status so the generated spec (and the API client built from it) is deterministic. */
+    private static final SortedMap<String, String> ERROR_RESPONSES = Collections.unmodifiableSortedMap(new TreeMap<>(
+            Map.of(
+                    "400", "Invalid request",
+                    "401", "Authentication required",
+                    "403", "Access denied",
+                    "404", "Resource not found",
+                    "500", "Unexpected server error")));
 
     @Bean
     OpenApiCustomizer problemDetailCustomizer() {
@@ -59,21 +64,23 @@ public class ProblemDetailOpenApiCustomizer {
     }
 
     private Schema<?> problemDetailSchema() {
-        Schema<?> fieldError = new ObjectSchema()
-                .addProperty("field", new StringSchema())
-                .addProperty("code", new StringSchema())
-                .addProperty("message", new StringSchema())
-                .required(List.of("field", "code", "message"));
-        return new ObjectSchema()
-                .addProperty("type", new StringSchema().example("about:blank"))
-                .addProperty("title", new StringSchema())
-                .addProperty("status", new IntegerSchema())
-                .addProperty("detail", new StringSchema())
-                .addProperty("instance", new StringSchema())
-                .addProperty("code", new StringSchema().description("Stable machine-readable error code"))
-                .addProperty("requestId", new StringSchema().description("Echo of the X-Request-Id header"))
-                .addProperty("errors", new ArraySchema().items(fieldError)
-                        .description("Field-level errors, present only for validation failures"))
-                .required(List.of("type", "title", "status", "code", "requestId"));
+        var fieldError = new ObjectSchema();
+        fieldError.addProperty("field", new StringSchema());
+        fieldError.addProperty("code", new StringSchema());
+        fieldError.addProperty("message", new StringSchema());
+        fieldError.setRequired(List.of("field", "code", "message"));
+
+        var problem = new ObjectSchema();
+        problem.addProperty("type", new StringSchema().example("about:blank"));
+        problem.addProperty("title", new StringSchema());
+        problem.addProperty("status", new IntegerSchema());
+        problem.addProperty("detail", new StringSchema());
+        problem.addProperty("instance", new StringSchema());
+        problem.addProperty("code", new StringSchema().description("Stable machine-readable error code"));
+        problem.addProperty("requestId", new StringSchema().description("Echo of the X-Request-Id header"));
+        problem.addProperty("errors", new ArraySchema().items(fieldError)
+                .description("Field-level errors, present only for validation failures"));
+        problem.setRequired(List.of("type", "title", "status", "code", "requestId"));
+        return problem;
     }
 }

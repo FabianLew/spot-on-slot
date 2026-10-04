@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,6 +67,9 @@ class SpotOnSlotApplicationTests {
 
         assertThat(JsonPath.<Map<String, Object>>read(spec, "$.paths").keySet())
                 .noneMatch(path -> path.startsWith("/test/"));
+        // Error responses are added in status order, so the exported spec (and generated client) is deterministic.
+        var responses = new ObjectMapper().readTree(spec).at("/paths/~1api~1v1~1system~1info/get/responses");
+        assertThat(responses.fieldNames()).toIterable().containsExactly("200", "400", "401", "403", "404", "500");
 
         Path output = Path.of("build", "openapi", "openapi.json");
         Files.createDirectories(output.getParent());
