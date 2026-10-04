@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,6 +51,16 @@ public class ProblemDetailsExceptionHandler extends ResponseEntityExceptionHandl
     @ExceptionHandler(OptimisticLockingFailureException.class)
     ResponseEntity<Object> handleOptimisticLock(OptimisticLockingFailureException ex, WebRequest request) {
         return respond(ex, HttpStatus.CONFLICT, "CONCURRENT_MODIFICATION", null, List.of(), new HttpHeaders(), request);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    ResponseEntity<Object> handleAuthentication(AuthenticationException ex, WebRequest request) {
+        return respond(ex, HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", null, List.of(), new HttpHeaders(), request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex, WebRequest request) {
+        return respond(ex, HttpStatus.FORBIDDEN, "FORBIDDEN", null, List.of(), new HttpHeaders(), request);
     }
 
     @ExceptionHandler(Exception.class)

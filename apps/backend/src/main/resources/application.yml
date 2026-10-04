@@ -33,6 +33,10 @@ spring:
           enabled: false
       republish-outstanding-events-on-restart: true
 
+logging:
+  pattern:
+    level: "%5p [%X{requestId:-}]"
+
 server:
   error:
     whitelabel:

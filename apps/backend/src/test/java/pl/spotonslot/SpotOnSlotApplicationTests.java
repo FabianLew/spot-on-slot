@@ -45,7 +45,8 @@ class SpotOnSlotApplicationTests {
     @Test
     void securesOtherEndpoints() throws Exception {
         mockMvc.perform(get("/api/v1/bookings"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
     }
 
     /**
