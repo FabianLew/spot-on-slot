@@ -60,6 +60,8 @@ Każda podklasa przyjmuje opcjonalnie własny kod (np. `new NotFoundException("A
 
 Ustawiamy `spring.mvc.problemdetails.enabled: true` oraz `server.error.whitelabel.enabled: false`.
 
+**Błędy z dyspozycji kontenera (`/error`).** `ProblemDetailsErrorController` renderuje problem+json z kodem z `ErrorMessages.genericCode` i `instance` równym oryginalnej ścieżce; dyspozycje ERROR są dozwolone w Spring Security (dodane po przeglądzie końcowym).
+
 **Spring Security.** `AuthenticationEntryPoint` i `AccessDeniedHandler` delegują do `HandlerExceptionResolver`, więc 401 (`UNAUTHORIZED`) i 403 (`FORBIDDEN`) mają ten sam format.
 
 **OpenAPI.** Customizer springdoc rejestruje schemat `ProblemDetail` (z polami rozszerzeń) i dokłada do każdej operacji odpowiedzi `400`, `401`, `403`, `404`, `500` z `application/problem+json`, żeby `packages/api-client` miał otypowane błędy.
