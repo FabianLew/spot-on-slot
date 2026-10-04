@@ -1,0 +1,14 @@
+logging:
+  structured:
+    format:
+      console: ecs
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+spotonslot:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS}

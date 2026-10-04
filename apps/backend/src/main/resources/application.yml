@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    default: dev
   application:
     name: spot-on-slot
   datasource:
@@ -22,10 +24,6 @@ spring:
     basename: messages
     encoding: UTF-8
     fallback-to-system-locale: false
-  docker:
-    compose:
-      file: ../../docker-compose.yml
-      lifecycle-management: start-only
   modulith:
     events:
       jdbc:

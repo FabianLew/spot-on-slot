@@ -1,3 +1,7 @@
 spring:
   flyway:
     locations: classpath:db/migration,classpath:db/testmigration
+
+spotonslot:
+  cors:
+    allowed-origins: http://localhost:3000
