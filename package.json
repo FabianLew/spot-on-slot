@@ -1,0 +1,22 @@
+{
+  "name": "spot-on-slot",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:landing": "pnpm --filter landing dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "api:generate": "pnpm --filter @spot-on-slot/api-client generate"
+  },
+  "devDependencies": {
+    "turbo": "^2.11.7",
+    "typescript": "^5"
+  }
+}

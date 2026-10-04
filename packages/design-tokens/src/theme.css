@@ -1,0 +1,18 @@
+/* Tailwind v4 theme generated from src/index.ts. Placeholder brand values. */
+@theme {
+  --color-primary: #5b3df5;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #ff7a59;
+  --color-secondary-foreground: #1a1033;
+  --color-background: #ffffff;
+  --color-foreground: #14111f;
+  --color-muted: #f4f2fa;
+  --color-muted-foreground: #6b6680;
+  --color-border: #e4e0f0;
+  --color-success: #1f9d55;
+  --color-danger: #d93a3a;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}

@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "@spot-on-slot/design-tokens/theme.css";
+
+@source "../../../../packages/ui/src";
+
+@theme inline {
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+}

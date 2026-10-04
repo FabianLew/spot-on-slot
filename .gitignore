@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# builds
+.next/
+out/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# backend
+apps/backend/.gradle/
+apps/backend/build/
+*.class
+
+# env
+.env
+.env.*
+!.env.example
+
+# ide / os
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# logs
+*.log

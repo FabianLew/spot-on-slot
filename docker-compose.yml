@@ -1,0 +1,30 @@
+# Local development services. The backend starts them automatically (spring-boot-docker-compose),
+# or run `docker compose up -d` by hand.
+# S3-compatible storage for the media module is added together with that module.
+services:
+  postgres:
+    image: postgis/postgis:16-3.5
+    labels:
+      org.springframework.boot.service-connection: postgres
+    environment:
+      POSTGRES_DB: spotonslot
+      POSTGRES_USER: spotonslot
+      POSTGRES_PASSWORD: spotonslot
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spotonslot -d spotonslot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  postgres-data:
