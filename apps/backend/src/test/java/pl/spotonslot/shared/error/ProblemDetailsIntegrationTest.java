@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -114,6 +115,13 @@ class ProblemDetailsIntegrationTest {
     @Test
     void missingRequestParameter() throws Exception {
         problem(mockMvc.perform(get("/test/errors/param")), 400, "VALIDATION_FAILED", "/test/errors/param");
+    }
+
+    @Test
+    @WithAnonymousUser
+    void unauthorizedWithoutAcceptLanguageIsPolish() throws Exception {
+        problem(mockMvc.perform(get("/api/v1/bookings")), 401, "UNAUTHORIZED", "/api/v1/bookings")
+                .andExpect(jsonPath("$.title").value("Wymagane uwierzytelnienie"));
     }
 
     @Test

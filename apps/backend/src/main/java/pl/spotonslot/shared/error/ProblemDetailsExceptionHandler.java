@@ -3,6 +3,7 @@ package pl.spotonslot.shared.error;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * Renders every error as an RFC 9457 problem document ({@code application/problem+json}) with a stable {@code code},
@@ -37,10 +38,13 @@ public class ProblemDetailsExceptionHandler extends ResponseEntityExceptionHandl
 
     private final ErrorMessages errorMessages;
     private final MessageSource messageSource;
+    private final LocaleResolver localeResolver;
 
-    public ProblemDetailsExceptionHandler(ErrorMessages errorMessages, MessageSource messageSource) {
+    public ProblemDetailsExceptionHandler(ErrorMessages errorMessages, MessageSource messageSource,
+            LocaleResolver localeResolver) {
         this.errorMessages = errorMessages;
         this.messageSource = messageSource;
+        this.localeResolver = localeResolver;
     }
 
     @ExceptionHandler(DomainException.class)
@@ -93,7 +97,7 @@ public class ProblemDetailsExceptionHandler extends ResponseEntityExceptionHandl
     private ResponseEntity<Object> respond(Exception ex, HttpStatus status, String code, Object[] args,
             List<Map<String, String>> errors, HttpHeaders headers, WebRequest request) {
         var servletRequest = ((ServletWebRequest) request).getRequest();
-        var locale = RequestContextUtils.getLocale(servletRequest);
+        var locale = locale(request);
         var problem = ProblemDetails.of(status, code, errorMessages.resolve(code, status, args, locale), servletRequest);
         if (!errors.isEmpty()) {
             problem.setProperty("errors", errors);
@@ -128,8 +132,15 @@ public class ProblemDetailsExceptionHandler extends ResponseEntityExceptionHandl
     }
 
     private String message(MessageSourceResolvable error, WebRequest request) {
-        var locale = RequestContextUtils.getLocale(((ServletWebRequest) request).getRequest());
-        return messageSource.getMessage(error, locale);
+        return messageSource.getMessage(error, locale(request));
+    }
+
+    /**
+     * Resolves the locale with the application's {@link LocaleResolver} directly: errors raised in the security filter
+     * chain never reach the DispatcherServlet, so the request carries no resolved locale of its own.
+     */
+    private Locale locale(WebRequest request) {
+        return localeResolver.resolveLocale(((ServletWebRequest) request).getRequest());
     }
 
     private static HttpStatus toStatus(HttpStatusCode code) {
