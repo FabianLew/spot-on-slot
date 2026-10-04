@@ -11,4 +11,4 @@ springdoc:
 
 spotonslot:
   cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:}
