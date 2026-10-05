@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -7,17 +7,21 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-const inter = Inter({
+// Self-hosted (OFL) so the build does not depend on Google Fonts being reachable from CI.
+const inter = localFont({
+  src: "../../fonts/InterVariable.woff2",
   variable: "--font-inter",
-  subsets: ["latin", "latin-ext"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: "100 900",
+  style: "normal",
+  display: "swap",
 });
 
-const playfair = Playfair_Display({
+const playfair = localFont({
+  src: "../../fonts/PlayfairDisplay-Italic.ttf",
   variable: "--font-playfair",
-  subsets: ["latin", "latin-ext"],
+  weight: "400 900",
   style: "italic",
-  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export function generateStaticParams() {

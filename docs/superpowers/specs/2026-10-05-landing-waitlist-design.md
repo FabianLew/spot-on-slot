@@ -110,7 +110,7 @@ Hero odtwarza kompozycję, interakcję i animacje z promptu Fabiana, przeniesion
 | W promptcie | U nas | Powód |
 |---|---|---|
 | React 18 + Vite | Next.js 16 w `apps/landing`, hero jako komponent kliencki `"use client"` | Landing już jest aplikacją Next; reszta strony jest statyczna i SEO |
-| `@import` Google Fonts w CSS | `next/font/google` (Inter i Playfair Display italic) ze zmiennymi `--font-inter` i `--font-playfair` | Bez zewnętrznego żądania przy ładowaniu, brak przeskoku fontu |
+| `@import` Google Fonts w CSS | `next/font/local` z plikami OFL w `src/fonts/` (Inter Variable, Playfair Display Italic) ze zmiennymi `--font-inter` i `--font-playfair` | Bez zewnętrznego żądania przy ładowaniu, brak przeskoku fontu; pliki w repo, bo build na CI nie może zależeć od dostępności Google Fonts (błąd 2026-10-05) |
 | `@tailwind base/components/utilities` | Tailwind 4 (`@import "tailwindcss"`), keyframes w `globals.css` | Tak jest skonfigurowany monorepo |
 | Stałe w pliku komponentu | Stałe konfiguracyjne (obrazy, kolor CTA, promień) w `hero.config.ts`; teksty z `messages/{pl,en}.json` | Teksty muszą mieć dwie wersje językowe |
 | `CTA_COLOR` `#e8702a` | `#dc2626` i hover `#b91c1c`, czyli `primary` z tokenów | Nasza paleta: czerń, szarość, czerwień |
