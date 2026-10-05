@@ -1,0 +1,9 @@
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+
+// Design preview with sample data: not part of the product, keep it out of search engines.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
+
+export default function DesignLayout({ children }: { children: ReactNode }) {
+  return children;
+}

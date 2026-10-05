@@ -26,6 +26,7 @@ export const colors = {
     success: "#15803d",
     danger: "#b91c1c",
     dangerForeground: "#ffffff",
+    field: "#ffffff",
   },
   dark: {
     background: "#0a0a0a",
@@ -48,10 +49,76 @@ export const colors = {
     success: "#22c55e",
     danger: "#f87171",
     dangerForeground: "#0a0a0a",
+    field: "#0a0a0a",
   },
 } as const;
 
 export type Palette = { [K in keyof typeof colors.light]: string };
+
+/**
+ * "Arcade" palettes for the web app, measured from the first design mockups
+ * (black/gray + yellow + red, square corners). Red is adjusted for WCAG AA:
+ * light #d91f17 carries white text (5.1:1), dark #ff261f carries near-black text (5.4:1).
+ * The landing still uses `colors`; keep src/arcade.css in sync (tokens.test.ts).
+ */
+export const arcadeColors = {
+  light: {
+    background: "#d7d7d2",
+    foreground: "#101010",
+    card: "#eeeeea",
+    cardForeground: "#101010",
+    popover: "#eeeeea",
+    popoverForeground: "#101010",
+    primary: "#d91f17",
+    primaryForeground: "#ffffff",
+    secondary: "#fcfcf8",
+    secondaryForeground: "#101010",
+    muted: "#e2e2dd",
+    mutedForeground: "#4a4a47",
+    accent: "#e2e2dd",
+    accentForeground: "#101010",
+    border: "#101010",
+    input: "#101010",
+    ring: "#d91f17",
+    success: "#15803d",
+    danger: "#b91c1c",
+    dangerForeground: "#ffffff",
+    highlight: "#ffe31a",
+    highlightForeground: "#101010",
+    heading: "#101010",
+    field: "#fcfcf8",
+    grid: "#c8c8c3",
+  },
+  dark: {
+    background: "#050505",
+    foreground: "#f2f2ee",
+    card: "#0d0d0d",
+    cardForeground: "#f2f2ee",
+    popover: "#0d0d0d",
+    popoverForeground: "#f2f2ee",
+    primary: "#ff261f",
+    primaryForeground: "#050505",
+    secondary: "#141414",
+    secondaryForeground: "#f2f2ee",
+    muted: "#141414",
+    mutedForeground: "#a3a39e",
+    accent: "#1f1b05",
+    accentForeground: "#ffd400",
+    border: "#ffd400",
+    input: "#ffd400",
+    ring: "#ff261f",
+    success: "#22c55e",
+    danger: "#f87171",
+    dangerForeground: "#050505",
+    highlight: "#ffd400",
+    highlightForeground: "#050505",
+    heading: "#ffd400",
+    field: "#050505",
+    grid: "#2b260c",
+  },
+} as const;
+
+export type ArcadePalette = { [K in keyof typeof arcadeColors.light]: string };
 
 export const radius = {
   sm: 6,
@@ -80,6 +147,13 @@ export const typography = {
     xl: 22,
     "2xl": 28,
     "3xl": 36,
+  },
+} as const;
+
+export const arcadeTypography = {
+  fontFamily: {
+    display: "Silkscreen",
+    sans: "Space Mono",
   },
 } as const;
 

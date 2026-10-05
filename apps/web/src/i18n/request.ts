@@ -10,6 +10,9 @@ export default getRequestConfig(async () => {
   });
   return {
     locale,
+    // One zone for server and client rendering, so formatted dates match during hydration.
+    // Per-user time zones come with user settings.
+    timeZone: "Europe/Warsaw",
     messages: (await import(`../../messages/${locale}.json`)).default,
   };
 });

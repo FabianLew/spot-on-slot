@@ -1,16 +1,21 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { buttonVariants } from "@spot-on-slot/ui";
+import { buttonVariants, Panel } from "@spot-on-slot/ui";
 
 export default async function NotFound() {
   const t = await getTranslations("errors");
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-start justify-center gap-3 px-4 py-16">
-      <h1 className="text-2xl font-bold">{t("notFoundTitle")}</h1>
-      <p className="text-muted-foreground">{t("notFoundText")}</p>
-      <Link href="/dashboard" className={buttonVariants()}>
-        {t("backToDashboard")}
-      </Link>
+    <main className="pattern-grid flex flex-1 items-center justify-center px-4 py-16">
+      <Panel className="w-full max-w-md items-start">
+        <p aria-hidden="true" className="font-display text-5xl leading-none text-primary">
+          404
+        </p>
+        <h1 className="font-display text-xl leading-tight">{t("notFoundTitle")}</h1>
+        <p className="text-sm text-muted-foreground">{t("notFoundText")}</p>
+        <Link href="/dashboard" className={buttonVariants()}>
+          {t("backToDashboard")}
+        </Link>
+      </Panel>
     </main>
   );
 }

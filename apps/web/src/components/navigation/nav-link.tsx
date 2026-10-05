@@ -26,25 +26,24 @@ export function NavLink({
       aria-current={active ? "page" : undefined}
       onClick={onNavigate}
       className={cn(
-        "relative flex items-center text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        variant === "sidebar" && "gap-3 rounded-md px-3 py-2 hover:bg-accent",
-        variant === "sheet" && "gap-3 rounded-md px-3 py-3 hover:bg-accent",
-        variant === "tab" && "min-h-14 flex-1 flex-col justify-center gap-1 text-xs",
-        active ? "text-foreground" : "text-muted-foreground",
+        "font-display relative flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        variant !== "tab" && "gap-3 border-2 px-3 text-sm",
+        variant === "sidebar" && "py-2",
+        variant === "sheet" && "py-3",
+        variant !== "tab" &&
+          (active
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-transparent hover:border-border hover:bg-accent hover:text-accent-foreground"),
+        variant === "tab" && "min-h-14 flex-1 flex-col justify-center gap-1 text-[0.625rem]",
+        variant === "tab" && (active ? "text-foreground" : "text-muted-foreground"),
       )}
     >
-      <Icon className="size-5" aria-hidden="true" />
+      <Icon className={cn("size-5", active && variant === "tab" && "text-primary")} aria-hidden="true" />
       {t(item.labelKey)}
-      {active && (
-        <span
-          aria-hidden="true"
-          data-active-indicator
-          className={cn(
-            "absolute bg-primary",
-            variant === "tab" ? "inset-x-4 top-0 h-0.5" : "inset-y-1.5 left-0 w-1 rounded-full",
-          )}
-        />
+      {active && variant === "tab" && (
+        <span aria-hidden="true" data-active-indicator className="absolute inset-x-3 top-0 h-1 bg-primary" />
       )}
+      {active && variant !== "tab" && <span aria-hidden="true" data-active-indicator className="ml-auto">›</span>}
     </Link>
   );
 }

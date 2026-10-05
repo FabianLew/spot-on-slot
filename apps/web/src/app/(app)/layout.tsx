@@ -9,7 +9,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh flex-1">
       <SkipLink />
       <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="pattern-grid flex min-w-0 flex-1 flex-col">
         <TopBar />
         <main
           id="main"

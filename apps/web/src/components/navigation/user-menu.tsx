@@ -1,6 +1,6 @@
 "use client";
 
-import { UserRound } from "lucide-react";
+import { User } from "pixelarticons/react/User";
 import { useTranslations } from "next-intl";
 import {
   Avatar,
@@ -19,10 +19,10 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="w-full justify-start gap-3 px-3">
-          <Avatar className="size-8">
-            <AvatarFallback>
-              <UserRound className="size-4" aria-hidden="true" />
+        <Button variant="ghost" className="w-full justify-start gap-3 border-2 border-border px-3">
+          <Avatar className="size-8 rounded-none border-2 border-border">
+            <AvatarFallback className="rounded-none">
+              <User className="size-4" aria-hidden="true" />
             </AvatarFallback>
           </Avatar>
           {t("menu")}

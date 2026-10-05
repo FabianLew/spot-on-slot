@@ -22,6 +22,7 @@
   --success: #15803d;
   --danger: #b91c1c;
   --danger-foreground: #ffffff;
+  --field: #ffffff;
 }
 
 .dark {
@@ -45,6 +46,7 @@
   --success: #22c55e;
   --danger: #f87171;
   --danger-foreground: #0a0a0a;
+  --field: #0a0a0a;
 }
 
 @theme inline {
@@ -68,6 +70,7 @@
   --color-success: var(--success);
   --color-danger: var(--danger);
   --color-danger-foreground: var(--danger-foreground);
+  --color-field: var(--field);
 
   --radius-sm: 6px;
   --radius-md: 10px;
