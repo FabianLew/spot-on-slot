@@ -105,6 +105,7 @@
     }
   },
   "confirm": {
+    "title": "Potwierdzenie zapisu",
     "loading": "Potwierdzamy Twój zapis…",
     "success": {
       "title": "Gotowe, jesteś na liście.",

@@ -105,6 +105,7 @@
     }
   },
   "confirm": {
+    "title": "Sign-up confirmation",
     "loading": "Confirming your sign-up…",
     "success": {
       "title": "Done, you're on the list.",
