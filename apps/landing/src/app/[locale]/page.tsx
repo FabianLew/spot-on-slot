@@ -7,6 +7,7 @@ import { Audiences } from "@/components/sections/audiences";
 import { Faq } from "@/components/sections/faq";
 import { Footer } from "@/components/sections/footer";
 import { HowItWorks } from "@/components/sections/how-it-works";
+import { WaitlistSection } from "@/components/waitlist/waitlist-section";
 
 export default function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = use(params);
@@ -19,7 +20,7 @@ export default function HomePage({ params }: PageProps<"/[locale]">) {
       <main>
         <Audiences />
         <HowItWorks />
-        {/* Task 8: <WaitlistSection /> (#waitlist) goes here, between HowItWorks and Faq. */}
+        <WaitlistSection />
         <Faq />
       </main>
       <Footer />
