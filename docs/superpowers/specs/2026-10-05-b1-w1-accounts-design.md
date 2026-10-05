@@ -22,7 +22,7 @@ Poza zakresem: profil artysty i lokalu (B4/B5, W2–W4), logowanie Google/Apple,
 ## 3. Backend (`identity`)
 
 ### Dane (migracja Flyway)
-- `identity_user`: `email` (unikalny, zapisany małymi literami), `password_hash` (BCrypt, koszt 12, przez `DelegatingPasswordEncoder`), `role`, `status` (`PENDING_VERIFICATION`, `ACTIVE`, `BLOCKED`), `email_verified_at`, `locale`, `privacy_notice_accepted_at` + kolumny `BaseEntity`.
+- `identity_user`: `email` (unikalny, zapisany małymi literami), `password_hash` (PBKDF2 przez `DelegatingPasswordEncoder`; w implementacji zamiast BCrypt, bo BCrypt ucina hasła po 72 bajtach, a dopuszczamy 128 znaków), `role`, `status` (`PENDING_VERIFICATION`, `ACTIVE`, `BLOCKED`), `email_verified_at`, `locale`, `privacy_notice_accepted_at` + kolumny `BaseEntity`.
 - `identity_token`: jednorazowe tokeny weryfikacji i resetu (`type`, `user_id`, `token_hash` SHA-256, `expires_at`, `used_at`). Surowy token tylko w mailu.
 - `identity_refresh_token`: `user_id`, `token_hash`, `family_id`, `expires_at`, `revoked_at`, `replaced_by`.
 
@@ -58,7 +58,7 @@ Chroniony: `GET /api/v1/me` → `{id, email, role, locale}`.
 ## 4. Web (`apps/web`)
 
 ### Ekrany (poza powłoką aplikacji, styl arcade, PL/EN)
-- `/register`: krok 1 to ekran wyboru roli z makiety (przenoszę go z `/design/role`), krok 2 formularz. Po wysłaniu ekran „Sprawdź skrzynkę”.
+- `/register`: krok 1 to ekran wyboru roli z makiety (przenoszę go z `/design/role`), krok 2 formularz. Po wysłaniu ekran „Sprawdź skrzynkę” (w miejscu formularza, bez osobnego adresu, żeby e-mail nie trafiał do URL-a).
 - `/verify-email?token=…`: potwierdza automatycznie, potem „Konto aktywne, zaloguj się”; przy złym linku formularz ponownej wysyłki.
 - `/login`, `/forgot-password`, `/reset-password?token=…`.
 - Pod formularzem rejestracji krótka klauzula informacyjna (administrator danych, cel, kontakt), tak jak na landingu. Regulamin i polityka prywatności to osobne dokumenty z etapu L3; gdy powstaną, dojdzie do nich checkbox z linkami.

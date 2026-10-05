@@ -51,7 +51,13 @@
   },
   "validation": {
     "required": "This field is required.",
-    "invalidOption": "Choose one of the available options."
+    "invalidOption": "Choose one of the available options.",
+    "email": "Enter a valid email address.",
+    "passwordTooShort": "The password must be at least 10 characters long.",
+    "passwordTooLong": "The password can be at most 128 characters long.",
+    "passwordMismatch": "The passwords don't match.",
+    "passwordEqualsEmail": "The password can't be the same as the email.",
+    "privacyRequired": "Confirm that you have read how your data is processed."
   },
   "design": {
     "title": "Design preview",
@@ -64,18 +70,6 @@
       "djProfile": "DJ profile",
       "bookDj": "Book DJ",
       "venuePanel": "Venue panel"
-    },
-    "role": {
-      "heading": "Choose who you are",
-      "slot": {
-        "title": "I have a slot",
-        "lines": "I'm a DJ\nI'm available\nI want to play"
-      },
-      "spot": {
-        "title": "I have a spot",
-        "lines": "I'm a club\nI'm organising\nI need a DJ"
-      },
-      "tagline": "Music\nPeople\nPlaces\nSlots"
     },
     "profile": {
       "roles": "DJ, producer",
@@ -130,6 +124,81 @@
         "main": "Main room",
         "b": "Room B"
       }
+    }
+  },
+  "auth": {
+    "loading": "Loading…",
+    "logout": "Sign out",
+    "backToLogin": "Back to sign in",
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "passwordRepeat": "Repeat password",
+      "newPassword": "New password",
+      "passwordHint": "At least 10 characters. A long password made of a few words is safer than a short one with symbols."
+    },
+    "register": {
+      "title": "Create an account",
+      "asRole": "Account: {role}",
+      "roles": {
+        "ARTIST": "artist",
+        "VENUE": "venue"
+      },
+      "changeRole": "Change role",
+      "privacyAccept": "I have read how my data is processed",
+      "privacyClause": "Your data is controlled by {administrator}, contact: {contact}. We process your email address, password (as a hash) and role to create and run your Spot On Slot account (Art. 6(1)(b) GDPR). Unconfirmed accounts are deleted after 7 days; others are kept until the account is deleted. You have the right to access, correct and delete your data and to lodge a complaint with the supervisory authority (in Poland, the President of UODO).",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in"
+    },
+    "role": {
+      "heading": "Choose who you are",
+      "slot": {
+        "title": "I have a slot",
+        "lines": "I'm a DJ\nI'm available\nI want to play"
+      },
+      "spot": {
+        "title": "I have a spot",
+        "lines": "I'm a club\nI'm organising\nI need a DJ"
+      },
+      "tagline": "Music\nPeople\nPlaces\nSlots",
+      "hasAccount": "Already have an account? Sign in"
+    },
+    "checkEmail": {
+      "title": "Check your inbox",
+      "text": "We sent a link to {email}. Click it within 48 hours to activate your account.",
+      "noMail": "No message? Check your spam folder or send the link again.",
+      "resend": "Send the link again",
+      "resent": "We sent a new link. The previous one no longer works."
+    },
+    "verify": {
+      "title": "Account activation",
+      "pending": "Confirming your address…",
+      "success": "Your account is active. You can sign in now.",
+      "invalid": "This link is invalid or has expired. Enter your email and we'll send a new one.",
+      "resend": "Send a new link"
+    },
+    "login": {
+      "title": "Sign in",
+      "submit": "Sign in",
+      "forgot": "Forgot your password?",
+      "noAccount": "No account yet?",
+      "register": "Create one",
+      "resend": "Send the activation link",
+      "resent": "We sent a new activation link to that address."
+    },
+    "forgot": {
+      "title": "Reset password",
+      "text": "Enter your account email. We'll send a link to set a new password.",
+      "submit": "Send link",
+      "sent": "If an account with {email} exists, we sent it a link. It is valid for one hour."
+    },
+    "reset": {
+      "title": "New password",
+      "submit": "Set password",
+      "done": "Your password was changed and all devices were signed out. Sign in with the new password.",
+      "missingToken": "This link is incomplete. Request a new one.",
+      "requestNew": "Request a new link"
     }
   }
 }
