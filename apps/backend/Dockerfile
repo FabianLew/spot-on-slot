@@ -25,6 +25,7 @@ WORKDIR /app
 
 COPY --from=build /workspace/build/libs/*.jar /app/app.jar
 
+ENV SPRING_PROFILES_ACTIVE=prod
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dfile.encoding=UTF-8"
 
 USER appuser

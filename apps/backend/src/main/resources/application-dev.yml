@@ -1,0 +1,11 @@
+spring:
+  docker:
+    compose:
+      file: ../../docker-compose.yml
+      lifecycle-management: start-only
+
+spotonslot:
+  cors:
+    allowed-origins:
+      - http://localhost:3000
+      - http://localhost:3001

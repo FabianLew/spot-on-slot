@@ -114,6 +114,7 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 - **Kalendarz i czas:** wszystko w UTC w bazie (`timestamptz`), strefa czasowa użytkownika i lokalu zapisana osobno; web: FullCalendar; mobile: react-native-calendars.
 - **Mapy:** MapLibre + OpenStreetMap (bez kosztów Google Maps na start), geokodowanie przez Nominatim/Photon lub Mapbox przy większym ruchu.
 - **i18n od pierwszego commita** (PL + EN), bo plan zakłada komercjalizację.
+- **Fundament backendu (B0):** błędy (RFC 9457 problem+json), paginacja, `BaseEntity`, request ID, CORS i profile opisuje [specyfikacja B0](superpowers/specs/2026-10-04-b0-backend-foundation-design.md).
 - **RODO:** zgoda na geolokalizację, przechowujemy przybliżoną lokalizację, eksport/usunięcie konta.
 
 ## 6. Infrastruktura i CI

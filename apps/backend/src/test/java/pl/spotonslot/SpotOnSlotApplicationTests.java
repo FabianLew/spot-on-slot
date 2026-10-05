@@ -4,21 +4,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.spotonslot.support.IntegrationTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Import(TestcontainersConfiguration.class)
+@IntegrationTest
 class SpotOnSlotApplicationTests {
 
     @Autowired
@@ -34,6 +33,12 @@ class SpotOnSlotApplicationTests {
     }
 
     @Test
+    void appliesTestMigrations() {
+        Integer count = jdbcTemplate.queryForObject("SELECT count(*) FROM test_note", Integer.class);
+        assertThat(count).isZero();
+    }
+
+    @Test
     void exposesPublicSystemInfo() throws Exception {
         mockMvc.perform(get("/api/v1/system/info"))
                 .andExpect(status().isOk())
@@ -43,7 +48,8 @@ class SpotOnSlotApplicationTests {
     @Test
     void securesOtherEndpoints() throws Exception {
         mockMvc.perform(get("/api/v1/bookings"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
     }
 
     /**
@@ -54,7 +60,16 @@ class SpotOnSlotApplicationTests {
         String spec = mockMvc.perform(get("/v3/api-docs"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.openapi").exists())
+                .andExpect(jsonPath("$.components.schemas.ProblemDetail.properties.code").exists())
+                .andExpect(jsonPath("$.components.schemas.ProblemDetail.properties.errors").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/system/info'].get.responses['500'].content['application/problem+json']").exists())
                 .andReturn().getResponse().getContentAsString();
+
+        assertThat(JsonPath.<Map<String, Object>>read(spec, "$.paths").keySet())
+                .noneMatch(path -> path.startsWith("/test/"));
+        // Error responses are added in status order, so the exported spec (and generated client) is deterministic.
+        var responses = new ObjectMapper().readTree(spec).at("/paths/~1api~1v1~1system~1info/get/responses");
+        assertThat(responses.fieldNames()).toIterable().containsExactly("200", "400", "401", "403", "404", "500");
 
         Path output = Path.of("build", "openapi", "openapi.json");
         Files.createDirectories(output.getParent());

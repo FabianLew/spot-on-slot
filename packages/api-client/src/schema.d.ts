@@ -28,6 +28,25 @@ export interface components {
             name?: string;
             version?: string;
         };
+        ProblemDetail: {
+            /** @example about:blank */
+            type: string;
+            title: string;
+            /** Format: int32 */
+            status: number;
+            detail?: string;
+            instance?: string;
+            /** @description Stable machine-readable error code */
+            code: string;
+            /** @description Echo of the X-Request-Id header */
+            requestId: string;
+            /** @description Field-level errors, present only for validation failures */
+            errors?: {
+                field: string;
+                code: string;
+                message: string;
+            }[];
+        };
     };
     responses: never;
     parameters: never;
@@ -53,6 +72,51 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SystemInfo"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
         };
