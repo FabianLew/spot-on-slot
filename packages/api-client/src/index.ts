@@ -20,14 +20,49 @@ export interface ApiClientOptions {
   getAccessToken?: () => string | null | undefined | Promise<string | null | undefined>;
   /** Active UI language; sent as `Accept-Language` so the backend localizes problem texts. */
   getLocale?: () => string | undefined;
+  /**
+   * Called when a request answers 401; renews the session (e.g. `POST /api/v1/auth/refresh`) and
+   * resolves `true` when a new access token is available. Parallel 401s share one call.
+   */
+  onUnauthorized?: () => Promise<boolean>;
+}
+
+/** Session endpoints authenticate with the refresh cookie, never with the bearer token. */
+const AUTH_PATH = "/api/v1/auth/";
+
+function isAuthCall(request: Request) {
+  return new URL(request.url).pathname.startsWith(AUTH_PATH);
 }
 
 /**
  * Typed client generated from the backend OpenAPI spec.
  * Shared by the web app and, later, the Expo mobile app.
  */
-export function createApiClient({ baseUrl, getAccessToken, getLocale }: ApiClientOptions) {
-  const client = createClient<paths>({ baseUrl });
+export function createApiClient({ baseUrl, getAccessToken, getLocale, onUnauthorized }: ApiClientOptions) {
+  let refreshing: Promise<boolean> | null = null;
+  const renewSession = () => {
+    refreshing ??= onUnauthorized!().finally(() => (refreshing = null));
+    return refreshing;
+  };
+
+  // Retrying needs the request again after its body was consumed, so the retry lives in fetch, not in a middleware.
+  const sessionFetch = async (input: Request): Promise<Response> => {
+    if (isAuthCall(input)) {
+      return globalThis.fetch(new Request(input, { credentials: "include" }));
+    }
+    const retry = onUnauthorized ? input.clone() : null;
+    const response = await globalThis.fetch(input);
+    if (response.status !== 401 || !retry || !(await renewSession())) {
+      return response;
+    }
+    const token = await getAccessToken?.();
+    if (token) {
+      retry.headers.set("Authorization", `Bearer ${token}`);
+    }
+    return globalThis.fetch(retry);
+  };
+
+  const client = createClient<paths>({ baseUrl, fetch: sessionFetch });
 
   // Only a failed `fetch` reaches onError, so this is the one place a network failure is recognised.
   const network: Middleware = {
@@ -40,6 +75,7 @@ export function createApiClient({ baseUrl, getAccessToken, getLocale }: ApiClien
   if (getAccessToken) {
     const auth: Middleware = {
       async onRequest({ request }) {
+        if (isAuthCall(request)) return request;
         const token = await getAccessToken();
         if (token) {
           request.headers.set("Authorization", `Bearer ${token}`);

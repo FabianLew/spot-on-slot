@@ -9,3 +9,6 @@ spotonslot:
     allowed-origins:
       - http://localhost:3000
       - http://localhost:3001
+  identity:
+    # Plain http on localhost: a Secure cookie would still work in Chrome, but not in every browser.
+    cookie-secure: false

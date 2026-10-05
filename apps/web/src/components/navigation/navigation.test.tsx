@@ -14,6 +14,13 @@ vi.mock("next/navigation", () => ({
 }));
 vi.mock("next-themes", () => ({ useTheme: () => ({ theme: "light", setTheme: vi.fn() }) }));
 vi.mock("@/i18n/actions", () => ({ setLocale: vi.fn() }));
+const signOut = vi.fn();
+vi.mock("@/components/session/session-provider", () => ({
+  useSession: () => ({
+    session: { status: "authenticated", user: { id: "1", email: "dj@example.com", role: "ARTIST", locale: "pl" } },
+    signOut,
+  }),
+}));
 
 function renderIntl(ui: ReactNode) {
   return render(
@@ -25,6 +32,7 @@ function renderIntl(ui: ReactNode) {
 
 beforeEach(() => {
   pathname = "/calendar";
+  signOut.mockClear();
 });
 
 describe("Sidebar", () => {
@@ -34,6 +42,15 @@ describe("Sidebar", () => {
     expect(within(nav).getAllByRole("link")).toHaveLength(8);
     expect(within(nav).getByRole("link", { name: "Kalendarz" })).toHaveAttribute("aria-current", "page");
     expect(within(nav).getByRole("link", { name: "Pulpit" })).not.toHaveAttribute("aria-current");
+  });
+
+  it("shows the signed-in e-mail and signs out from the user menu", async () => {
+    renderIntl(<Sidebar />);
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: "Menu" }));
+    expect(await screen.findByText("dj@example.com")).toBeInTheDocument();
+    await user.click(screen.getByRole("menuitem", { name: messages.auth.logout }));
+    expect(signOut).toHaveBeenCalled();
   });
 });
 
@@ -49,6 +66,8 @@ describe("BottomTabs", () => {
     }
     expect(within(dialog).getByRole("radio", { name: "Polski" })).toBeChecked();
     expect(within(dialog).getByRole("radio", { name: "Jasny" })).toBeChecked();
+    await userEvent.setup().click(within(dialog).getByRole("button", { name: messages.auth.logout }));
+    expect(signOut).toHaveBeenCalled();
   });
 });
 

@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   const t = await getTranslations("design");
   const screens = [
-    { href: "/design/role", label: t("screens.role"), icon: <PixelSquare className="size-6 text-primary" /> },
+    { href: "/register", label: t("screens.role"), icon: <PixelSquare className="size-6 text-primary" /> },
     { href: "/design/dj-profile", label: t("screens.djProfile"), icon: <PixelHeadphones className="size-7 text-primary" /> },
     { href: "/design/book-dj", label: t("screens.bookDj"), icon: <PixelNote className="size-7 text-primary" /> },
     { href: "/design/venue-panel", label: t("screens.venuePanel"), icon: <PixelBlob className="size-7 text-primary" /> },

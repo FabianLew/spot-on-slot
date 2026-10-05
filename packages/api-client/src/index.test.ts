@@ -45,3 +45,75 @@ describe("createApiClient network errors", () => {
     expect(result.response.status).toBe(404);
   });
 });
+
+describe("createApiClient session handling", () => {
+  function sessionSetup(responses: Array<() => Response>) {
+    const seen: Request[] = [];
+    const fetchMock = vi.fn(async (request: Request) => {
+      seen.push(request);
+      const next = responses.shift();
+      return next ? next() : Response.json({});
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    let token: string | null = "old";
+    const onUnauthorized = vi.fn(async () => {
+      token = "new";
+      return true;
+    });
+    const client = createApiClient({ baseUrl: "http://api.test", getAccessToken: () => token, onUnauthorized });
+    return { client, seen, onUnauthorized, fetchMock };
+  }
+
+  it("sends the bearer token", async () => {
+    const { client, seen } = sessionSetup([]);
+    await client.GET("/api/v1/me");
+    expect(seen[0]!.headers.get("Authorization")).toBe("Bearer old");
+  });
+
+  it("refreshes once on 401 and retries with the new token", async () => {
+    const { client, seen, onUnauthorized } = sessionSetup([
+      () => new Response(null, { status: 401 }),
+      () => Response.json({ id: "1" }),
+    ]);
+    const result = await client.GET("/api/v1/me");
+    expect(onUnauthorized).toHaveBeenCalledTimes(1);
+    expect(result.response.status).toBe(200);
+    expect(seen[1]!.headers.get("Authorization")).toBe("Bearer new");
+  });
+
+  it("retries a request with a body", async () => {
+    const { client, seen } = sessionSetup([() => new Response(null, { status: 401 }), () => Response.json({})]);
+    await client.POST("/api/v1/waitlist" as never, { body: { email: "a@b.pl" } } as never);
+    expect(await seen[1]!.text()).toBe(JSON.stringify({ email: "a@b.pl" }));
+  });
+
+  it("returns the 401 when the refresh fails", async () => {
+    const { client, onUnauthorized } = sessionSetup([() => new Response(null, { status: 401 })]);
+    onUnauthorized.mockResolvedValueOnce(false);
+    const result = await client.GET("/api/v1/me");
+    expect(result.response.status).toBe(401);
+  });
+
+  it("shares one refresh between parallel requests", async () => {
+    const { client, onUnauthorized } = sessionSetup([
+      () => new Response(null, { status: 401 }),
+      () => new Response(null, { status: 401 }),
+    ]);
+    let release: (ok: boolean) => void = () => {};
+    onUnauthorized.mockImplementationOnce(() => new Promise<boolean>((resolve) => (release = resolve)));
+    const both = Promise.all([client.GET("/api/v1/me"), client.GET("/api/v1/me")]);
+    await vi.waitFor(() => expect(onUnauthorized).toHaveBeenCalled());
+    release(true);
+    await both;
+    expect(onUnauthorized).toHaveBeenCalledTimes(1);
+  });
+
+  it("sends auth calls with credentials and without the bearer token, never refreshing them", async () => {
+    const { client, seen, onUnauthorized } = sessionSetup([() => new Response(null, { status: 401 })]);
+    const result = await client.POST("/api/v1/auth/refresh");
+    expect(result.response.status).toBe(401);
+    expect(seen[0]!.credentials).toBe("include");
+    expect(seen[0]!.headers.has("Authorization")).toBe(false);
+    expect(onUnauthorized).not.toHaveBeenCalled();
+  });
+});

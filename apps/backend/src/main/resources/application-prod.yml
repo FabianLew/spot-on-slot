@@ -21,3 +21,7 @@ spotonslot:
     from: ${MAIL_FROM}
   landing:
     base-url: ${LANDING_BASE_URL}
+  web:
+    base-url: ${WEB_BASE_URL}
+  identity:
+    jwt-secret: ${JWT_SECRET}

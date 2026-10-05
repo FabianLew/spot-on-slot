@@ -1,18 +1,21 @@
 "use client";
 
+import { Logout } from "pixelarticons/react/Logout";
 import { MoreHorizontal } from "pixelarticons/react/MoreHorizontal";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { cn, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@spot-on-slot/ui";
+import { Button, cn, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@spot-on-slot/ui";
 import { LanguageRadioList } from "@/components/preferences/language-menu";
 import { ThemeRadioList } from "@/components/preferences/theme-menu";
+import { useSession } from "@/components/session/session-provider";
 import { isActive } from "./is-active";
 import { NavLink } from "./nav-link";
 import { navItems } from "./nav-items";
 
 export function MoreSheet() {
   const t = useTranslations();
+  const { signOut } = useSession();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const moreItems = navItems.filter((item) => item.mobile === "more");
@@ -45,6 +48,10 @@ export function MoreSheet() {
         </ul>
         <LanguageRadioList />
         <ThemeRadioList />
+        <Button variant="outline" className="justify-start gap-3" onClick={() => void signOut()}>
+          <Logout className="size-5" aria-hidden="true" />
+          {t("auth.logout")}
+        </Button>
       </SheetContent>
     </Sheet>
   );

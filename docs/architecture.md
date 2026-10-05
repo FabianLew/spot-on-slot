@@ -117,6 +117,7 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 - **i18n od pierwszego commita** (PL + EN), bo plan zakłada komercjalizację.
 - **Fundament backendu (B0):** błędy (RFC 9457 problem+json), paginacja, `BaseEntity`, request ID, CORS i profile opisuje [specyfikacja B0](superpowers/specs/2026-10-04-b0-backend-foundation-design.md).
 - **Szkielet aplikacji web (W0):** nawigację, i18n, motyw, klienta API, błędy i formularze opisuje [specyfikacja W0](superpowers/specs/2026-10-05-w0-web-shell-design.md).
+- **Konta (B1 + W1):** rejestracja, weryfikacja e-maila, logowanie, odświeżanie sesji i reset hasła opisuje [specyfikacja kont](superpowers/specs/2026-10-05-b1-w1-accounts-design.md).
 - **Landing z listą oczekujących:** routing `/pl` + `/en`, formularz zapisu i potwierdzenie e-mailem opisuje [specyfikacja landingu](superpowers/specs/2026-10-05-landing-waitlist-design.md).
 - **RODO:** zgoda na geolokalizację, przechowujemy przybliżoną lokalizację, eksport/usunięcie konta.
 
@@ -129,7 +130,7 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 
 ### Zmienne środowiskowe backendu (prod)
 
-Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`application-prod.yml`) wymagane są `MAIL_HOST`, `MAIL_FROM` i `LANDING_BASE_URL` (start bez nich się nie powiedzie).
+Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`application-prod.yml`) wymagane są `MAIL_HOST`, `MAIL_FROM`, `LANDING_BASE_URL`, `WEB_BASE_URL` i `JWT_SECRET` (start bez nich się nie powiedzie).
 
 | Zmienna | Znaczenie |
 |---|---|
@@ -138,6 +139,8 @@ Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`applicat
 | `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` | serwer SMTP |
 | `MAIL_FROM` | adres nadawcy e-maili |
 | `LANDING_BASE_URL` | publiczny adres landingu (linki potwierdzające) |
+| `WEB_BASE_URL` | publiczny adres aplikacji webowej (linki aktywacji konta i resetu hasła) |
+| `JWT_SECRET` | sekret podpisu access tokenów (HS256, min. 32 bajty) |
 
 ### Zmienne środowiskowe landingu (prod)
 

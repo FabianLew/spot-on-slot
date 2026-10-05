@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Toaster, toast } from "@spot-on-slot/ui";
+import { SessionProvider } from "@/components/session/session-provider";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { fallbackMessage } from "@/lib/problem-text";
 import { createQueryClient } from "@/lib/query-client";
@@ -38,7 +39,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <SessionProvider>{children}</SessionProvider>
         <ThemedToaster />
       </QueryClientProvider>
     </ThemeProvider>

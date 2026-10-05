@@ -20,7 +20,8 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/api/v1/system/**",
-            "/api/v1/waitlist/**"
+            "/api/v1/waitlist/**",
+            "/api/v1/auth/**"
     };
 
     @Bean
@@ -35,6 +36,10 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(PUBLIC_PATHS).permitAll()
                         .anyRequest().authenticated())
+                // Bearer JWTs; the decoder and the role converter are beans of the identity module.
+                .oauth2ResourceServer(resource -> resource
+                        .jwt(Customizer.withDefaults())
+                        .authenticationEntryPoint(entryPoint))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(entryPoint)
                         .accessDeniedHandler(accessDeniedHandler))

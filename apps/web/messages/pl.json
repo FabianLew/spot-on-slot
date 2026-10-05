@@ -51,7 +51,13 @@
   },
   "validation": {
     "required": "To pole jest wymagane.",
-    "invalidOption": "Wybierz jedną z dostępnych opcji."
+    "invalidOption": "Wybierz jedną z dostępnych opcji.",
+    "email": "Podaj poprawny adres e-mail.",
+    "passwordTooShort": "Hasło musi mieć co najmniej 10 znaków.",
+    "passwordTooLong": "Hasło może mieć najwyżej 128 znaków.",
+    "passwordMismatch": "Hasła się różnią.",
+    "passwordEqualsEmail": "Hasło nie może być takie samo jak e-mail.",
+    "privacyRequired": "Zaznacz, że znasz informację o przetwarzaniu danych."
   },
   "design": {
     "title": "Podgląd designu",
@@ -64,18 +70,6 @@
       "djProfile": "Profil DJ-a",
       "bookDj": "Rezerwacja DJ-a",
       "venuePanel": "Panel lokalu"
-    },
-    "role": {
-      "heading": "Wybierz, kim jesteś",
-      "slot": {
-        "title": "Mam slot",
-        "lines": "Jestem DJ-em\nMam wolny termin\nChcę grać"
-      },
-      "spot": {
-        "title": "Mam miejsce",
-        "lines": "Jestem klubem\nOrganizuję\nSzukam DJ-a"
-      },
-      "tagline": "Muzyka\nLudzie\nMiejsca\nSloty"
     },
     "profile": {
       "roles": "DJ, producentka",
@@ -130,6 +124,81 @@
         "main": "Sala główna",
         "b": "Sala B"
       }
+    }
+  },
+  "auth": {
+    "loading": "Ładowanie…",
+    "logout": "Wyloguj się",
+    "backToLogin": "Wróć do logowania",
+    "fields": {
+      "email": "E-mail",
+      "password": "Hasło",
+      "passwordRepeat": "Powtórz hasło",
+      "newPassword": "Nowe hasło",
+      "passwordHint": "Co najmniej 10 znaków. Długie hasło z kilku słów jest bezpieczniejsze niż krótkie z symbolami."
+    },
+    "register": {
+      "title": "Załóż konto",
+      "asRole": "Konto: {role}",
+      "roles": {
+        "ARTIST": "artysta",
+        "VENUE": "lokal"
+      },
+      "changeRole": "Zmień rolę",
+      "privacyAccept": "Znam informację o przetwarzaniu moich danych",
+      "privacyClause": "Administratorem Twoich danych jest {administrator}, kontakt: {contact}. Przetwarzamy adres e-mail, hasło (w postaci skrótu) i rolę, żeby założyć i prowadzić Twoje konto w Spot On Slot (art. 6 ust. 1 lit. b RODO). Niepotwierdzone konta usuwamy po 7 dniach, pozostałe przechowujemy do usunięcia konta. Masz prawo dostępu do danych, ich sprostowania i usunięcia oraz prawo skargi do Prezesa UODO.",
+      "submit": "Załóż konto",
+      "hasAccount": "Masz już konto?",
+      "login": "Zaloguj się"
+    },
+    "role": {
+      "heading": "Wybierz, kim jesteś",
+      "slot": {
+        "title": "Mam slot",
+        "lines": "Jestem DJ-em\nMam wolny termin\nChcę grać"
+      },
+      "spot": {
+        "title": "Mam miejsce",
+        "lines": "Jestem klubem\nOrganizuję\nSzukam DJ-a"
+      },
+      "tagline": "Muzyka\nLudzie\nMiejsca\nSloty",
+      "hasAccount": "Masz już konto? Zaloguj się"
+    },
+    "checkEmail": {
+      "title": "Sprawdź skrzynkę",
+      "text": "Wysłaliśmy link na adres {email}. Kliknij go w ciągu 48 godzin, żeby aktywować konto.",
+      "noMail": "Nie widzisz wiadomości? Sprawdź spam albo wyślij link jeszcze raz.",
+      "resend": "Wyślij link ponownie",
+      "resent": "Wysłaliśmy nowy link. Poprzedni przestał działać."
+    },
+    "verify": {
+      "title": "Aktywacja konta",
+      "pending": "Potwierdzamy adres…",
+      "success": "Konto jest aktywne. Możesz się zalogować.",
+      "invalid": "Link jest nieprawidłowy albo wygasł. Podaj e-mail, wyślemy nowy.",
+      "resend": "Wyślij nowy link"
+    },
+    "login": {
+      "title": "Zaloguj się",
+      "submit": "Zaloguj się",
+      "forgot": "Nie pamiętasz hasła?",
+      "noAccount": "Nie masz konta?",
+      "register": "Załóż konto",
+      "resend": "Wyślij link aktywacyjny",
+      "resent": "Wysłaliśmy nowy link aktywacyjny na podany adres."
+    },
+    "forgot": {
+      "title": "Reset hasła",
+      "text": "Podaj e-mail konta. Wyślemy link do ustawienia nowego hasła.",
+      "submit": "Wyślij link",
+      "sent": "Jeśli konto z adresem {email} istnieje, wysłaliśmy na nie link. Jest ważny przez godzinę."
+    },
+    "reset": {
+      "title": "Nowe hasło",
+      "submit": "Ustaw hasło",
+      "done": "Hasło zostało zmienione, a wszystkie urządzenia wylogowane. Zaloguj się nowym hasłem.",
+      "missingToken": "Ten link jest niepełny. Poproś o nowy.",
+      "requestNew": "Poproś o nowy link"
     }
   }
 }
