@@ -70,3 +70,16 @@ describe("Skeleton", () => {
     expect(container.firstChild).toHaveAttribute("aria-hidden", "true");
   });
 });
+
+describe("focus ring", () => {
+  it("offsets the ring with the background color so dark mode has no white halo", () => {
+    render(
+      <>
+        <Button>Go</Button>
+        <Input aria-label="field" />
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Go" })).toHaveClass("focus-visible:ring-offset-background");
+    expect(screen.getByRole("textbox", { name: "field" })).toHaveClass("focus-visible:ring-offset-background");
+  });
+});
