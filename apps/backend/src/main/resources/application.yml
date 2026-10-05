@@ -81,3 +81,12 @@ spotonslot:
   identity:
     # Development-only key; prod requires JWT_SECRET (application-prod.yml has no default).
     jwt-secret: ${JWT_SECRET:dev-only-secret-change-me-0123456789abcdef}
+  media:
+    # Defaults point at S3Mock from docker compose (it accepts any credentials); prod requires all of them.
+    endpoint: ${MEDIA_ENDPOINT:http://localhost:9090}
+    presign-endpoint: ${MEDIA_PRESIGN_ENDPOINT:}
+    region: ${MEDIA_REGION:auto}
+    bucket: ${MEDIA_BUCKET:spotonslot-media}
+    access-key: ${MEDIA_ACCESS_KEY:local}
+    secret-key: ${MEDIA_SECRET_KEY:local}
+    public-base-url: ${MEDIA_PUBLIC_BASE_URL:http://localhost:9090/spotonslot-media}

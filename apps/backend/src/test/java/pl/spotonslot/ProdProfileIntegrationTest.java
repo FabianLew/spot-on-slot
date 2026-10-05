@@ -19,7 +19,10 @@ import pl.spotonslot.support.IntegrationTest;
     "MAIL_FROM=no-reply@spotonslot.pl",
     "LANDING_BASE_URL=https://spotonslot.pl",
     "WEB_BASE_URL=https://app.spotonslot.pl",
-    "JWT_SECRET=prod-test-secret-0123456789abcdef0123456789"
+    "JWT_SECRET=prod-test-secret-0123456789abcdef0123456789",
+    // Endpoint, bucket and public URL come from the S3Mock container in TestcontainersConfiguration.
+    "MEDIA_ACCESS_KEY=prod-test-key",
+    "MEDIA_SECRET_KEY=prod-test-secret"
 })
 class ProdProfileIntegrationTest {
 

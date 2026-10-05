@@ -47,7 +47,8 @@
     "notFoundText": "This page doesn't exist or has been moved.",
     "backToDashboard": "Back to dashboard",
     "NETWORK_ERROR": "Can't reach the server. Check your connection and try again.",
-    "INTERNAL_ERROR": "An unexpected error occurred. Please try again in a moment."
+    "INTERNAL_ERROR": "An unexpected error occurred. Please try again in a moment.",
+    "MEDIA_UPLOAD_FAILED": "Could not send the file to storage. Please try again."
   },
   "validation": {
     "required": "This field is required.",
@@ -69,7 +70,8 @@
       "role": "Role select",
       "djProfile": "DJ profile",
       "bookDj": "Book DJ",
-      "venuePanel": "Venue panel"
+      "venuePanel": "Venue panel",
+      "upload": "Photo upload"
     },
     "profile": {
       "roles": "DJ, producer",
@@ -124,6 +126,26 @@
         "main": "Main room",
         "b": "Room B"
       }
+    },
+    "upload": {
+      "intro": "Upload a photo to try the whole flow: the file goes straight to storage and the server saves three WebP sizes without metadata. You can delete the photo afterwards.",
+      "choose": "Choose a photo",
+      "drop": "or drag it here",
+      "hint": "JPEG, PNG or WebP, up to 10 MB",
+      "uploading": "Uploading…",
+      "previewAlt": "Preview of the uploaded photo",
+      "variants": "Stored sizes",
+      "variant": "{name}: {width} × {height} px",
+      "names": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "open": "Open",
+      "delete": "Delete photo",
+      "deleted": "Photo deleted.",
+      "tooLarge": "A photo can be at most 10 MB.",
+      "unsupported": "Choose a JPEG, PNG or WebP file."
     }
   },
   "auth": {

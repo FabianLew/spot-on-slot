@@ -71,7 +71,7 @@ spot-on-slot/
 │   └── design-tokens/    # kolory, typografia, spacing z brand booka → Tailwind (web) i RN (mobile)
 ├── docs/                 # architektura, ADR-y, moduły
 ├── ai-development/       # stories / prompts (jak w ecommerce-flow)
-├── docker-compose.yml    # Postgres+PostGIS, Mailpit, MinIO lokalnie
+├── docker-compose.yml    # Postgres+PostGIS, Mailpit, S3Mock lokalnie
 └── turbo.json
 ```
 
@@ -117,20 +117,21 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 - **i18n od pierwszego commita** (PL + EN), bo plan zakłada komercjalizację.
 - **Fundament backendu (B0):** błędy (RFC 9457 problem+json), paginacja, `BaseEntity`, request ID, CORS i profile opisuje [specyfikacja B0](superpowers/specs/2026-10-04-b0-backend-foundation-design.md).
 - **Szkielet aplikacji web (W0):** nawigację, i18n, motyw, klienta API, błędy i formularze opisuje [specyfikacja W0](superpowers/specs/2026-10-05-w0-web-shell-design.md).
+- **Zdjęcia (B2):** wgrywanie przez podpisany link prosto do magazynu i rozmiary WebP opisuje [specyfikacja mediów](superpowers/specs/2026-10-05-b2-media-design.md).
 - **Konta (B1 + W1):** rejestracja, weryfikacja e-maila, logowanie, odświeżanie sesji i reset hasła opisuje [specyfikacja kont](superpowers/specs/2026-10-05-b1-w1-accounts-design.md).
 - **Landing z listą oczekujących:** routing `/pl` + `/en`, formularz zapisu i potwierdzenie e-mailem opisuje [specyfikacja landingu](superpowers/specs/2026-10-05-landing-waitlist-design.md).
 - **RODO:** zgoda na geolokalizację, przechowujemy przybliżoną lokalizację, eksport/usunięcie konta.
 
 ## 6. Infrastruktura i CI
 
-- Lokalnie: `docker compose` (Postgres+PostGIS, MinIO, Mailpit). Backend wysyła e-maile przez SMTP: w dev do Mailpit (`localhost:1025`, UI `localhost:8025`), na produkcji do skonfigurowanego serwera SMTP.
+- Lokalnie: `docker compose` (Postgres+PostGIS, S3Mock jako magazyn plików zamiast MinIO, który nie publikuje już darmowych obrazów, Mailpit). Backend wysyła e-maile przez SMTP: w dev do Mailpit (`localhost:1025`, UI `localhost:8025`), na produkcji do skonfigurowanego serwera SMTP.
 - CI: GitHub Actions — build + testy backendu (Testcontainers), lint/typecheck/test frontów przez Turborepo, generowanie klienta API, Playwright e2e na PR.
 - MVP prod: backend w kontenerze na Hetzner (Docker Compose + Caddy) lub Railway, zarządzany Postgres z PostGIS (np. Neon/Railway), frontendy na Vercel, R2 na pliki, Sentry na błędy.
 - Mobile (faza 2): EAS Build + EAS Submit do sklepów, EAS Update do poprawek OTA.
 
 ### Zmienne środowiskowe backendu (prod)
 
-Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`application-prod.yml`) wymagane są `MAIL_HOST`, `MAIL_FROM`, `LANDING_BASE_URL`, `WEB_BASE_URL` i `JWT_SECRET` (start bez nich się nie powiedzie).
+Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`application-prod.yml`) wymagane są `MAIL_HOST`, `MAIL_FROM`, `LANDING_BASE_URL`, `WEB_BASE_URL`, `JWT_SECRET` i zmienne `MEDIA_*` (start bez nich się nie powiedzie).
 
 | Zmienna | Znaczenie |
 |---|---|
@@ -141,6 +142,10 @@ Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`applicat
 | `LANDING_BASE_URL` | publiczny adres landingu (linki potwierdzające) |
 | `WEB_BASE_URL` | publiczny adres aplikacji webowej (linki aktywacji konta i resetu hasła) |
 | `JWT_SECRET` | sekret podpisu access tokenów (HS256, min. 32 bajty) |
+| `MEDIA_ENDPOINT`, `MEDIA_BUCKET` | adres API S3 magazynu (Cloudflare R2) i bucket na zdjęcia |
+| `MEDIA_ACCESS_KEY`, `MEDIA_SECRET_KEY` | klucze dostępu do magazynu |
+| `MEDIA_PUBLIC_BASE_URL` | publiczny adres, pod którym są serwowane rozmiary zdjęć (domena R2) |
+| `MEDIA_PRESIGN_ENDPOINT`, `MEDIA_REGION` | opcjonalnie: inny adres w linkach do wgrywania, region podpisu (domyślnie `auto`) |
 
 ### Zmienne środowiskowe landingu (prod)
 
