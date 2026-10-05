@@ -31,3 +31,5 @@ spotonslot:
     access-key: ${MEDIA_ACCESS_KEY}
     secret-key: ${MEDIA_SECRET_KEY}
     public-base-url: ${MEDIA_PUBLIC_BASE_URL}
+  location:
+    geocoder-url: ${LOCATION_GEOCODER_URL}

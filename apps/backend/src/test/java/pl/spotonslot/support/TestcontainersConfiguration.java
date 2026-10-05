@@ -32,6 +32,17 @@ public class TestcontainersConfiguration {
                 .waitingFor(Wait.forHttp("/").forPort(9090));
     }
 
+    /** Fake geocoder shared by every test context. */
+    @Bean(destroyMethod = "close")
+    PhotonStub photonStub() {
+        return new PhotonStub();
+    }
+
+    @Bean
+    DynamicPropertyRegistrar photonProperties(PhotonStub photonStub) {
+        return registry -> registry.add("spotonslot.location.geocoder-url", photonStub::url);
+    }
+
     @Bean
     DynamicPropertyRegistrar s3MockProperties(GenericContainer<?> s3MockContainer) {
         return registry -> {

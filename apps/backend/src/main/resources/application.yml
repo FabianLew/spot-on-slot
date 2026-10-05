@@ -90,3 +90,6 @@ spotonslot:
     access-key: ${MEDIA_ACCESS_KEY:local}
     secret-key: ${MEDIA_SECRET_KEY:local}
     public-base-url: ${MEDIA_PUBLIC_BASE_URL:http://localhost:9090/spotonslot-media}
+  location:
+    # The public Photon instance is for development only; prod requires its own (LOCATION_GEOCODER_URL).
+    geocoder-url: ${LOCATION_GEOCODER_URL:https://photon.komoot.io}

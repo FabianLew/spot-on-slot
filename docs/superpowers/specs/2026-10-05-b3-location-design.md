@@ -1,6 +1,6 @@
 # B3: lokalizacja
 
-Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: B3 (moduł `location`). Mapy i geokodowanie: MapLibre + OpenStreetMap (Fabian wybrał 2026-10-05).
+Status: zaakceptowany przez Fabiana 2026-10-05. Etap według `architektura/segmenty-mvp.md`: B3 (moduł `location`). Mapy i geokodowanie: MapLibre + OpenStreetMap (Fabian wybrał 2026-10-05).
 
 ## 1. Co użytkownik dostaje
 
