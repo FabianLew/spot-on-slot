@@ -6,7 +6,16 @@
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "lint": {},
-    "typecheck": {},
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
+    "typecheck": {
+      "dependsOn": ["transit"]
+    },
+    "test": {
+      "dependsOn": ["transit"],
+      "outputs": []
+    },
     "dev": {
       "cache": false,
       "persistent": true

@@ -1,0 +1,56 @@
+{
+  "common": {
+    "appName": "Spot On Slot",
+    "tagline": "Book gigs and events without the stress.",
+    "notifications": "Notifications",
+    "close": "Close"
+  },
+  "settings": {
+    "theme": {
+      "label": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language": {
+      "label": "Language",
+      "pl": "Polski",
+      "en": "English"
+    },
+    "title": "Settings",
+    "description": "Language and appearance of the app.",
+    "save": "Save",
+    "saved": "Saved"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "search": "Search",
+    "messages": "Messages",
+    "listings": "Listings",
+    "bookings": "Bookings",
+    "profile": "Profile",
+    "settings": "Settings",
+    "more": "More",
+    "primary": "Main navigation",
+    "skipToContent": "Skip to content",
+    "menu": "Menu"
+  },
+  "pages": {
+    "placeholder": "This section is coming soon."
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "retry": "Try again",
+    "requestId": "Request ID: {id}",
+    "notFoundTitle": "Page not found",
+    "notFoundText": "This page doesn't exist or has been moved.",
+    "backToDashboard": "Back to dashboard",
+    "NETWORK_ERROR": "Can't reach the server. Check your connection and try again.",
+    "INTERNAL_ERROR": "An unexpected error occurred. Please try again in a moment."
+  },
+  "validation": {
+    "required": "This field is required.",
+    "invalidOption": "Choose one of the available options."
+  }
+}

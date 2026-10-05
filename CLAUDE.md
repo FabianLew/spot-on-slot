@@ -26,7 +26,14 @@ Read `docs/architecture.md` before larger changes. Decisions there are agreed wi
 - Call the backend only through `@spot-on-slot/api-client`; never hand-write request/response types. After API changes run backend tests, then `pnpm api:generate`, and commit `schema.d.ts`.
 - Colors/spacing come from `@spot-on-slot/design-tokens`; keep `src/index.ts` and `src/theme.css` in sync.
 - UI copy is Polish by default; keep i18n in mind (`SUPPORTED_LOCALES`).
-- Before pushing: `pnpm lint && pnpm typecheck && pnpm build`.
+- Navigation: `apps/web/src/components/navigation/nav-items.ts` is the single source for the sidebar, bottom tabs and the "Więcej" sheet. Entries are plain serializable data: `icon` is a `NavIconName` string resolved client-side in `nav-icons.ts`; never put components or functions in them. Adding a section = an entry in `nav-items.ts` + (new icon → `NavIconName` + `nav-icons.ts`) + a page under `src/app/(app)/` + `nav.*` keys in both message files.
+- i18n (`apps/web`): next-intl without routing; locale from cookie `NEXT_LOCALE` → Accept-Language → `pl`. Copy lives only in `apps/web/messages/{pl,en}.json` (key parity test, typed keys). Switch locale with the `setLocale` server action.
+- Theme: next-themes, class-based; light/dark tokens in `@spot-on-slot/design-tokens` (`index.ts` and `theme.css` are kept in sync by a test). Palette is black/gray + red accent, a placeholder until the brand book; danger text always comes with an icon.
+- `packages/ui`: shadcn-style components; no `next-intl`/`next` imports, text comes via props; files using hooks/context need `"use client"`.
+- API in `apps/web`: use `api` from `src/lib/api.ts` (wraps `@spot-on-slot/api-client`, sends Accept-Language); `unwrap` + `toApiProblem` + `ApiProblemError`; show query errors with `ApiErrorState`; mutation errors toast automatically unless the mutation sets `meta: { handlesErrors: true }`.
+- Forms: `Form` from `@spot-on-slot/ui` + a zod schema whose messages are `validation.*` keys (translated via `translateFormError`); `applyServerErrors(form, problem)` maps backend `errors[]` to fields or `root.server`.
+- Tests: Vitest + Testing Library in `packages/ui`, `packages/design-tokens`, `packages/api-client`, `apps/web`.
+- Before pushing: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`.
 
 ## Workflow
 - Story-based development in `ai-development/` (see its README), same as ecommerce-flow.

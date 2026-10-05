@@ -61,6 +61,8 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    // SpotOnSlotApplicationTests exports the OpenAPI spec here; declared so a build-cache hit restores it.
+    outputs.dir(layout.buildDirectory.dir('openapi'))
 }
 
 tasks.named('jar') {

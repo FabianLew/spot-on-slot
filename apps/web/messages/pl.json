@@ -1,0 +1,56 @@
+{
+  "common": {
+    "appName": "Spot On Slot",
+    "tagline": "Umawiaj występy i wydarzenia bez stresu.",
+    "notifications": "Powiadomienia",
+    "close": "Zamknij"
+  },
+  "settings": {
+    "theme": {
+      "label": "Motyw",
+      "light": "Jasny",
+      "dark": "Ciemny",
+      "system": "Systemowy"
+    },
+    "language": {
+      "label": "Język",
+      "pl": "Polski",
+      "en": "English"
+    },
+    "title": "Ustawienia",
+    "description": "Język i wygląd aplikacji.",
+    "save": "Zapisz",
+    "saved": "Zapisano"
+  },
+  "nav": {
+    "dashboard": "Pulpit",
+    "calendar": "Kalendarz",
+    "search": "Szukaj",
+    "messages": "Wiadomości",
+    "listings": "Ogłoszenia",
+    "bookings": "Bookingi",
+    "profile": "Profil",
+    "settings": "Ustawienia",
+    "more": "Więcej",
+    "primary": "Nawigacja główna",
+    "skipToContent": "Przejdź do treści",
+    "menu": "Menu"
+  },
+  "pages": {
+    "placeholder": "Ta sekcja jest w przygotowaniu."
+  },
+  "errors": {
+    "title": "Coś poszło nie tak",
+    "retry": "Spróbuj ponownie",
+    "requestId": "ID zgłoszenia: {id}",
+    "notFoundTitle": "Nie znaleziono strony",
+    "notFoundText": "Ta strona nie istnieje albo została przeniesiona.",
+    "backToDashboard": "Wróć do pulpitu",
+    "NETWORK_ERROR": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.",
+    "INTERNAL_ERROR": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie za chwilę."
+  },
+  "validation": {
+    "required": "To pole jest wymagane.",
+    "invalidOption": "Wybierz jedną z dostępnych opcji."
+  }
+}

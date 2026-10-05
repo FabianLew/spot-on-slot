@@ -1,21 +1,57 @@
 /**
  * Design tokens shared by web, landing and (later) the Expo app.
- * Placeholder values until the brand book defines the palette and typography;
- * keep src/theme.css in sync when these change.
+ * Temporary black/gray/red palettes (light and dark) until the brand book defines
+ * the palette and typography; keep src/theme.css in sync when these change
+ * (tokens.test.ts fails on drift).
  */
 export const colors = {
-  primary: "#5b3df5",
-  primaryForeground: "#ffffff",
-  secondary: "#ff7a59",
-  secondaryForeground: "#1a1033",
-  background: "#ffffff",
-  foreground: "#14111f",
-  muted: "#f4f2fa",
-  mutedForeground: "#6b6680",
-  border: "#e4e0f0",
-  success: "#1f9d55",
-  danger: "#d93a3a",
+  light: {
+    background: "#ffffff",
+    foreground: "#0a0a0a",
+    card: "#ffffff",
+    cardForeground: "#0a0a0a",
+    popover: "#ffffff",
+    popoverForeground: "#0a0a0a",
+    primary: "#dc2626",
+    primaryForeground: "#ffffff",
+    secondary: "#f4f4f5",
+    secondaryForeground: "#18181b",
+    muted: "#f4f4f5",
+    mutedForeground: "#52525b",
+    accent: "#f4f4f5",
+    accentForeground: "#18181b",
+    border: "#e4e4e7",
+    input: "#e4e4e7",
+    ring: "#dc2626",
+    success: "#15803d",
+    danger: "#b91c1c",
+    dangerForeground: "#ffffff",
+  },
+  dark: {
+    background: "#0a0a0a",
+    foreground: "#fafafa",
+    card: "#171717",
+    cardForeground: "#fafafa",
+    popover: "#171717",
+    popoverForeground: "#fafafa",
+    primary: "#dc2626",
+    primaryForeground: "#ffffff",
+    secondary: "#27272a",
+    secondaryForeground: "#fafafa",
+    muted: "#171717",
+    mutedForeground: "#a1a1aa",
+    accent: "#27272a",
+    accentForeground: "#fafafa",
+    border: "#27272a",
+    input: "#27272a",
+    ring: "#dc2626",
+    success: "#22c55e",
+    danger: "#f87171",
+    dangerForeground: "#0a0a0a",
+  },
 } as const;
+
+export type Palette = { [K in keyof typeof colors.light]: string };
 
 export const radius = {
   sm: 6,

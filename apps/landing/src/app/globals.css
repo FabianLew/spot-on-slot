@@ -6,8 +6,3 @@
 @theme inline {
   --font-sans: var(--font-inter);
 }
-
-body {
-  background: var(--color-background);
-  color: var(--color-foreground);
-}
