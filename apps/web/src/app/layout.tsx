@@ -12,7 +12,8 @@ const inter = Inter({
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("common");
-  return { title: t("appName"), description: t("tagline") };
+  const appName = t("appName");
+  return { title: { template: `%s · ${appName}`, default: appName }, description: t("tagline") };
 }
 
 export const viewport: Viewport = {

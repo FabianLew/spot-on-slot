@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { navMetadata } from "@/lib/nav-metadata";
 import { SettingsForm } from "./settings-form";
 
 export default function Page() {
@@ -13,3 +14,5 @@ export default function Page() {
     </section>
   );
 }
+
+export const generateMetadata = () => navMetadata("settings");
