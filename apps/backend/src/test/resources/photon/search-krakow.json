@@ -1,0 +1,6 @@
+{"type":"FeatureCollection","features":[
+{"type":"Feature","geometry":{"type":"Point","coordinates":[19.9368564,50.0619474]},"properties":{"osm_type":"R","osm_id":449696,"osm_key":"place","osm_value":"city","type":"city","name":"Kraków","state":"województwo małopolskie","country":"Polska","countrycode":"PL","extent":[19.7922355,50.1261338,20.2173455,49.9676668]}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[19.9372,50.0617]},"properties":{"osm_type":"N","osm_id":1,"osm_key":"building","osm_value":"yes","type":"house","street":"Rynek Główny","housenumber":"1","postcode":"31-042","city":"Kraków","state":"województwo małopolskie","country":"Polska","countrycode":"PL"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[19.95,50.05]},"properties":{"osm_type":"W","osm_id":2,"osm_key":"highway","osm_value":"residential","type":"street","name":"Krakowska","city":"Kraków","district":"Kazimierz","state":"województwo małopolskie","country":"Polska","countrycode":"PL"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[10,50]},"properties":{"osm_key":"natural","osm_value":"peak","type":"other","name":"Krakow Peak"}}
+]}

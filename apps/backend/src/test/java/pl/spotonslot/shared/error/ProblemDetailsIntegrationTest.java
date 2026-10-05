@@ -54,6 +54,12 @@ class ProblemDetailsIntegrationTest {
     }
 
     @Test
+    void serviceUnavailableUsesGenericTextForUntranslatedCode() throws Exception {
+        problem(mockMvc.perform(get("/test/errors/unavailable")), 503, "GEOCODER_DOWN", "/test/errors/unavailable")
+                .andExpect(jsonPath("$.title").value("Usługa niedostępna"));
+    }
+
+    @Test
     void optimisticLock() throws Exception {
         problem(mockMvc.perform(get("/test/errors/optimistic")), 409, "CONCURRENT_MODIFICATION",
                 "/test/errors/optimistic");

@@ -71,7 +71,8 @@
       "djProfile": "Profil DJ-a",
       "bookDj": "Rezerwacja DJ-a",
       "venuePanel": "Panel lokalu",
-      "upload": "Wgrywanie zdjęcia"
+      "upload": "Wgrywanie zdjęcia",
+      "location": "Lokalizacja"
     },
     "profile": {
       "roles": "DJ, producentka",
@@ -146,6 +147,28 @@
       "deleted": "Zdjęcie usunięte.",
       "tooLarge": "Zdjęcie może mieć najwyżej 10 MB.",
       "unsupported": "Wybierz plik JPEG, PNG albo WebP."
+    },
+    "location": {
+      "intro": "Ustaw swoją lokalizację z przeglądarki albo wpisz miasto lub adres. Zapisujemy tylko punkt przybliżony do około 1 km i nazwę miejscowości.",
+      "search": "Miasto lub adres",
+      "placeholder": "np. Kraków, Rynek Główny",
+      "useDevice": "Użyj mojej lokalizacji",
+      "locating": "Ustalam lokalizację…",
+      "searching": "Szukam…",
+      "noResults": "Nic nie znaleziono. Spróbuj wpisać samo miasto.",
+      "current": "Twoja lokalizacja",
+      "none": "Nie ustawiono jeszcze lokalizacji.",
+      "approx": "{latitude}, {longitude} (z dokładnością do około 1 km)",
+      "sources": {
+        "DEVICE": "Z lokalizacji przeglądarki",
+        "MANUAL": "Wybrana ręcznie"
+      },
+      "saved": "Zapisano lokalizację: {label}",
+      "delete": "Usuń lokalizację",
+      "deleted": "Usunięto lokalizację",
+      "denied": "Nie masz zgody na lokalizację w przeglądarce. Wpisz miasto powyżej.",
+      "unavailable": "Nie udało się ustalić lokalizacji. Wpisz miasto powyżej.",
+      "unsupported": "Ta przeglądarka nie udostępnia lokalizacji. Wpisz miasto powyżej."
     }
   },
   "auth": {

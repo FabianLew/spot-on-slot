@@ -28,6 +28,11 @@ class ErrorTestController {
         throw new BusinessRuleException("BOOKING_SLOT_TAKEN");
     }
 
+    @GetMapping("/unavailable")
+    void unavailable() {
+        throw new ServiceUnavailableException("GEOCODER_DOWN");
+    }
+
     @GetMapping("/optimistic")
     void optimistic() {
         throw new ObjectOptimisticLockingFailureException(Object.class, "id");

@@ -113,11 +113,12 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 - **Auth:** własny moduł na Spring Security + JWT (jak w ecommerce-flow), refresh token w httpOnly cookie dla web i w SecureStore dla mobile. Keycloak/Auth0 odrzucam na MVP: dodatkowa infrastruktura lub koszt bez wyraźnej korzyści.
 - **Kontrakt API:** OpenAPI generowane z kodu, w CI generujemy `packages/api-client`; zmiana w backendzie od razu pokazuje błędy typów w web i mobile.
 - **Kalendarz i czas:** wszystko w UTC w bazie (`timestamptz`), strefa czasowa użytkownika i lokalu zapisana osobno; web: FullCalendar; mobile: react-native-calendars.
-- **Mapy:** MapLibre + OpenStreetMap (bez kosztów Google Maps na start), geokodowanie przez Nominatim/Photon lub Mapbox przy większym ruchu.
+- **Mapy:** MapLibre + OpenStreetMap (bez kosztów Google Maps na start; Fabian potwierdził 2026-10-05), geokodowanie przez Photon za interfejsem `Geocoder` w backendzie, więc dostawcę można wymienić w jednym miejscu.
 - **i18n od pierwszego commita** (PL + EN), bo plan zakłada komercjalizację.
 - **Fundament backendu (B0):** błędy (RFC 9457 problem+json), paginacja, `BaseEntity`, request ID, CORS i profile opisuje [specyfikacja B0](superpowers/specs/2026-10-04-b0-backend-foundation-design.md).
 - **Szkielet aplikacji web (W0):** nawigację, i18n, motyw, klienta API, błędy i formularze opisuje [specyfikacja W0](superpowers/specs/2026-10-05-w0-web-shell-design.md).
 - **Zdjęcia (B2):** wgrywanie przez podpisany link prosto do magazynu i rozmiary WebP opisuje [specyfikacja mediów](superpowers/specs/2026-10-05-b2-media-design.md).
+- **Lokalizacja (B3):** lokalizacja osoby zapisana tylko jako punkt przybliżony do około 1 km plus miejscowość, zapytania w promieniu przez PostGIS; szczegóły w [specyfikacji lokalizacji](superpowers/specs/2026-10-05-b3-location-design.md).
 - **Konta (B1 + W1):** rejestracja, weryfikacja e-maila, logowanie, odświeżanie sesji i reset hasła opisuje [specyfikacja kont](superpowers/specs/2026-10-05-b1-w1-accounts-design.md).
 - **Landing z listą oczekujących:** routing `/pl` + `/en`, formularz zapisu i potwierdzenie e-mailem opisuje [specyfikacja landingu](superpowers/specs/2026-10-05-landing-waitlist-design.md).
 - **RODO:** zgoda na geolokalizację, przechowujemy przybliżoną lokalizację, eksport/usunięcie konta.
@@ -131,7 +132,7 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 
 ### Zmienne środowiskowe backendu (prod)
 
-Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`application-prod.yml`) wymagane są `MAIL_HOST`, `MAIL_FROM`, `LANDING_BASE_URL`, `WEB_BASE_URL`, `JWT_SECRET` i zmienne `MEDIA_*` (start bez nich się nie powiedzie).
+Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`application-prod.yml`) wymagane są `MAIL_HOST`, `MAIL_FROM`, `LANDING_BASE_URL`, `WEB_BASE_URL`, `JWT_SECRET`, zmienne `MEDIA_*` i `LOCATION_GEOCODER_URL` (start bez nich się nie powiedzie).
 
 | Zmienna | Znaczenie |
 |---|---|
@@ -146,6 +147,7 @@ Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`applicat
 | `MEDIA_ACCESS_KEY`, `MEDIA_SECRET_KEY` | klucze dostępu do magazynu |
 | `MEDIA_PUBLIC_BASE_URL` | publiczny adres, pod którym są serwowane rozmiary zdjęć (domena R2) |
 | `MEDIA_PRESIGN_ENDPOINT`, `MEDIA_REGION` | opcjonalnie: inny adres w linkach do wgrywania, region podpisu (domyślnie `auto`) |
+| `LOCATION_GEOCODER_URL` | adres instancji Photon (własnej lub płatnej); publiczna `photon.komoot.io` tylko w dev |
 
 ### Zmienne środowiskowe landingu (prod)
 
