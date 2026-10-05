@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import en from "../../../messages/en.json";
 import pl from "../../../messages/pl.json";
 import { isActive } from "./is-active";
+import { navIcons } from "./nav-icons";
 import { navItems } from "./nav-items";
 
 describe("navItems", () => {
@@ -20,6 +21,15 @@ describe("navItems", () => {
     for (const item of navItems) {
       expect(pl.nav).toHaveProperty(item.labelKey);
       expect(en.nav).toHaveProperty(item.labelKey);
+    }
+  });
+  it("is plain serializable data that can cross the server/client boundary", () => {
+    expect(structuredClone(navItems)).toEqual(navItems);
+    expect(JSON.parse(JSON.stringify(navItems))).toEqual(navItems);
+  });
+  it("resolves every icon name to a component", () => {
+    for (const item of navItems) {
+      expect(navIcons[item.icon], item.icon).toBeDefined();
     }
   });
   it("has a page on disk for every href", () => {

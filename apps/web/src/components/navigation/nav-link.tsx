@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@spot-on-slot/ui";
 import { isActive } from "./is-active";
+import { navIcons } from "./nav-icons";
 import type { NavItem } from "./nav-items";
 
 export function NavLink({
@@ -18,7 +19,7 @@ export function NavLink({
 }) {
   const t = useTranslations("nav");
   const active = isActive(usePathname(), item.href);
-  const Icon = item.icon;
+  const Icon = navIcons[item.icon];
   return (
     <Link
       href={item.href}
