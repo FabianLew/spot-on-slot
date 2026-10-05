@@ -104,6 +104,22 @@ describe("ConfirmStatus", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
+  it.each([
+    ["a 500 problem", () => problem(500, "INTERNAL_ERROR")],
+    ["a 503 problem", () => problem(503, "INTERNAL_ERROR")],
+    ["a 502 HTML page", () => new Response("<html>Bad Gateway</html>", { status: 502, headers: { "Content-Type": "text/html" } })],
+  ])("treats %s as a network error with a retry", async (_label, response) => {
+    fetchMock.mockResolvedValueOnce(response());
+    renderStatus("abc");
+
+    const retry = await screen.findByRole("button", { name: pl.confirm.retry });
+    expect(screen.getByText(pl.confirm.invalid.title)).toBeInTheDocument();
+
+    fetchMock.mockResolvedValue(ok());
+    await userEvent.setup().click(retry);
+    expect(await screen.findByText(pl.confirm.success.title)).toBeInTheDocument();
+  });
+
   it("is invalid without a request when there is no token", async () => {
     renderStatus(null);
 

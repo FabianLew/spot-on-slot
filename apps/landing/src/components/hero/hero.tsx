@@ -2,8 +2,15 @@
 
 import { useTranslations } from "next-intl";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
-import { HERO_BASE_IMAGE, HERO_CTA_COLOR, HERO_CTA_HOVER_COLOR, HERO_REVEAL_IMAGE } from "./hero.config";
+import {
+  HERO_BASE_IMAGE,
+  HERO_CTA_COLOR,
+  HERO_CTA_HOVER_COLOR,
+  HERO_REVEAL_IMAGE,
+  HERO_SECTION_ID,
+} from "./hero.config";
 import { RevealLayer } from "./reveal-layer";
+import { useInView } from "./use-in-view";
 
 export function Hero() {
   const t = useTranslations("hero");
@@ -11,31 +18,50 @@ export function Hero() {
   const smooth = useRef({ x: -999, y: -999 });
   const rafRef = useRef<number | null>(null);
   const [cursorPos, setCursorPos] = useState({ x: -999, y: -999 });
+  const sectionRef = useRef<HTMLElement>(null);
+  const heroVisible = useInView(sectionRef);
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
     };
+    window.addEventListener("mousemove", onMouseMove);
+    return () => window.removeEventListener("mousemove", onMouseMove);
+  }, []);
+
+  // The loop only runs while the hero is on screen; it resumes from the last smoothed position.
+  useEffect(() => {
+    if (!heroVisible) return;
     const tick = () => {
-      smooth.current.x += (mouse.current.x - smooth.current.x) * 0.1;
-      smooth.current.y += (mouse.current.y - smooth.current.y) * 0.1;
+      // The mask canvas is in section coordinates, so the viewport cursor is shifted by the
+      // section's offset (non-zero once the page is scrolled). The offset is read every frame
+      // so the spot stays under the cursor while scrolling without moving the mouse.
+      const rect = sectionRef.current?.getBoundingClientRect();
+      const targetX = mouse.current.x === -999 ? -999 : mouse.current.x - (rect?.left ?? 0);
+      const targetY = mouse.current.y === -999 ? -999 : mouse.current.y - (rect?.top ?? 0);
+      smooth.current.x += (targetX - smooth.current.x) * 0.1;
+      smooth.current.y += (targetY - smooth.current.y) * 0.1;
       setCursorPos({ x: smooth.current.x, y: smooth.current.y });
       rafRef.current = requestAnimationFrame(tick);
     };
-    window.addEventListener("mousemove", onMouseMove);
     rafRef.current = requestAnimationFrame(tick);
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
     };
-  }, []);
+  }, [heroVisible]);
 
   const ctaStyle = { "--hero-cta": HERO_CTA_COLOR, "--hero-cta-hover": HERO_CTA_HOVER_COLOR } as CSSProperties;
 
   return (
     <div className="min-h-screen bg-black tracking-[-0.02em] font-sans">
-      <section className="relative w-full overflow-hidden h-screen bg-black" style={{ height: "100dvh" }}>
+      <section
+        ref={sectionRef}
+        id={HERO_SECTION_ID}
+        className="relative w-full overflow-hidden h-screen bg-black"
+        style={{ height: "100dvh" }}
+      >
         <div
           aria-hidden="true"
           className="absolute inset-0 z-10 bg-center bg-cover bg-no-repeat hero-zoom"

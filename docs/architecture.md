@@ -139,6 +139,17 @@ Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`applicat
 | `MAIL_FROM` | adres nadawcy e-maili |
 | `LANDING_BASE_URL` | publiczny adres landingu (linki potwierdzające) |
 
+### Zmienne środowiskowe landingu (prod)
+
+Build z `LANDING_ENV=production` przerywa się, jeśli brakuje którejkolwiek z poniższych (`apps/landing/next.config.ts`, wzór w `apps/landing/.env.example`).
+
+| Zmienna | Znaczenie |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | adres backendu (formularz zapisu i potwierdzenie) |
+| `NEXT_PUBLIC_SITE_URL` | publiczny adres landingu (`metadataBase`, linki `hreflang`) |
+| `NEXT_PUBLIC_PRIVACY_CONTROLLER` | administrator danych w klauzuli i stopce |
+| `NEXT_PUBLIC_PRIVACY_EMAIL` | e-mail kontaktowy administratora danych |
+
 ## 7. Fazy (propozycja)
 
 1. **Fundament:** monorepo, backend skeleton z Modulith, CI, docker-compose, design tokens.

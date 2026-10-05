@@ -116,6 +116,9 @@ Hero odtwarza kompozycję, interakcję i animacje z promptu Fabiana, przeniesion
 | `CTA_COLOR` `#e8702a` | `#dc2626` i hover `#b91c1c`, czyli `primary` z tokenów | Nasza paleta: czerń, szarość, czerwień |
 | Hamburger bez menu | Hamburger otwiera `Sheet` z linkami sekcji i przełącznikiem języka | Na telefonie bez tego nie da się przejść do FAQ ani zmienić języka |
 | Tylko hero, bez sekcji poniżej | Pod hero są sekcje z punktu 3 (dla kogo, jak to działa, formularz, FAQ, stopka) | Landing musi zbierać zapisy; prompt zabrania dodatków tylko „bez wyraźnej prośby” |
+| Nawigacja zawsze przezroczysta, biały tekst | Nad hero bez zmian (pigułka ze szkła); gdy hero schowa się pod paskiem (`IntersectionObserver` na sekcji hero, `rootMargin: -80px` u góry), nawigacja dostaje pełne tło `bg-background/95` z dolną krawędzią, tekst `text-foreground`, pigułkę `bg-muted`, CTA w kolorze `primary`; tokeny jasne i ciemne z motywu | Biały tekst znikał na jasnych sekcjach, a niewidoczny pasek `z-[100]` dalej przechwytywał kliknięcia (także hamburger) |
+| Reflektor w `clientX`/`clientY` | Pozycja kursora minus `getBoundingClientRect().left/top` sekcji, liczone w każdej klatce | Canvas maski jest w układzie sekcji; po przewinięciu strony plamka była przesunięta względem kursora |
+| Pętla `requestAnimationFrame` działa zawsze | Pętla zatrzymana, gdy sekcja hero jest poza ekranem (`IntersectionObserver`), wznawia się od ostatniej wygładzonej pozycji | Bez sensu liczyć i renderować maskę 60 razy na sekundę, gdy hero nie widać |
 
 **Mechanika reflektora: dokładnie jak w promptcie Fabiana (zrzut z 2026-10-05).** W komponencie nadrzędnym `SPOTLIGHT_R = 260`; refy `mouse` (surowa pozycja), `smooth` (wygładzona) i `rafRef`; stan `cursorPos` z wartością początkową `{x: -999, y: -999}`. Nasłuch `mousemove` zapisuje `clientX`/`clientY`. Pętla `requestAnimationFrame` liczy `smooth.x += (mouse.x - smooth.x) * 0.1` (tak samo dla `y`) i wywołuje `setCursorPos`. Po odmontowaniu: zdjęcie nasłuchu i `cancelAnimationFrame`. `RevealLayer({ image, cursorX, cursorY })` trzyma ukryty `canvas` (`absolute inset-0 pointer-events-none`, `display: none`) o rozmiarze `window.innerWidth/innerHeight`, ustawianym przy montowaniu i `resize`, oraz `div` odsłaniający (`absolute inset-0 bg-center bg-cover bg-no-repeat z-30 pointer-events-none`) z obrazem w tle. Przy każdej zmianie pozycji: czyszczenie canvasa, gradient radialny w `(cursorX, cursorY)` od 0 do `SPOTLIGHT_R` z przystankami 0 → `rgba(255,255,255,1)`, 0,4 → 1, 0,6 → 0,75, 0,75 → 0,4, 0,88 → 0,12, 1 → 0, wypełnienie koła o promieniu `SPOTLIGHT_R`, potem `canvas.toDataURL()` jako `maskImage` i `WebkitMaskImage` z `maskSize: '100% 100%'`. Bez dodatkowego dławienia. Na ekranach dotykowych nie ma `mousemove`, więc kursor zostaje w `(-999, -999)` i widać sam obraz bazowy; to wynika z mechaniki, a nie z osobnego warunku.
 
@@ -165,7 +168,7 @@ Strona ma `robots: noindex`.
 - Zmienne `NEXT_PUBLIC_PRIVACY_CONTROLLER` (nazwa lub imię i nazwisko) i `NEXT_PUBLIC_PRIVACY_EMAIL` trafiają do klauzuli pod formularzem i do stopki.
 - Gdy `LANDING_ENV=production`, `next.config.ts` przerywa build, jeśli którejś z nich brakuje.
 - W dev i CI brakujące wartości zastępuje widoczny tekst „[administrator danych]” i „[e-mail kontaktowy]”, żeby nie dało się go przeoczyć.
-- Do tego `NEXT_PUBLIC_API_URL`, czyli adres backendu.
+- Do tego `NEXT_PUBLIC_API_URL`, czyli adres backendu. Build z `LANDING_ENV=production` wymaga też jej oraz `NEXT_PUBLIC_SITE_URL` (bez nich formularz trafiałby na `localhost`).
 
 ## 5. Formularz zapisu (L2)
 

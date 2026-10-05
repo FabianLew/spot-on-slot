@@ -39,7 +39,7 @@ Read `docs/architecture.md` before larger changes. Decisions there are agreed wi
 - Landing (`apps/landing`): locale-prefixed routing (`/pl`, `/en`) via `src/i18n/routing.ts` + `src/proxy.ts`, `localePrefix: always`, no locale cookie; `/` redirects by Accept-Language, unknown first segments 404.
 - Landing copy lives only in `apps/landing/messages/{pl,en}.json`.
 - Landing hero: config in `src/components/hero/hero.config.ts`; the hero reproduces Fabian's prompt, so do not restyle its classes or animations.
-- Landing env: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_PRIVACY_CONTROLLER`, `NEXT_PUBLIC_PRIVACY_EMAIL`; with `LANDING_ENV=production` the build fails without the last three (see `apps/landing/.env.example`).
+- Landing env: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_PRIVACY_CONTROLLER`, `NEXT_PUBLIC_PRIVACY_EMAIL`; with `LANDING_ENV=production` the build fails without any of them (see `apps/landing/.env.example`).
 
 ## Workflow
 - Story-based development in `ai-development/` (see its README), same as ecommerce-flow.

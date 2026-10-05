@@ -11,3 +11,5 @@ export const NAV_ITEMS = [
   { key: "faq", href: "#faq" },
 ] as const;
 export const ACTIVE_NAV_ITEM: (typeof NAV_ITEMS)[number]["key"] = "audiences";
+/** DOM id of the hero section; the nav observes it to switch to a solid background below the hero. */
+export const HERO_SECTION_ID = "hero";

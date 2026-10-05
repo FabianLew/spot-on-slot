@@ -1,9 +1,11 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import pl from "../../../messages/pl.json";
+import { HERO_SECTION_ID } from "./hero.config";
 import { HeroNav } from "./hero-nav";
+import { mockIntersectionObserver } from "./test-intersection-observer";
 
 vi.mock("next/navigation", async (importOriginal) => ({
   ...(await importOriginal<typeof import("next/navigation")>()),
@@ -14,9 +16,12 @@ function renderNav() {
   return render(
     <NextIntlClientProvider locale="pl" messages={pl}>
       <HeroNav />
+      <section id={HERO_SECTION_ID} />
     </NextIntlClientProvider>,
   );
 }
+
+afterEach(() => vi.unstubAllGlobals());
 
 describe("HeroNav", () => {
   it("shows the brand and the section pill with the active item highlighted", () => {
@@ -66,5 +71,52 @@ describe("HeroNav", () => {
     const sheet = await screen.findByRole("dialog");
     await user.click(within(sheet).getByRole("link", { name: pl.nav.faq }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  describe("background after the hero", () => {
+    it("stays transparent over the hero and turns solid once the hero leaves the viewport", () => {
+      const io = mockIntersectionObserver();
+      renderNav();
+      const nav = screen.getByRole("navigation");
+      const hero = document.getElementById(HERO_SECTION_ID)!;
+      const pill = nav.querySelector("div.md\\:flex") as HTMLElement;
+      const menuIcon = screen.getByRole("button", { name: pl.nav.menu }).querySelector("svg")!;
+
+      expect(io.observers.some((o) => o.targets.includes(hero))).toBe(true);
+      expect(nav).toHaveAttribute("data-over-hero", "true");
+      expect(nav).not.toHaveClass("bg-background/95");
+      expect(pill).toHaveClass("bg-white/20 backdrop-blur-md");
+      expect(screen.getByText(pl.hero.brand)).toHaveClass("text-white");
+      expect(menuIcon).toHaveClass("text-white");
+
+      act(() => io.setIntersecting(hero, false));
+      expect(nav).toHaveAttribute("data-over-hero", "false");
+      expect(nav).toHaveClass("bg-background/95 text-foreground border-b");
+      expect(pill).toHaveClass("bg-muted");
+      expect(pill).not.toHaveClass("bg-white/20");
+      expect(within(pill).getByRole("link", { name: pl.nav.audiences })).toHaveClass("bg-foreground text-background");
+      expect(screen.getByText(pl.hero.brand)).toHaveClass("text-foreground");
+      expect(menuIcon).toHaveClass("text-foreground");
+      expect(screen.getByRole("link", { name: pl.nav.join })).toHaveClass("bg-primary");
+
+      act(() => io.setIntersecting(hero, true));
+      expect(nav).toHaveAttribute("data-over-hero", "true");
+      expect(nav).not.toHaveClass("bg-background/95");
+    });
+
+    it("treats the hero as left once it no longer reaches below the nav bar", () => {
+      const io = mockIntersectionObserver();
+      renderNav();
+      const hero = document.getElementById(HERO_SECTION_ID)!;
+      const observer = io.observers.find((o) => o.targets.includes(hero));
+      expect(observer?.options?.rootMargin).toBe("-80px 0px 0px 0px");
+    });
+
+    it("stops observing on unmount", () => {
+      const io = mockIntersectionObserver();
+      const { unmount } = renderNav();
+      unmount();
+      expect(io.observers.every((o) => o.targets.length === 0)).toBe(true);
+    });
   });
 });

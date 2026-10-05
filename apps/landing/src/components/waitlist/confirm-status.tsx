@@ -16,7 +16,8 @@ async function confirm(token: string): Promise<Exclude<ConfirmState, "loading">>
   } catch (error) {
     const problem = toApiProblem(error);
     if (problem.code === "WAITLIST_TOKEN_EXPIRED") return "expired";
-    if (problem.code === "NETWORK_ERROR" || problem.status === 0) return "network";
+    // Server errors are transient like network failures, so they get the retry button too.
+    if (problem.code === "NETWORK_ERROR" || problem.status === 0 || problem.status >= 500) return "network";
     return "invalid";
   }
 }

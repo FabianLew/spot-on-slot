@@ -3,7 +3,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import pl from "../../../messages/pl.json";
 import { Hero } from "./hero";
-import { HERO_CTA_COLOR, HERO_CTA_HOVER_COLOR, SPOTLIGHT_R } from "./hero.config";
+import { HERO_CTA_COLOR, HERO_CTA_HOVER_COLOR, HERO_SECTION_ID, SPOTLIGHT_R } from "./hero.config";
+import { mockIntersectionObserver } from "./test-intersection-observer";
 
 let gradientArgs: number[][];
 let frames: FrameRequestCallback[];
@@ -93,5 +94,40 @@ describe("Hero", () => {
     unmount();
     expect(remove).toHaveBeenCalledWith("mousemove", handler);
     expect(cancelAnimationFrame).toHaveBeenCalled();
+  });
+
+  it("positions the spotlight relative to the hero section after scrolling", () => {
+    renderHero();
+    const section = document.getElementById(HERO_SECTION_ID)!;
+    // Page scrolled by 200px: the section's top edge is 200px above the viewport.
+    vi.spyOn(section, "getBoundingClientRect").mockReturnValue(
+      { left: 0, top: -200, right: 1000, bottom: 600, width: 1000, height: 800, x: 0, y: -200 } as DOMRect,
+    );
+    act(() => {
+      window.dispatchEvent(new MouseEvent("mousemove", { clientX: 701, clientY: 251 }));
+    });
+    act(() => frames.at(-1)!(0));
+    // Target in section coordinates is (701, 451): same frame result as without scrolling.
+    expect(gradientArgs.at(-1)).toEqual([-829, -854, 0, -829, -854, SPOTLIGHT_R]);
+  });
+
+  it("pauses the animation loop while the hero is off-screen and resumes when it returns", () => {
+    const io = mockIntersectionObserver();
+    renderHero();
+    const section = document.getElementById(HERO_SECTION_ID)!;
+    expect(frames).toHaveLength(1);
+
+    act(() => io.setIntersecting(section, false));
+    expect(cancelAnimationFrame).toHaveBeenCalled();
+    const scheduled = frames.length;
+    act(() => {
+      window.dispatchEvent(new MouseEvent("mousemove", { clientX: 701, clientY: 451 }));
+    });
+    expect(frames).toHaveLength(scheduled);
+
+    act(() => io.setIntersecting(section, true));
+    expect(frames).toHaveLength(scheduled + 1);
+    act(() => frames.at(-1)!(0));
+    expect(gradientArgs.at(-1)).toEqual([-829, -854, 0, -829, -854, SPOTLIGHT_R]);
   });
 });
