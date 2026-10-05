@@ -1,6 +1,20 @@
 {
   "common": {
     "appName": "Spot On Slot",
-    "tagline": "Umawiaj występy i wydarzenia bez stresu."
+    "tagline": "Umawiaj występy i wydarzenia bez stresu.",
+    "notifications": "Powiadomienia"
+  },
+  "settings": {
+    "theme": {
+      "label": "Motyw",
+      "light": "Jasny",
+      "dark": "Ciemny",
+      "system": "Systemowy"
+    },
+    "language": {
+      "label": "Język",
+      "pl": "Polski",
+      "en": "English"
+    }
   }
 }

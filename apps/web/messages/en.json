@@ -1,6 +1,20 @@
 {
   "common": {
     "appName": "Spot On Slot",
-    "tagline": "Book gigs and events without the stress."
+    "tagline": "Book gigs and events without the stress.",
+    "notifications": "Notifications"
+  },
+  "settings": {
+    "theme": {
+      "label": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language": {
+      "label": "Language",
+      "pl": "Polski",
+      "en": "English"
+    }
   }
 }
