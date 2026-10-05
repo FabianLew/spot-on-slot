@@ -13,7 +13,12 @@ import pl.spotonslot.support.IntegrationTest;
 
 @IntegrationTest
 @ActiveProfiles({"test", "prod"})
-@TestPropertySource(properties = "CORS_ALLOWED_ORIGINS=https://app.spotonslot.pl")
+@TestPropertySource(properties = {
+    "CORS_ALLOWED_ORIGINS=https://app.spotonslot.pl",
+    "MAIL_HOST=smtp.example.com",
+    "MAIL_FROM=no-reply@spotonslot.pl",
+    "LANDING_BASE_URL=https://spotonslot.pl"
+})
 class ProdProfileIntegrationTest {
 
     @Autowired

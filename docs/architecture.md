@@ -93,6 +93,7 @@ Pakiet bazowy np. `pl.spotonslot` (do ustalenia).
 | `booking` | zapytanie → oferta → akceptacja/odrzucenie → potwierdzone → zakończone; maszyna stanów |
 | `messaging` | rozmowy między stronami (powiązane z bookingiem lub ogólne), WebSocket |
 | `notification` | in-app, e-mail, push; preferencje użytkownika; reaguje na zdarzenia innych modułów |
+| `waitlist` | publiczny zapis na listę oczekujących z podwójnym opt-in (potwierdzenie e-mailem), czyszczenie niepotwierdzonych zapisów |
 | `media` | upload zdjęć/plików do R2, presigned URL |
 | `shared` | wyjątki, paginacja, bezpieczeństwo, audyt |
 
@@ -116,14 +117,38 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 - **i18n od pierwszego commita** (PL + EN), bo plan zakłada komercjalizację.
 - **Fundament backendu (B0):** błędy (RFC 9457 problem+json), paginacja, `BaseEntity`, request ID, CORS i profile opisuje [specyfikacja B0](superpowers/specs/2026-10-04-b0-backend-foundation-design.md).
 - **Szkielet aplikacji web (W0):** nawigację, i18n, motyw, klienta API, błędy i formularze opisuje [specyfikacja W0](superpowers/specs/2026-10-05-w0-web-shell-design.md).
+- **Landing z listą oczekujących:** routing `/pl` + `/en`, formularz zapisu i potwierdzenie e-mailem opisuje [specyfikacja landingu](superpowers/specs/2026-10-05-landing-waitlist-design.md).
 - **RODO:** zgoda na geolokalizację, przechowujemy przybliżoną lokalizację, eksport/usunięcie konta.
 
 ## 6. Infrastruktura i CI
 
-- Lokalnie: `docker compose` (Postgres+PostGIS, MinIO, Mailpit).
+- Lokalnie: `docker compose` (Postgres+PostGIS, MinIO, Mailpit). Backend wysyła e-maile przez SMTP: w dev do Mailpit (`localhost:1025`, UI `localhost:8025`), na produkcji do skonfigurowanego serwera SMTP.
 - CI: GitHub Actions — build + testy backendu (Testcontainers), lint/typecheck/test frontów przez Turborepo, generowanie klienta API, Playwright e2e na PR.
 - MVP prod: backend w kontenerze na Hetzner (Docker Compose + Caddy) lub Railway, zarządzany Postgres z PostGIS (np. Neon/Railway), frontendy na Vercel, R2 na pliki, Sentry na błędy.
 - Mobile (faza 2): EAS Build + EAS Submit do sklepów, EAS Update do poprawek OTA.
+
+### Zmienne środowiskowe backendu (prod)
+
+Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`application-prod.yml`) wymagane są `MAIL_HOST`, `MAIL_FROM` i `LANDING_BASE_URL` (start bez nich się nie powiedzie).
+
+| Zmienna | Znaczenie |
+|---|---|
+| `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | połączenie z PostgreSQL |
+| `CORS_ALLOWED_ORIGINS` | dozwolone originy frontendów |
+| `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` | serwer SMTP |
+| `MAIL_FROM` | adres nadawcy e-maili |
+| `LANDING_BASE_URL` | publiczny adres landingu (linki potwierdzające) |
+
+### Zmienne środowiskowe landingu (prod)
+
+Build z `LANDING_ENV=production` przerywa się, jeśli brakuje którejkolwiek z poniższych (`apps/landing/next.config.ts`, wzór w `apps/landing/.env.example`).
+
+| Zmienna | Znaczenie |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | adres backendu (formularz zapisu i potwierdzenie) |
+| `NEXT_PUBLIC_SITE_URL` | publiczny adres landingu (`metadataBase`, linki `hreflang`) |
+| `NEXT_PUBLIC_PRIVACY_CONTROLLER` | administrator danych w klauzuli i stopce |
+| `NEXT_PUBLIC_PRIVACY_EMAIL` | e-mail kontaktowy administratora danych |
 
 ## 7. Fazy (propozycja)
 

@@ -3,7 +3,7 @@
 import { CircleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@spot-on-slot/ui";
-import { toApiProblem } from "@/lib/api-error";
+import { toApiProblem } from "@spot-on-slot/api-client";
 import { fallbackMessage } from "@/lib/problem-text";
 
 export function ApiErrorState({ error, onRetry }: { error: unknown; onRetry?: () => void }) {

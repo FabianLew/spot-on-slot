@@ -20,13 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
   toast,
+  translateFormError,
 } from "@spot-on-slot/ui";
 import { SUPPORTED_LOCALES } from "@spot-on-slot/shared";
 import { setLocale } from "@/i18n/actions";
 import { isLocale } from "@/i18n/locale";
 import { THEMES, type ThemePreference } from "@/components/theme/theme-provider";
-import { toApiProblem } from "@/lib/api-error";
-import { translateFormError } from "@/lib/forms";
+import { toApiProblem } from "@spot-on-slot/api-client";
 import { fallbackMessage } from "@/lib/problem-text";
 import { settingsSchema, type SettingsValues } from "./settings-schema";
 
@@ -64,7 +64,7 @@ export function SettingsForm() {
   }
 
   return (
-    <Form {...form} translateError={translateFormError(t)}>
+    <Form {...form} translateError={translateFormError(t as Parameters<typeof translateFormError>[0])}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid max-w-md gap-6" noValidate>
         <FormField
           control={form.control}

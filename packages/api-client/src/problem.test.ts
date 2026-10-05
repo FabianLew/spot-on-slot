@@ -1,6 +1,5 @@
-import { NetworkError } from "@spot-on-slot/api-client";
 import { describe, expect, it } from "vitest";
-import { ApiProblemError, toApiProblem, unwrap, type ApiProblem } from "./api-error";
+import { ApiProblemError, NetworkError, toApiProblem, unwrap, type ApiProblem } from "./index";
 
 const backend: ApiProblem = {
   type: "about:blank",

@@ -49,3 +49,4 @@ export {
   FormRootError,
   useFormField,
 } from "./form";
+export { applyServerErrors, translateFormError, type ServerProblem } from "./form-errors";
