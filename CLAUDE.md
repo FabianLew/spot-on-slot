@@ -18,6 +18,8 @@ Read `docs/architecture.md` before larger changes. Decisions there are agreed wi
 - Entities (`shared.persistence`): extend `BaseEntity` (UUID v7 `id`, `createdAt`, `updatedAt`, `version`). Migration columns: `id uuid primary key, created_at timestamptz not null, updated_at timestamptz not null, version bigint not null`.
 - Web (`shared.web`): `RequestIdFilter` (`X-Request-Id`, echoed in logs and errors); CORS via `spotonslot.cors.allowed-origins`. OpenAPI documents the problem schema automatically.
 - Lombok for boilerplate: `@Getter`/`@Setter`, `@RequiredArgsConstructor` for constructor injection, `@NoArgsConstructor(access = PROTECTED)` on entities, `@Slf4j` for loggers. Don't hand-write getters, setters or plain constructors. Entities never use `@Data`, `@EqualsAndHashCode` or `@ToString` (lazy loading); DTOs stay Java `record`s. `lombok.config` copies `@Qualifier`/`@Value` from fields to generated constructors.
+- Events: cross-module side effects use `@ApplicationModuleListener` (e.g. `WaitlistConfirmationRequested` in `waitlist` -> confirmation e-mail in `notification`); failed listeners stay in the Modulith event registry and are retried.
+- Mail: `spring-boot-starter-mail`; dev uses Mailpit (SMTP `localhost:1025`, UI `localhost:8025`, from `docker compose`). Prod env: `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM`, `LANDING_BASE_URL` (confirmation links). Mail is excluded from `/actuator/health`.
 - Profiles: `dev` (default), `prod`, `test`.
 - Tests: use `@IntegrationTest`; test-only tables go in `src/test/resources/db/testmigration`; test controllers under `/test/...` must be `@Hidden`.
 
@@ -30,10 +32,14 @@ Read `docs/architecture.md` before larger changes. Decisions there are agreed wi
 - i18n (`apps/web`): next-intl without routing; locale from cookie `NEXT_LOCALE` → Accept-Language → `pl`. Copy lives only in `apps/web/messages/{pl,en}.json` (key parity test, typed keys). Switch locale with the `setLocale` server action.
 - Theme: next-themes, class-based; light/dark tokens in `@spot-on-slot/design-tokens` (`index.ts` and `theme.css` are kept in sync by a test). Palette is black/gray + red accent, a placeholder until the brand book; danger text always comes with an icon.
 - `packages/ui`: shadcn-style components; no `next-intl`/`next` imports, text comes via props; files using hooks/context need `"use client"`.
-- API in `apps/web`: use `api` from `src/lib/api.ts` (wraps `@spot-on-slot/api-client`, sends Accept-Language); `unwrap` + `toApiProblem` + `ApiProblemError`; show query errors with `ApiErrorState`; mutation errors toast automatically unless the mutation sets `meta: { handlesErrors: true }`.
-- Forms: `Form` from `@spot-on-slot/ui` + a zod schema whose messages are `validation.*` keys (translated via `translateFormError`); `applyServerErrors(form, problem)` maps backend `errors[]` to fields or `root.server`.
-- Tests: Vitest + Testing Library in `packages/ui`, `packages/design-tokens`, `packages/api-client`, `apps/web`.
+- API in `apps/web`: use `api` from `src/lib/api.ts` (wraps `@spot-on-slot/api-client`, sends Accept-Language); `unwrap`, `toApiProblem` and `ApiProblemError` come from `@spot-on-slot/api-client`; show query errors with `ApiErrorState`; mutation errors toast automatically unless the mutation sets `meta: { handlesErrors: true }`.
+- Forms: `Form` from `@spot-on-slot/ui` + a zod schema whose messages are `validation.*` keys (translated via `translateFormError`); `applyServerErrors` and `translateFormError` come from `@spot-on-slot/ui`; `applyServerErrors(form, problem)` maps backend `errors[]` to fields or `root.server`.
+- Tests: Vitest + Testing Library in `packages/ui`, `packages/design-tokens`, `packages/api-client`, `apps/web`, `apps/landing`.
 - Before pushing: `pnpm lint && pnpm typecheck && pnpm test && pnpm build`.
+- Landing (`apps/landing`): locale-prefixed routing (`/pl`, `/en`) via `src/i18n/routing.ts` + `src/proxy.ts`, `localePrefix: always`, no locale cookie; `/` redirects by Accept-Language, unknown first segments 404.
+- Landing copy lives only in `apps/landing/messages/{pl,en}.json`.
+- Landing hero: config in `src/components/hero/hero.config.ts`; the hero reproduces Fabian's prompt, so do not restyle its classes or animations.
+- Landing env: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_PRIVACY_CONTROLLER`, `NEXT_PUBLIC_PRIVACY_EMAIL`; with `LANDING_ENV=production` the build fails without the last three (see `apps/landing/.env.example`).
 
 ## Workflow
 - Story-based development in `ai-development/` (see its README), same as ecommerce-flow.
