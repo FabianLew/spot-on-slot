@@ -1,6 +1,6 @@
 # B2: media (zdjęcia profili)
 
-Status: do akceptacji przez Fabiana. Etap według `architektura/segmenty-mvp.md`: B2 (moduł `media`). Miniatury robi backend po uploadzie (Fabian wybrał 2026-10-05).
+Status: zaakceptowany przez Fabiana 2026-10-05. Etap według `architektura/segmenty-mvp.md`: B2 (moduł `media`). Miniatury robi backend po uploadzie (Fabian wybrał 2026-10-05).
 
 ## 1. Co użytkownik dostaje
 

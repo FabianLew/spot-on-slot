@@ -25,3 +25,9 @@ spotonslot:
     base-url: ${WEB_BASE_URL}
   identity:
     jwt-secret: ${JWT_SECRET}
+  media:
+    endpoint: ${MEDIA_ENDPOINT}
+    bucket: ${MEDIA_BUCKET}
+    access-key: ${MEDIA_ACCESS_KEY}
+    secret-key: ${MEDIA_SECRET_KEY}
+    public-base-url: ${MEDIA_PUBLIC_BASE_URL}

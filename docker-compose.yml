@@ -1,6 +1,5 @@
 # Local development services. The backend starts them automatically (spring-boot-docker-compose),
 # or run `docker compose up -d` by hand.
-# S3-compatible storage for the media module is added together with that module.
 services:
   postgres:
     image: postgis/postgis:16-3.5
@@ -26,5 +25,20 @@ services:
       - "1025:1025"
       - "8025:8025"
 
+  # S3-compatible storage for media (Cloudflare R2 in prod). MinIO no longer publishes free images.
+  # It accepts any credentials and allows browser uploads from any origin (CORS).
+  s3mock:
+    image: adobe/s3mock:5.2.3
+    environment:
+      COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: spotonslot-media
+      # Keep files in the volume across restarts (the default is a temp dir wiped on exit).
+      COM_ADOBE_TESTING_S3MOCK_STORE_ROOT: /s3mockroot
+      COM_ADOBE_TESTING_S3MOCK_STORE_RETAIN_FILES_ON_EXIT: "true"
+    ports:
+      - "9090:9090"
+    volumes:
+      - s3mock-data:/s3mockroot
+
 volumes:
   postgres-data:
+  s3mock-data:
