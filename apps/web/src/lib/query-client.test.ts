@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { NetworkError } from "@spot-on-slot/api-client";
-import { ApiProblemError } from "./api-error";
+import { ApiProblemError, NetworkError } from "@spot-on-slot/api-client";
 import { createQueryClient } from "./query-client";
 
 const problemError = (status: number) =>

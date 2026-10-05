@@ -1,16 +1,11 @@
 import { act, render, renderHook } from "@testing-library/react";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { describe, expect, it } from "vitest";
-import type { ApiProblem } from "./api-error";
-import { applyServerErrors, translateFormError } from "./forms";
+import { applyServerErrors, translateFormError } from "./form-errors";
 
-const base: ApiProblem = {
-  type: "about:blank",
-  title: "Błąd",
-  status: 400,
-  code: "VALIDATION_FAILED",
-  requestId: "r1",
-};
+type ApiProblem = Parameters<typeof applyServerErrors>[1];
+
+const base: ApiProblem = { title: "Błąd" };
 
 function setup() {
   return renderHook(() => {
@@ -26,7 +21,7 @@ describe("applyServerErrors", () => {
     act(() =>
       applyServerErrors(result.current, {
         ...base,
-        errors: [{ field: "email", code: "X", message: "zły" }],
+        errors: [{ field: "email", message: "zły" }],
       }),
     );
     expect(result.current.formState.errors.email?.message).toBe("zły");
@@ -40,8 +35,8 @@ describe("applyServerErrors", () => {
       applyServerErrors(result.current, {
         ...base,
         errors: [
-          { field: "email", code: "X", message: "zły" },
-          { field: "nickname", code: "Y", message: "zajęty" },
+          { field: "email", message: "zły" },
+          { field: "nickname", message: "zajęty" },
         ],
       }),
     );
@@ -52,7 +47,7 @@ describe("applyServerErrors", () => {
   it("puts detail of a problem without errors into the root error", () => {
     const { result } = setup();
     act(() =>
-      applyServerErrors(result.current, { ...base, status: 409, code: "CONFLICT", detail: "Konflikt" }),
+      applyServerErrors(result.current, { ...base, detail: "Konflikt" }),
     );
     expect(result.current.formState.errors.root?.server?.message).toBe("Konflikt");
   });
@@ -86,7 +81,7 @@ describe("applyServerErrors with registered fields", () => {
   }
   const problem = (field: string): ApiProblem => ({
     ...base,
-    errors: [{ field, code: "X", message: "zły" }],
+    errors: [{ field, message: "zły" }],
   });
 
   it("pins errors on a registered field whose value is undefined", () => {

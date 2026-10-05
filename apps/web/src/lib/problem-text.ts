@@ -1,4 +1,4 @@
-import type { ApiProblem } from "./api-error";
+import type { ApiProblem } from "@spot-on-slot/api-client";
 
 type Translate = ((key: string) => string) & { has: (key: string) => boolean };
 

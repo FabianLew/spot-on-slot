@@ -1,5 +1,5 @@
 import { MutationCache, QueryClient } from "@tanstack/react-query";
-import { toApiProblem, type ApiProblem } from "./api-error";
+import { toApiProblem, type ApiProblem } from "@spot-on-slot/api-client";
 
 declare module "@tanstack/react-query" {
   interface Register {

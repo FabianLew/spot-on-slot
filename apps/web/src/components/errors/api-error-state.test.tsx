@@ -1,10 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
-import { NetworkError } from "@spot-on-slot/api-client";
+import { ApiProblemError, NetworkError, toApiProblem } from "@spot-on-slot/api-client";
 import { describe, expect, it, vi } from "vitest";
 import messages from "../../../messages/pl.json";
-import { ApiProblemError, toApiProblem } from "@/lib/api-error";
 import { ApiErrorState } from "./api-error-state";
 
 function renderState(error: unknown, onRetry?: () => void) {
