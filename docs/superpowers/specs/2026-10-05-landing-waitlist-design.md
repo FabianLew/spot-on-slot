@@ -1,6 +1,6 @@
 # Landing z listą oczekujących: L1, B15, L2 (design)
 
-Data: 2026-10-05 · Status: do przeglądu · Segmenty: L1, B15, L2 z `docs/architecture.md`
+Data: 2026-10-05 · Status: zatwierdzony (Fabian, 2026-10-05) · Segmenty: L1, B15, L2 z `docs/architecture.md`
 
 ## Cel
 
