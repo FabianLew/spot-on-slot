@@ -7,18 +7,29 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2",
+    "lucide-react": "^1.52.0",
+    "radix-ui": "^1.6.7",
     "tailwind-merge": "^3"
   },
   "peerDependencies": {
     "react": "^19"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/react": "^19",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^30.1.2",
     "react": "19.2.8",
-    "typescript": "^5"
+    "react-dom": "19.2.8",
+    "typescript": "^5",
+    "vitest": "^5.0.3"
   }
 }
