@@ -1,6 +1,6 @@
 "use client";
 
-import { Ellipsis } from "lucide-react";
+import { MoreHorizontal } from "pixelarticons/react/MoreHorizontal";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -22,17 +22,17 @@ export function MoreSheet() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         className={cn(
-          "relative flex min-h-14 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "font-display relative flex min-h-14 flex-1 flex-col items-center justify-center gap-1 text-[0.625rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           active ? "text-foreground" : "text-muted-foreground",
         )}
       >
-        <Ellipsis className="size-5" aria-hidden="true" />
+        <MoreHorizontal className={cn("size-5", active && "text-primary")} aria-hidden="true" />
         {t("nav.more")}
         {active && (
-          <span aria-hidden="true" data-active-indicator className="absolute inset-x-4 top-0 h-0.5 bg-primary" />
+          <span aria-hidden="true" data-active-indicator className="absolute inset-x-3 top-0 h-1 bg-primary" />
         )}
       </SheetTrigger>
-      <SheetContent closeLabel={t("common.close")} aria-describedby={undefined}>
+      <SheetContent className="border-t-2" closeLabel={t("common.close")} aria-describedby={undefined}>
         <SheetHeader>
           <SheetTitle>{t("nav.more")}</SheetTitle>
         </SheetHeader>

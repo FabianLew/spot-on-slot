@@ -51,7 +51,7 @@ export function SheetHeader({ className, ...props }: ComponentProps<"div">) {
 }
 
 export function SheetTitle({ className, ...props }: ComponentProps<typeof SheetPrimitive.Title>) {
-  return <SheetPrimitive.Title className={cn("text-lg font-semibold", className)} {...props} />;
+  return <SheetPrimitive.Title className={cn("font-display text-lg font-semibold", className)} {...props} />;
 }
 
 export function SheetDescription({

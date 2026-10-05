@@ -51,7 +51,7 @@ export function DropdownMenuRadioItem({
 }
 
 export function DropdownMenuLabel({ className, ...props }: ComponentProps<typeof MenuPrimitive.Label>) {
-  return <MenuPrimitive.Label className={cn("px-2 py-1.5 text-sm font-semibold", className)} {...props} />;
+  return <MenuPrimitive.Label className={cn("font-display px-2 py-1.5 text-sm font-semibold", className)} {...props} />;
 }
 
 export function DropdownMenuSeparator({

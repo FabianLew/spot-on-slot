@@ -1,12 +1,18 @@
 import { useTranslations } from "next-intl";
+import { PageHeader, Panel, PixelSquare } from "@spot-on-slot/ui";
 import type { NavKey } from "@/components/navigation/nav-items";
 
 export function PlaceholderPage({ titleKey }: { titleKey: NavKey }) {
   const t = useTranslations();
   return (
-    <section className="flex flex-col gap-2">
-      <h1 className="text-2xl font-bold">{t(`nav.${titleKey}`)}</h1>
-      <p className="text-muted-foreground">{t("pages.placeholder")}</p>
+    <section className="flex flex-col gap-4">
+      <PageHeader title={t(`nav.${titleKey}`)} />
+      <Panel>
+        <p className="flex items-center gap-3 text-sm uppercase">
+          <PixelSquare className="size-4 shrink-0 text-primary" />
+          {t("pages.placeholder")}
+        </p>
+      </Panel>
     </section>
   );
 }

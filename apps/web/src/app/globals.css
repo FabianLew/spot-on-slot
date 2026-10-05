@@ -1,8 +1,11 @@
 @import "tailwindcss";
 @import "@spot-on-slot/design-tokens/theme.css";
+@import "@spot-on-slot/design-tokens/arcade.css";
 
 @source "../../../../packages/ui/src";
 
-@theme inline {
-  --font-sans: var(--font-inter);
+/* Self-hosted (OFL) via @fontsource, imported in layout.tsx; only latin + latin-ext subsets. */
+:root {
+  --font-silkscreen: "Silkscreen";
+  --font-space-mono: "Space Mono";
 }

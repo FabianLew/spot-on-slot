@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleAlert } from "lucide-react";
+import { WarningDiamond } from "pixelarticons/react/WarningDiamond";
 import { useTranslations } from "next-intl";
 import { Button } from "@spot-on-slot/ui";
 import { toApiProblem } from "@spot-on-slot/api-client";
@@ -15,7 +15,7 @@ export function ApiErrorState({ error, onRetry }: { error: unknown; onRetry?: ()
   return (
     <section role="alert" className="flex flex-col items-start gap-3">
       <h1 className="flex items-center gap-2 text-2xl font-bold text-danger">
-        <CircleAlert aria-hidden className="size-6 shrink-0" />
+        <WarningDiamond aria-hidden className="size-6 shrink-0" />
         {title}
       </h1>
       {detail && <p className="text-muted-foreground">{detail}</p>}

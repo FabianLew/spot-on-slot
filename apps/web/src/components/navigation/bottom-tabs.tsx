@@ -8,7 +8,7 @@ export function BottomTabs() {
   return (
     <nav
       aria-label={t("primary")}
-      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 flex border-t-2 border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
     >
       {navItems
         .filter((item) => item.mobile === "tab")

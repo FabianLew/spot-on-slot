@@ -52,5 +52,84 @@
   "validation": {
     "required": "This field is required.",
     "invalidOption": "Choose one of the available options."
+  },
+  "design": {
+    "title": "Design preview",
+    "intro": "Screens from the first mockups with sample data. They get wired to the API together with the artist, venue and booking modules.",
+    "back": "Back",
+    "moreActions": "More options",
+    "previewNotice": "Preview: nothing was saved.",
+    "screens": {
+      "role": "Role select",
+      "djProfile": "DJ profile",
+      "bookDj": "Book DJ",
+      "venuePanel": "Venue panel"
+    },
+    "role": {
+      "heading": "Choose who you are",
+      "slot": {
+        "title": "I have a slot",
+        "lines": "I'm a DJ\nI'm available\nI want to play"
+      },
+      "spot": {
+        "title": "I have a spot",
+        "lines": "I'm a club\nI'm organising\nI need a DJ"
+      },
+      "tagline": "Music\nPeople\nPlaces\nSlots"
+    },
+    "profile": {
+      "roles": "DJ, producer",
+      "radius": "+{km} km",
+      "skills": "Skills",
+      "skill": {
+        "tempo": "Tempo (BPM)",
+        "experience": "Experience",
+        "energy": "Energy",
+        "vinyl": "Vinyl",
+        "cdj": "CDJ",
+        "production": "Production"
+      },
+      "about": "About",
+      "aboutText": "DJ sets blending techno, house and trance. Available for clubs, festivals and private events. Open to collabs.",
+      "location": "Location",
+      "change": "Change",
+      "nextSlots": "Next available slots",
+      "bookNow": "Book now"
+    },
+    "book": {
+      "calendar": "Availability calendar",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "available": "Available",
+      "selected": "Selected",
+      "unavailable": "Unavailable",
+      "eventDetails": "Event details",
+      "venueName": "Venue name",
+      "location": "Location",
+      "date": "Date",
+      "datePlaceholder": "Pick a day in the calendar",
+      "time": "Time",
+      "send": "Send booking request",
+      "sent": "Request sent."
+    },
+    "venue": {
+      "capacity": "Capacity {capacity} // {floors, plural, one {# floor} other {# floors}}",
+      "today": "Today",
+      "djsNearby": "DJs nearby",
+      "openRequests": "Open requests",
+      "nextOpenSlot": "Next open slot",
+      "openSlots": "Open slots",
+      "quickActions": "Quick actions",
+      "postOpenSlot": "Post open slot",
+      "inbox": "Inbox",
+      "radar": "Radar",
+      "profile": "Profile",
+      "tonight": "Tonight / live status",
+      "liveStatus": "{rooms, plural, one {# room active} other {# rooms active}} // {djs, plural, one {# DJ checked in} other {# DJs checked in}}",
+      "rooms": {
+        "main": "Main room",
+        "b": "Room B"
+      }
+    }
   }
 }

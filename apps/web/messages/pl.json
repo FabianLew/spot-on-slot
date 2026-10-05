@@ -52,5 +52,84 @@
   "validation": {
     "required": "To pole jest wymagane.",
     "invalidOption": "Wybierz jedną z dostępnych opcji."
+  },
+  "design": {
+    "title": "Podgląd designu",
+    "intro": "Ekrany z pierwszych makiet na przykładowych danych. Do API podłączymy je razem z modułami artysty, lokalu i rezerwacji.",
+    "back": "Wstecz",
+    "moreActions": "Więcej opcji",
+    "previewNotice": "Podgląd: nic nie zostało zapisane.",
+    "screens": {
+      "role": "Wybór roli",
+      "djProfile": "Profil DJ-a",
+      "bookDj": "Rezerwacja DJ-a",
+      "venuePanel": "Panel lokalu"
+    },
+    "role": {
+      "heading": "Wybierz, kim jesteś",
+      "slot": {
+        "title": "Mam slot",
+        "lines": "Jestem DJ-em\nMam wolny termin\nChcę grać"
+      },
+      "spot": {
+        "title": "Mam miejsce",
+        "lines": "Jestem klubem\nOrganizuję\nSzukam DJ-a"
+      },
+      "tagline": "Muzyka\nLudzie\nMiejsca\nSloty"
+    },
+    "profile": {
+      "roles": "DJ, producentka",
+      "radius": "+{km} km",
+      "skills": "Umiejętności",
+      "skill": {
+        "tempo": "Tempo (BPM)",
+        "experience": "Doświadczenie",
+        "energy": "Energia",
+        "vinyl": "Winyle",
+        "cdj": "CDJ",
+        "production": "Produkcja"
+      },
+      "about": "O mnie",
+      "aboutText": "Gram sety łączące techno, house i trance. Dostępna dla klubów, festiwali i wydarzeń prywatnych. Otwarta na kolaboracje.",
+      "location": "Lokalizacja",
+      "change": "Zmień",
+      "nextSlots": "Najbliższe wolne terminy",
+      "bookNow": "Zarezerwuj"
+    },
+    "book": {
+      "calendar": "Kalendarz dostępności",
+      "previousMonth": "Poprzedni miesiąc",
+      "nextMonth": "Następny miesiąc",
+      "available": "Dostępny",
+      "selected": "Wybrany",
+      "unavailable": "Niedostępny",
+      "eventDetails": "Szczegóły wydarzenia",
+      "venueName": "Nazwa lokalu",
+      "location": "Lokalizacja",
+      "date": "Data",
+      "datePlaceholder": "Wybierz dzień w kalendarzu",
+      "time": "Godzina",
+      "send": "Wyślij prośbę o rezerwację",
+      "sent": "Prośba wysłana."
+    },
+    "venue": {
+      "capacity": "Pojemność {capacity} // {floors, plural, one {# piętro} few {# piętra} many {# pięter} other {# piętra}}",
+      "today": "Dziś",
+      "djsNearby": "DJ-e w pobliżu",
+      "openRequests": "Otwarte prośby",
+      "nextOpenSlot": "Najbliższy wolny slot",
+      "openSlots": "Wolne sloty",
+      "quickActions": "Szybkie akcje",
+      "postOpenSlot": "Dodaj wolny slot",
+      "inbox": "Skrzynka",
+      "radar": "Radar",
+      "profile": "Profil",
+      "tonight": "Dziś wieczorem / na żywo",
+      "liveStatus": "{rooms, plural, one {# sala aktywna} few {# sale aktywne} many {# sal aktywnych} other {# sali aktywnej}} // {djs, plural, one {# DJ na miejscu} other {# DJ-ów na miejscu}}",
+      "rooms": {
+        "main": "Sala główna",
+        "b": "Sala B"
+      }
+    }
   }
 }

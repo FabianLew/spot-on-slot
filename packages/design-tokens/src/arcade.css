@@ -1,0 +1,107 @@
+/* "Arcade" theme for the web app, imported after theme.css. Values mirror arcadeColors in
+   src/index.ts (tokens.test.ts enforces it). The landing does not import this file. */
+:root {
+  --background: #d7d7d2;
+  --foreground: #101010;
+  --card: #eeeeea;
+  --card-foreground: #101010;
+  --popover: #eeeeea;
+  --popover-foreground: #101010;
+  --primary: #d91f17;
+  --primary-foreground: #ffffff;
+  --secondary: #fcfcf8;
+  --secondary-foreground: #101010;
+  --muted: #e2e2dd;
+  --muted-foreground: #4a4a47;
+  --accent: #e2e2dd;
+  --accent-foreground: #101010;
+  --border: #101010;
+  --input: #101010;
+  --ring: #d91f17;
+  --success: #15803d;
+  --danger: #b91c1c;
+  --danger-foreground: #ffffff;
+  --highlight: #ffe31a;
+  --highlight-foreground: #101010;
+  --heading: #101010;
+  --field: #fcfcf8;
+  --grid: #c8c8c3;
+}
+
+.dark {
+  --background: #050505;
+  --foreground: #f2f2ee;
+  --card: #0d0d0d;
+  --card-foreground: #f2f2ee;
+  --popover: #0d0d0d;
+  --popover-foreground: #f2f2ee;
+  --primary: #ff261f;
+  --primary-foreground: #050505;
+  --secondary: #141414;
+  --secondary-foreground: #f2f2ee;
+  --muted: #141414;
+  --muted-foreground: #a3a39e;
+  --accent: #1f1b05;
+  --accent-foreground: #ffd400;
+  --border: #ffd400;
+  --input: #ffd400;
+  --ring: #ff261f;
+  --success: #22c55e;
+  --danger: #f87171;
+  --danger-foreground: #050505;
+  --highlight: #ffd400;
+  --highlight-foreground: #050505;
+  --heading: #ffd400;
+  --field: #050505;
+  --grid: #2b260c;
+}
+
+@theme inline {
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-heading: var(--heading);
+  --color-grid: var(--grid);
+
+  /* Square corners everywhere; rounded-full stays for dots. */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius: 0px;
+
+  /* Flat panels; floating layers get a hard pixel shadow instead of a blur. */
+  --shadow-sm: 0 0 #0000;
+  --shadow-md: 4px 4px 0 0 var(--border);
+  --shadow-lg: 6px 6px 0 0 var(--border);
+
+  --font-sans: var(--font-space-mono), ui-monospace, monospace;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+}
+
+/* Pixel headings, labels and buttons. Only defined here, so shared components that use it
+   keep their old look on the landing. */
+@utility font-display {
+  font-family: var(--font-silkscreen), var(--font-space-mono), monospace;
+  text-transform: uppercase;
+}
+
+/* Faint line grid behind screens, as in the mockups. */
+@utility pattern-grid {
+  background-image:
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Checkerboard strip ornament. */
+@utility pattern-checker {
+  background-image: conic-gradient(currentColor 25%, transparent 0 50%, currentColor 0 75%, transparent 0);
+  background-size: 12px 12px;
+}
+
+@layer base {
+  h1, h2, h3, h4 {
+    color: var(--heading);
+  }
+}
