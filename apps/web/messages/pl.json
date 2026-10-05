@@ -16,7 +16,11 @@
       "label": "Język",
       "pl": "Polski",
       "en": "English"
-    }
+    },
+    "title": "Ustawienia",
+    "description": "Język i wygląd aplikacji.",
+    "save": "Zapisz",
+    "saved": "Zapisano"
   },
   "nav": {
     "dashboard": "Pulpit",
@@ -44,5 +48,9 @@
     "backToDashboard": "Wróć do pulpitu",
     "NETWORK_ERROR": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.",
     "INTERNAL_ERROR": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie za chwilę."
+  },
+  "validation": {
+    "required": "To pole jest wymagane.",
+    "invalidOption": "Wybierz jedną z dostępnych opcji."
   }
 }
