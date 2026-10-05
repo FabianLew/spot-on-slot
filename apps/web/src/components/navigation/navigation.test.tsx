@@ -52,6 +52,25 @@ describe("BottomTabs", () => {
   });
 });
 
+describe("MoreSheet trigger", () => {
+  it("looks active (indicator, no aria-current) on a section inside the sheet", () => {
+    pathname = "/profile";
+    renderIntl(<BottomTabs />);
+    const trigger = screen.getByRole("button", { name: "Więcej" });
+    expect(trigger.querySelector("[data-active-indicator]")).not.toBeNull();
+    expect(trigger).toHaveClass("text-foreground");
+    expect(trigger).not.toHaveAttribute("aria-current");
+  });
+
+  it("is not active on a tab section", () => {
+    pathname = "/calendar";
+    renderIntl(<BottomTabs />);
+    const trigger = screen.getByRole("button", { name: "Więcej" });
+    expect(trigger.querySelector("[data-active-indicator]")).toBeNull();
+    expect(trigger).toHaveClass("text-muted-foreground");
+  });
+});
+
 describe("MoreSheet", () => {
   it("marks the active section with aria-current and an indicator", async () => {
     pathname = "/profile";

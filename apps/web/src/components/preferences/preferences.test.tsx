@@ -9,8 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@spot-on-slot/ui";
 import messages from "../../../messages/pl.json";
-import { LanguageMenu } from "./language-menu";
-import { ThemeMenu } from "./theme-menu";
+import { LanguageMenu, LanguageRadioList } from "./language-menu";
+import { ThemeMenu, ThemeRadioList } from "./theme-menu";
 
 const setTheme = vi.fn();
 const refresh = vi.fn();
@@ -66,5 +66,28 @@ describe("LanguageMenu", () => {
     expect(setLocale).toHaveBeenCalledWith("en");
     await vi.waitFor(() => expect(refresh).toHaveBeenCalledTimes(1));
     expect(setLocale.mock.invocationCallOrder[0]).toBeLessThan(refresh.mock.invocationCallOrder[0]!);
+  });
+});
+
+describe("RadioList variants", () => {
+  function renderPlain(ui: ReactNode) {
+    return render(
+      <NextIntlClientProvider locale="pl" messages={messages}>
+        {ui}
+      </NextIntlClientProvider>,
+    );
+  }
+
+  it("ThemeRadioList sets the chosen theme", async () => {
+    renderPlain(<ThemeRadioList />);
+    await userEvent.setup().click(screen.getByRole("radio", { name: "Ciemny" }));
+    expect(setTheme).toHaveBeenCalledWith("dark");
+  });
+
+  it("LanguageRadioList sets the chosen locale, then refreshes", async () => {
+    renderPlain(<LanguageRadioList />);
+    await userEvent.setup().click(screen.getByRole("radio", { name: "English" }));
+    expect(setLocale).toHaveBeenCalledWith("en");
+    await vi.waitFor(() => expect(refresh).toHaveBeenCalledTimes(1));
   });
 });
