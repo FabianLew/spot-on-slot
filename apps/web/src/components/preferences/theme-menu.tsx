@@ -8,29 +8,41 @@ import {
   DropdownMenuRadioItem,
 } from "@spot-on-slot/ui";
 import { THEMES, type ThemePreference } from "@/components/theme/theme-provider";
+import { RadioList, type Choice } from "./radio-list";
 
 function isThemePreference(value: string): value is ThemePreference {
   return THEMES.some((theme) => theme === value);
 }
 
-export function ThemeMenu() {
+function useThemeChoice(): Choice {
   const t = useTranslations("settings.theme");
   const { theme, setTheme } = useTheme();
+  return {
+    label: t("label"),
+    value: theme ?? "system",
+    options: THEMES.map((value) => ({ value, label: t(value) })),
+    select: (value) => {
+      if (isThemePreference(value)) setTheme(value);
+    },
+  };
+}
+
+export function ThemeMenu() {
+  const choice = useThemeChoice();
   return (
     <>
-      <DropdownMenuLabel>{t("label")}</DropdownMenuLabel>
-      <DropdownMenuRadioGroup
-        value={theme ?? "system"}
-        onValueChange={(value) => {
-          if (isThemePreference(value)) setTheme(value);
-        }}
-      >
-        {THEMES.map((value) => (
-          <DropdownMenuRadioItem key={value} value={value}>
-            {t(value)}
+      <DropdownMenuLabel>{choice.label}</DropdownMenuLabel>
+      <DropdownMenuRadioGroup value={choice.value} onValueChange={choice.select}>
+        {choice.options.map((option) => (
+          <DropdownMenuRadioItem key={option.value} value={option.value}>
+            {option.label}
           </DropdownMenuRadioItem>
         ))}
       </DropdownMenuRadioGroup>
     </>
   );
+}
+
+export function ThemeRadioList() {
+  return <RadioList choice={useThemeChoice()} />;
 }

@@ -2,7 +2,8 @@
   "common": {
     "appName": "Spot On Slot",
     "tagline": "Umawiaj występy i wydarzenia bez stresu.",
-    "notifications": "Powiadomienia"
+    "notifications": "Powiadomienia",
+    "close": "Zamknij"
   },
   "settings": {
     "theme": {
@@ -16,5 +17,22 @@
       "pl": "Polski",
       "en": "English"
     }
+  },
+  "nav": {
+    "dashboard": "Pulpit",
+    "calendar": "Kalendarz",
+    "search": "Szukaj",
+    "messages": "Wiadomości",
+    "listings": "Ogłoszenia",
+    "bookings": "Bookingi",
+    "profile": "Profil",
+    "settings": "Ustawienia",
+    "more": "Więcej",
+    "primary": "Nawigacja główna",
+    "skipToContent": "Przejdź do treści",
+    "menu": "Menu"
+  },
+  "pages": {
+    "placeholder": "Ta sekcja jest w przygotowaniu."
   }
 }

@@ -2,7 +2,8 @@
   "common": {
     "appName": "Spot On Slot",
     "tagline": "Book gigs and events without the stress.",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "close": "Close"
   },
   "settings": {
     "theme": {
@@ -16,5 +17,22 @@
       "pl": "Polski",
       "en": "English"
     }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "search": "Search",
+    "messages": "Messages",
+    "listings": "Listings",
+    "bookings": "Bookings",
+    "profile": "Profile",
+    "settings": "Settings",
+    "more": "More",
+    "primary": "Main navigation",
+    "skipToContent": "Skip to content",
+    "menu": "Menu"
+  },
+  "pages": {
+    "placeholder": "This section is coming soon."
   }
 }
