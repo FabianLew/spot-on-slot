@@ -22,6 +22,11 @@ spring:
     port: ${MAIL_PORT:1025}
     username: ${MAIL_USERNAME:}
     password: ${MAIL_PASSWORD:}
+    properties:
+      # JavaMail waits forever by default; a blackholed relay must not block listener threads.
+      mail.smtp.connectiontimeout: 10000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
   mvc:
     problemdetails:
       enabled: true
@@ -46,6 +51,11 @@ server:
       enabled: false
 
 management:
+  health:
+    mail:
+      # Mail is non-critical: failed sends stay in the Modulith event registry and are retried,
+      # so an SMTP outage must not make /actuator/health (the container HEALTHCHECK) fail.
+      enabled: false
   endpoints:
     web:
       exposure:

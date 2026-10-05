@@ -59,14 +59,14 @@ class WaitlistConfirmationMailer {
                 </html>
                 """.formatted(
                 locale.getLanguage(),
-                html("greeting", locale),
-                html("body", locale), html("validity", locale),
-                href, html("button", locale),
+                escaped("greeting", locale),
+                escaped("body", locale), escaped("validity", locale),
+                href, escaped("button", locale),
                 href, href,
-                html("ignore", locale));
+                escaped("ignore", locale));
     }
 
-    private String html(String key, Locale locale) {
+    private String escaped(String key, Locale locale) {
         return HtmlUtils.htmlEscape(text(key, locale));
     }
 

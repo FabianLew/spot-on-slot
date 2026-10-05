@@ -5,6 +5,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import jakarta.mail.Message;
 import jakarta.mail.Multipart;
@@ -19,9 +22,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.HealthContributorRegistry;
+import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.support.TransactionTemplate;
 import pl.spotonslot.support.IntegrationTest;
 import pl.spotonslot.waitlist.WaitlistConfirmationRequested;
@@ -41,6 +47,15 @@ class WaitlistConfirmationMailerIntegrationTest {
 
     @Autowired
     TransactionTemplate transactions;
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @Autowired
+    HealthContributorRegistry healthContributors;
+
+    @Autowired
+    MailProperties mailProperties;
 
     @BeforeEach
     void setUp() {
@@ -84,6 +99,23 @@ class WaitlistConfirmationMailerIntegrationTest {
                 .contains("href=\"" + link + "\"")
                 .contains("Confirm sign-up")
                 .contains("If this wasn&#39;t you");
+    }
+
+    /** Mail is non-critical (failed sends are retried by the event registry), so an SMTP outage must not fail health. */
+    @Test
+    void mailIsNotPartOfHealth() throws Exception {
+        assertThat(healthContributors.getContributor("mail")).isNull();
+        mockMvc.perform(get("/actuator/health"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
+    }
+
+    @Test
+    void smtpCallsTimeOut() {
+        assertThat(mailProperties.getProperties())
+                .containsEntry("mail.smtp.connectiontimeout", "10000")
+                .containsEntry("mail.smtp.timeout", "10000")
+                .containsEntry("mail.smtp.writetimeout", "10000");
     }
 
     private MimeMessage publishAndCapture(WaitlistConfirmationRequested event) throws Exception {
