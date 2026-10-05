@@ -34,12 +34,13 @@ export function NavLink({
     >
       <Icon className="size-5" aria-hidden="true" />
       {t(item.labelKey)}
-      {active && variant !== "sheet" && (
+      {active && (
         <span
           aria-hidden="true"
+          data-active-indicator
           className={cn(
             "absolute bg-primary",
-            variant === "sidebar" ? "inset-y-1.5 left-0 w-1 rounded-full" : "inset-x-4 top-0 h-0.5",
+            variant === "tab" ? "inset-x-4 top-0 h-0.5" : "inset-y-1.5 left-0 w-1 rounded-full",
           )}
         />
       )}

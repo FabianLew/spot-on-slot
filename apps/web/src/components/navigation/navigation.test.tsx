@@ -2,13 +2,14 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import messages from "../../../messages/pl.json";
 import { BottomTabs } from "./bottom-tabs";
 import { Sidebar } from "./sidebar";
 
+let pathname = "/calendar";
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/calendar",
+  usePathname: () => pathname,
   useRouter: () => ({ refresh: vi.fn() }),
 }));
 vi.mock("next-themes", () => ({ useTheme: () => ({ theme: "light", setTheme: vi.fn() }) }));
@@ -21,6 +22,10 @@ function renderIntl(ui: ReactNode) {
     </NextIntlClientProvider>,
   );
 }
+
+beforeEach(() => {
+  pathname = "/calendar";
+});
 
 describe("Sidebar", () => {
   it("renders all sections and marks the current one", () => {
@@ -44,5 +49,16 @@ describe("BottomTabs", () => {
     }
     expect(within(dialog).getByRole("radio", { name: "Polski" })).toBeChecked();
     expect(within(dialog).getByRole("radio", { name: "Jasny" })).toBeChecked();
+  });
+});
+
+describe("MoreSheet", () => {
+  it("marks the active section with aria-current and an indicator", async () => {
+    pathname = "/profile";
+    renderIntl(<BottomTabs />);
+    await userEvent.setup().click(screen.getByRole("button", { name: "Więcej" }));
+    const link = within(await screen.findByRole("dialog")).getByRole("link", { name: "Profil" });
+    expect(link).toHaveAttribute("aria-current", "page");
+    expect(link.querySelector("[data-active-indicator]")).not.toBeNull();
   });
 });
