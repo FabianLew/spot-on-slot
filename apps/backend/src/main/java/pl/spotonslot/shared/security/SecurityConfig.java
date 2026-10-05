@@ -19,7 +19,8 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/api/v1/system/**"
+            "/api/v1/system/**",
+            "/api/v1/waitlist/**"
     };
 
     @Bean
