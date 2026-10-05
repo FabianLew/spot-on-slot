@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "Spot On Slot — Idealny artysta na Twoje wydarzenie",
+    "description": "Spot On Slot łączy artystów, bookerów, kluby i lokale. Sprawdzasz dostępność, umawiasz występ i oszczędzasz czas na organizacji."
+  },
+  "nav": {
+    "audiences": "Dla kogo",
+    "howItWorks": "Jak to działa",
+    "waitlist": "Lista oczekujących",
+    "faq": "FAQ",
+    "join": "Dołącz"
+  },
+  "hero": {
+    "brand": "Spot On Slot",
+    "headlineLine1": "Idealny artysta",
+    "headlineLine2": "na Twoje wydarzenie.",
+    "descriptionLeft": "Spot On Slot łączy artystów, bookerów, kluby i lokale. Sprawdzasz dostępność, umawiasz występ i oszczędzasz czas na organizacji.",
+    "descriptionRight": "Ruszamy wkrótce. Zapisz się na listę oczekujących, a damy Ci znać jako pierwszemu.",
+    "cta": "Dołącz do listy oczekujących"
+  },
+  "audiences": {
+    "heading": "Dla kogo jest Spot On Slot",
+    "artists": {
+      "title": "Artyści",
+      "text": "Pokaż, kiedy masz wolne terminy, i daj znać, że szukasz występu. Lokale z okolicy łatwiej Cię znajdą."
+    },
+    "venues": {
+      "title": "Kluby i lokale",
+      "text": "Znajdź artystę na konkretny termin w pobliżu, wyślij zapytanie i ustal szczegóły w jednym miejscu."
+    },
+    "bookers": {
+      "title": "Bookerzy",
+      "text": "Prowadź kalendarze swoich artystów i odpowiadaj na zapytania z jednego miejsca."
+    }
+  },
+  "howItWorks": {
+    "heading": "Jak to działa",
+    "step1": {
+      "title": "Załóż profil.",
+      "text": "Artysta dodaje opis i linki do swojej muzyki, lokal nazwę i lokalizację."
+    },
+    "step2": {
+      "title": "Pokaż lub znajdź termin.",
+      "text": "Artyści zaznaczają wolne dni w kalendarzu, lokale szukają artystów dostępnych w danym terminie."
+    },
+    "step3": {
+      "title": "Umów występ.",
+      "text": "Wyślij zapytanie, ustal szczegóły w wiadomościach i potwierdź booking."
+    }
+  },
+  "waitlist": {
+    "heading": "Dołącz do listy oczekujących",
+    "description": "Damy Ci znać, gdy ruszymy. Zapis jest bezpłatny i do niczego nie zobowiązuje.",
+    "emailLabel": "Adres e-mail",
+    "roleLabel": "Kim jesteś?",
+    "roles": {
+      "ARTIST": "Artysta",
+      "BOOKER": "Booker",
+      "VENUE": "Klub lub lokal"
+    },
+    "cityLabel": "Miasto",
+    "consentLabel": "Zgadzam się na przetwarzanie mojego adresu e-mail, roli i miasta, żeby Spot On Slot mógł poinformować mnie o starcie platformy.",
+    "submit": "Zapisz mnie",
+    "successTitle": "Sprawdź skrzynkę.",
+    "successText": "Wysłaliśmy link potwierdzający na {email}. Kliknij go, żeby dokończyć zapis.",
+    "error": "Nie udało się zapisać. Spróbuj ponownie za chwilę."
+  },
+  "validation": {
+    "emailInvalid": "Podaj poprawny adres e-mail",
+    "roleRequired": "Wybierz, kim jesteś",
+    "cityRequired": "Podaj miasto",
+    "consentRequired": "Zgoda jest wymagana do zapisu"
+  },
+  "privacy": {
+    "clause": "Administratorem Twoich danych jest {administrator}, kontakt: {contact}. Przetwarzamy adres e-mail, rolę i miasto wyłącznie po to, żeby poinformować Cię o starcie Spot On Slot, na podstawie Twojej zgody (art. 6 ust. 1 lit. a RODO). Niepotwierdzone zapisy usuwamy po 7 dniach, a potwierdzone przechowujemy do wycofania zgody albo zamknięcia listy oczekujących. Zgodę możesz wycofać w każdej chwili, pisząc na powyższy adres. Masz prawo dostępu do danych, ich sprostowania i usunięcia oraz prawo skargi do Prezesa UODO."
+  },
+  "faq": {
+    "heading": "FAQ",
+    "whatIs": {
+      "question": "Czym jest Spot On Slot?",
+      "answer": "Platformą do umawiania występów i planowania wydarzeń. Łączy artystów, bookerów, kluby i lokale, żeby łatwiej im było ze sobą współpracować."
+    },
+    "launch": {
+      "question": "Kiedy startujecie?",
+      "answer": "Pracujemy nad pierwszą wersją. Osoby z listy oczekujących dowiedzą się o starcie jako pierwsze."
+    },
+    "price": {
+      "question": "Ile to kosztuje?",
+      "answer": "Zasady i ceny ogłosimy przed startem. Zapis na listę jest bezpłatny."
+    },
+    "roleAndCity": {
+      "question": "Po co pytacie o rolę i miasto?",
+      "answer": "Żeby lepiej przygotować platformę dla artystów, bookerów i lokali w Twojej okolicy."
+    },
+    "mobile": {
+      "question": "Czy będzie działać na telefonie?",
+      "answer": "Tak. Pierwsza wersja działa w przeglądarce na komputerze i telefonie, aplikacja mobilna pojawi się później."
+    },
+    "removal": {
+      "question": "Jak usunąć mój zapis?",
+      "answer": "Napisz na adres administratora podany pod formularzem, a usuniemy Twoje dane."
+    }
+  },
+  "confirm": {
+    "loading": "Potwierdzamy Twój zapis…",
+    "success": {
+      "title": "Gotowe, jesteś na liście.",
+      "text": "Napiszemy, gdy ruszymy."
+    },
+    "expired": {
+      "title": "Link wygasł.",
+      "text": "Zapisz się ponownie, a wyślemy nowy."
+    },
+    "invalid": {
+      "title": "Ten link jest nieprawidłowy.",
+      "text": "Sprawdź, czy skopiowałeś cały adres z wiadomości."
+    },
+    "backHome": "Wróć na stronę główną",
+    "retry": "Spróbuj ponownie"
+  },
+  "footer": {
+    "copyright": "© {year} Spot On Slot",
+    "controller": "Administrator danych: {administrator}, kontakt: {contact}"
+  },
+  "common": {
+    "notFoundTitle": "Nie znaleziono strony",
+    "backHome": "Wróć na stronę główną"
+  }
+}

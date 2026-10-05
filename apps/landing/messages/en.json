@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "Spot On Slot — The right artist for your event",
+    "description": "Spot On Slot connects artists, bookers, clubs and venues. Check availability, book a performance and save time on organising."
+  },
+  "nav": {
+    "audiences": "Who it's for",
+    "howItWorks": "How it works",
+    "waitlist": "Waitlist",
+    "faq": "FAQ",
+    "join": "Join"
+  },
+  "hero": {
+    "brand": "Spot On Slot",
+    "headlineLine1": "The right artist",
+    "headlineLine2": "for your event.",
+    "descriptionLeft": "Spot On Slot connects artists, bookers, clubs and venues. Check availability, book a performance and save time on organising.",
+    "descriptionRight": "Launching soon. Join the waitlist and you'll be the first to know.",
+    "cta": "Join the waitlist"
+  },
+  "audiences": {
+    "heading": "Who Spot On Slot is for",
+    "artists": {
+      "title": "Artists",
+      "text": "Show when you're free and let people know you're looking for gigs. Venues nearby will find you more easily."
+    },
+    "venues": {
+      "title": "Clubs and venues",
+      "text": "Find an artist nearby for a specific date, send a request and settle the details in one place."
+    },
+    "bookers": {
+      "title": "Bookers",
+      "text": "Keep your artists' calendars and answer requests from one place."
+    }
+  },
+  "howItWorks": {
+    "heading": "How it works",
+    "step1": {
+      "title": "Create a profile.",
+      "text": "Artists add a bio and links to their music, venues add their name and location."
+    },
+    "step2": {
+      "title": "Share or find a date.",
+      "text": "Artists mark free days in their calendar, venues search for artists available on a given date."
+    },
+    "step3": {
+      "title": "Book the gig.",
+      "text": "Send a request, agree on the details in messages and confirm the booking."
+    }
+  },
+  "waitlist": {
+    "heading": "Join the waitlist",
+    "description": "We'll let you know when we launch. Signing up is free and there's no commitment.",
+    "emailLabel": "Email address",
+    "roleLabel": "Who are you?",
+    "roles": {
+      "ARTIST": "Artist",
+      "BOOKER": "Booker",
+      "VENUE": "Club or venue"
+    },
+    "cityLabel": "City",
+    "consentLabel": "I agree to the processing of my email address, role and city so that Spot On Slot can tell me when the platform launches.",
+    "submit": "Sign me up",
+    "successTitle": "Check your inbox.",
+    "successText": "We've sent a confirmation link to {email}. Click it to complete your sign-up.",
+    "error": "We couldn't sign you up. Please try again shortly."
+  },
+  "validation": {
+    "emailInvalid": "Enter a valid email address",
+    "roleRequired": "Choose who you are",
+    "cityRequired": "Enter your city",
+    "consentRequired": "Consent is required to sign up"
+  },
+  "privacy": {
+    "clause": "Your data is controlled by {administrator}, contact: {contact}. We process your email address, role and city only to tell you when Spot On Slot launches, based on your consent (Art. 6(1)(a) GDPR). Unconfirmed sign-ups are deleted after 7 days; confirmed ones are kept until you withdraw consent or the waitlist closes. You can withdraw consent at any time by writing to the address above. You have the right to access, correct and delete your data and to lodge a complaint with the supervisory authority (in Poland, the President of UODO)."
+  },
+  "faq": {
+    "heading": "FAQ",
+    "whatIs": {
+      "question": "What is Spot On Slot?",
+      "answer": "A platform for booking performances and planning events. It connects artists, bookers, clubs and venues so they can work together more easily."
+    },
+    "launch": {
+      "question": "When do you launch?",
+      "answer": "We're working on the first version. People on the waitlist will be the first to know."
+    },
+    "price": {
+      "question": "How much does it cost?",
+      "answer": "We'll announce pricing before launch. Joining the waitlist is free."
+    },
+    "roleAndCity": {
+      "question": "Why do you ask for my role and city?",
+      "answer": "So we can better prepare the platform for artists, bookers and venues in your area."
+    },
+    "mobile": {
+      "question": "Will it work on my phone?",
+      "answer": "Yes. The first version runs in the browser on desktop and mobile; a mobile app will follow."
+    },
+    "removal": {
+      "question": "How do I remove my sign-up?",
+      "answer": "Write to the contact address below the form and we'll delete your data."
+    }
+  },
+  "confirm": {
+    "loading": "Confirming your sign-up…",
+    "success": {
+      "title": "Done, you're on the list.",
+      "text": "We'll write when we launch."
+    },
+    "expired": {
+      "title": "This link has expired.",
+      "text": "Sign up again and we'll send a new one."
+    },
+    "invalid": {
+      "title": "This link is invalid.",
+      "text": "Check that you copied the full address from the email."
+    },
+    "backHome": "Back to home",
+    "retry": "Try again"
+  },
+  "footer": {
+    "copyright": "© {year} Spot On Slot",
+    "controller": "Data controller: {administrator}, contact: {contact}"
+  },
+  "common": {
+    "notFoundTitle": "Page not found",
+    "backHome": "Back to home"
+  }
+}
