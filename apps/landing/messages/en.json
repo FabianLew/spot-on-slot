@@ -8,7 +8,10 @@
     "howItWorks": "How it works",
     "waitlist": "Waitlist",
     "faq": "FAQ",
-    "join": "Join"
+    "join": "Join",
+    "switchLocale": "PL",
+    "menu": "Menu",
+    "closeMenu": "Close menu"
   },
   "hero": {
     "brand": "Spot On Slot",

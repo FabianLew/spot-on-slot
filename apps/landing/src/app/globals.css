@@ -21,3 +21,6 @@
 .hero-fade { animation-name: heroFadeUp; animation-duration: 1s; }
 .hero-zoom { animation: heroZoom 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @media (prefers-reduced-motion: reduce) { .hero-anim, .hero-zoom { animation: none; opacity: 1; } }
+
+.hero-cta { background-color: var(--hero-cta); }
+.hero-cta:hover { background-color: var(--hero-cta-hover); }
