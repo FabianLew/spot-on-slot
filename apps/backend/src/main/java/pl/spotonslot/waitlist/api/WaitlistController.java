@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.spotonslot.waitlist.application.WaitlistService;
+import pl.spotonslot.waitlist.domain.WaitlistStatus;
 
 @RestController
 @RequestMapping("/api/v1/waitlist")
@@ -22,5 +23,12 @@ class WaitlistController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     void signUp(@Valid @RequestBody SignupRequest request) {
         waitlistService.signUp(request.toCommand());
+    }
+
+    /** POST rather than a GET link, so mail scanners that open links cannot confirm a sign-up by accident. */
+    @PostMapping("/confirmations")
+    ConfirmationResponse confirm(@Valid @RequestBody ConfirmationRequest request) {
+        waitlistService.confirm(request.token());
+        return new ConfirmationResponse(WaitlistStatus.CONFIRMED);
     }
 }
