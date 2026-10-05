@@ -43,19 +43,19 @@ function revealDiv(container: HTMLElement) {
 
 describe("RevealLayer", () => {
   it("renders a hidden canvas sized to the viewport and the reveal image", () => {
-    const { container } = render(<RevealLayer image="/hero/reveal.jpg" cursorX={-999} cursorY={-999} />);
+    const { container } = render(<RevealLayer image="/hero/reveal.webp" cursorX={-999} cursorY={-999} />);
     const canvas = container.querySelector("canvas") as HTMLCanvasElement;
     expect(canvas).toHaveStyle({ display: "none" });
     expect(canvas.width).toBe(window.innerWidth);
     expect(canvas.height).toBe(window.innerHeight);
     const reveal = revealDiv(container);
     expect(reveal).toHaveClass("absolute inset-0 bg-center bg-cover bg-no-repeat z-30 pointer-events-none");
-    expect(reveal.style.backgroundImage).toBe('url("/hero/reveal.jpg")');
+    expect(reveal.style.backgroundImage).toBe('url("/hero/reveal.webp")');
   });
 
   it("resizes the canvas with the window", () => {
     const { innerWidth, innerHeight } = window;
-    const { container } = render(<RevealLayer image="/hero/reveal.jpg" cursorX={-999} cursorY={-999} />);
+    const { container } = render(<RevealLayer image="/hero/reveal.webp" cursorX={-999} cursorY={-999} />);
     try {
       window.innerWidth = 500;
       window.innerHeight = 400;
@@ -71,9 +71,9 @@ describe("RevealLayer", () => {
 
   it("rebuilds the mask with the exact gradient when the cursor moves", () => {
     const { container, rerender } = render(
-      <RevealLayer image="/hero/reveal.jpg" cursorX={-999} cursorY={-999} />,
+      <RevealLayer image="/hero/reveal.webp" cursorX={-999} cursorY={-999} />,
     );
-    rerender(<RevealLayer image="/hero/reveal.jpg" cursorX={300} cursorY={200} />);
+    rerender(<RevealLayer image="/hero/reveal.webp" cursorX={300} cursorY={200} />);
 
     const last = ctx.gradients.at(-1)!;
     expect(last.args).toEqual([300, 200, 0, 300, 200, SPOTLIGHT_R]);

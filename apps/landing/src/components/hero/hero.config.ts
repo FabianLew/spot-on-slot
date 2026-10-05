@@ -1,5 +1,5 @@
-export const HERO_BASE_IMAGE = "/hero/base.jpg";
-export const HERO_REVEAL_IMAGE = "/hero/reveal.jpg";
+export const HERO_BASE_IMAGE = "/hero/base.webp";
+export const HERO_REVEAL_IMAGE = "/hero/reveal.webp";
 export const HERO_CTA_COLOR = "#dc2626";
 export const HERO_CTA_HOVER_COLOR = "#b91c1c";
 export const SPOTLIGHT_R = 260;

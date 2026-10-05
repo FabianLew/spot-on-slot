@@ -122,13 +122,13 @@ Hero odtwarza kompozycję, interakcję i animacje z promptu Fabiana, przeniesion
 
 **Mechanika reflektora: dokładnie jak w promptcie Fabiana (zrzut z 2026-10-05).** W komponencie nadrzędnym `SPOTLIGHT_R = 260`; refy `mouse` (surowa pozycja), `smooth` (wygładzona) i `rafRef`; stan `cursorPos` z wartością początkową `{x: -999, y: -999}`. Nasłuch `mousemove` zapisuje `clientX`/`clientY`. Pętla `requestAnimationFrame` liczy `smooth.x += (mouse.x - smooth.x) * 0.1` (tak samo dla `y`; `mouse` to pozycja kursora pomniejszona o `getBoundingClientRect().left/top` sekcji, zob. tabela wyżej) i wywołuje `setCursorPos`; pętla jest wstrzymana, gdy hero jest poza ekranem. Po odmontowaniu: zdjęcie nasłuchu i `cancelAnimationFrame`. `RevealLayer({ image, cursorX, cursorY })` trzyma ukryty `canvas` (`absolute inset-0 pointer-events-none`, `display: none`) o rozmiarze `window.innerWidth/innerHeight`, ustawianym przy montowaniu i `resize`, oraz `div` odsłaniający (`absolute inset-0 bg-center bg-cover bg-no-repeat z-30 pointer-events-none`) z obrazem w tle. Przy każdej zmianie pozycji: czyszczenie canvasa, gradient radialny w `(cursorX, cursorY)` od 0 do `SPOTLIGHT_R` z przystankami 0 → `rgba(255,255,255,1)`, 0,4 → 1, 0,6 → 0,75, 0,75 → 0,4, 0,88 → 0,12, 1 → 0, wypełnienie koła o promieniu `SPOTLIGHT_R`, potem `canvas.toDataURL()` jako `maskImage` i `WebkitMaskImage` z `maskSize: '100% 100%'`. Bez dodatkowego dławienia. Na ekranach dotykowych nie ma `mousemove`, więc kursor zostaje w `(-999, -999)` i widać sam obraz bazowy; to wynika z mechaniki, a nie z osobnego warunku.
 
-**Grafiki.** `apps/landing/public/hero/base.jpg` (czarno-biała, 1023×1537) jako obraz bazowy i `reveal.png` (czerwona, 1360×2048) jako obraz odsłaniany. Obie mają tę samą kompozycję i proporcje, więc `bg-cover` z wyśrodkowaniem je pokrywa. W implementacji `reveal.png` (3,6 MB) zostaje przekonwertowany do JPEG lub WebP o tej samej szerokości, żeby ważył poniżej 500 kB. Obrazy są pionowe, więc na szerokich ekranach `bg-cover` przytnie górę i dół; profil pozostaje w kadrze, bo jest w środku kompozycji. Zdjęcia referencyjne są też w `/mnt/project-files/landing-hero/`.
+**Grafiki.** `apps/landing/public/hero/base.webp` (czarno-biała) jako obraz bazowy i `reveal.webp` (czerwona) jako obraz odsłaniany; obie 3840×2160 (16:9), ten sam kadr piksel w piksel, WebP q82 (230 kB i 291 kB) z PNG dostarczonych przez Fabiana 2026-10-05 (pierwsze, pionowe wersje były rozmazane po powiększeniu do pełnego ekranu). Na ekranach 16:9 `bg-cover` pokazuje całą ilustrację; na węższych przycina boki, profil zostaje w kadrze. Oryginały PNG są w `/mnt/project-files/landing-hero/`.
 
 **Wartości konfiguracyjne (`hero.config.ts`):**
 
 ```ts
-export const HERO_BASE_IMAGE = "/hero/base.jpg";
-export const HERO_REVEAL_IMAGE = "/hero/reveal.jpg";
+export const HERO_BASE_IMAGE = "/hero/base.webp";
+export const HERO_REVEAL_IMAGE = "/hero/reveal.webp";
 export const HERO_CTA_COLOR = "#dc2626";
 export const HERO_CTA_HOVER_COLOR = "#b91c1c";
 export const SPOTLIGHT_R = 260;
