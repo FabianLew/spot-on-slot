@@ -71,7 +71,7 @@ spot-on-slot/
 │   └── design-tokens/    # kolory, typografia, spacing z brand booka → Tailwind (web) i RN (mobile)
 ├── docs/                 # architektura, ADR-y, moduły
 ├── ai-development/       # stories / prompts (jak w ecommerce-flow)
-├── docker-compose.yml    # Postgres+PostGIS, Mailpit, MinIO lokalnie
+├── docker-compose.yml    # Postgres+PostGIS, Mailpit, S3Mock lokalnie
 └── turbo.json
 ```
 
