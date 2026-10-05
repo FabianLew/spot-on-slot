@@ -1,6 +1,6 @@
 # D1: design aplikacji webowej na bazie makiet „pixel/arcade”
 
-Status: do akceptacji przez Fabiana. Źródło: dwie makiety (ciemna i jasna) czterech ekranów mobilnych: wybór roli („I have a slot / I have a spot”), profil DJ-a, rezerwacja DJ-a (kalendarz + formularz), panel lokalu.
+Status: zaakceptowany przez Fabiana 2026-10-05. Źródło: dwie makiety (ciemna i jasna) czterech ekranów mobilnych: wybór roli („I have a slot / I have a spot”), profil DJ-a, rezerwacja DJ-a (kalendarz + formularz), panel lokalu.
 
 ## 1. Kierunek wizualny
 
