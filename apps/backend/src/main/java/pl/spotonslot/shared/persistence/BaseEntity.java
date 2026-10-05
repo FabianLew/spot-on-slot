@@ -8,6 +8,9 @@ import jakarta.persistence.Version;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -17,6 +20,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  * Base class of all domain entities: UUID v7 identifier assigned on creation, audit timestamps and
  * optimistic locking. Equality is based on the identifier.
  */
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
@@ -36,24 +41,6 @@ public abstract class BaseEntity {
     @Version
     @Column(name = "version", nullable = false)
     private Long version;
-
-    protected BaseEntity() {}
-
-    public UUID getId() {
-        return id;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
 
     @Override
     public boolean equals(Object other) {

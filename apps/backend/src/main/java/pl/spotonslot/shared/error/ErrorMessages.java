@@ -1,6 +1,7 @@
 package pl.spotonslot.shared.error;
 
 import java.util.Locale;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -10,16 +11,13 @@ import pl.spotonslot.shared.i18n.LocaleConfig;
  * Resolves localized error title and detail. Lookup order: {@code error.<code>.*}, then the generic code for the
  * HTTP status. A raw message key is never returned.
  */
+@RequiredArgsConstructor
 @Component
 public class ErrorMessages {
 
     private static final String INTERNAL_ERROR = "INTERNAL_ERROR";
 
     private final MessageSource messageSource;
-
-    public ErrorMessages(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
 
     public ErrorText resolve(String code, HttpStatus status, Object[] args, Locale locale) {
         var effectiveLocale = supported(locale);

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -31,21 +31,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * Renders every error as an RFC 9457 problem document ({@code application/problem+json}) with a stable {@code code},
  * localized {@code title}/{@code detail}, and the request id. Unexpected exceptions never leak their message.
  */
+@Slf4j
+@RequiredArgsConstructor
 @RestControllerAdvice
 public class ProblemDetailsExceptionHandler extends ResponseEntityExceptionHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(ProblemDetailsExceptionHandler.class);
 
     private final ErrorMessages errorMessages;
     private final MessageSource messageSource;
     private final LocaleResolver localeResolver;
-
-    public ProblemDetailsExceptionHandler(ErrorMessages errorMessages, MessageSource messageSource,
-            LocaleResolver localeResolver) {
-        this.errorMessages = errorMessages;
-        this.messageSource = messageSource;
-        this.localeResolver = localeResolver;
-    }
 
     @ExceptionHandler(DomainException.class)
     ResponseEntity<Object> handleDomain(DomainException ex, WebRequest request) {

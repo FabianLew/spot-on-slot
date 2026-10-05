@@ -2,6 +2,8 @@ package pl.spotonslot.shared.error;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -9,10 +11,8 @@ import pl.spotonslot.shared.error.ErrorMessages.ErrorText;
 import pl.spotonslot.shared.web.RequestIdFilter;
 
 /** Builds RFC 9457 problem documents with the project's extension properties. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class ProblemDetails {
-
-    private ProblemDetails() {
-    }
 
     static ProblemDetail of(HttpStatus status, String code, ErrorText text, HttpServletRequest request) {
         return of(status, code, text, request.getRequestURI());

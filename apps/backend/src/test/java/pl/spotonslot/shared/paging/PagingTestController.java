@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import java.util.Set;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.spotonslot.shared.persistence.TestNote;
 import pl.spotonslot.shared.persistence.TestNoteRepository;
 
+@RequiredArgsConstructor
 @Hidden
 @RestController
 @RequestMapping("/test/paging")
@@ -22,10 +24,6 @@ class PagingTestController {
     private static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "createdAt");
 
     private final TestNoteRepository repository;
-
-    PagingTestController(TestNoteRepository repository) {
-        this.repository = repository;
-    }
 
     @GetMapping
     PageResponse<NoteDto> list(@Valid @ParameterObject PageQuery query) {

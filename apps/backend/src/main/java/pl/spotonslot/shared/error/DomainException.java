@@ -1,5 +1,7 @@
 package pl.spotonslot.shared.error;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -8,8 +10,14 @@ import org.springframework.http.HttpStatus;
  */
 public abstract class DomainException extends RuntimeException {
 
+    @Getter
+    @Accessors(fluent = true)
     private final String code;
+
+    @Getter
+    @Accessors(fluent = true)
     private final HttpStatus status;
+
     private final transient Object[] detailArgs;
 
     protected DomainException(String code, HttpStatus status, Object... detailArgs) {
@@ -17,14 +25,6 @@ public abstract class DomainException extends RuntimeException {
         this.code = code;
         this.status = status;
         this.detailArgs = detailArgs == null ? new Object[0] : detailArgs;
-    }
-
-    public String code() {
-        return code;
-    }
-
-    public HttpStatus status() {
-        return status;
     }
 
     public Object[] detailArgs() {

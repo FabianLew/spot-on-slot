@@ -3,6 +3,7 @@ package pl.spotonslot.shared.error;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,17 +18,13 @@ import org.springframework.web.servlet.LocaleResolver;
  * requests rejected by the Spring Security firewall, {@code sendError} calls outside MVC) are rendered as problem
  * documents too. Never exposes the original exception.
  */
+@RequiredArgsConstructor
 @Hidden
 @RestController
 class ProblemDetailsErrorController implements ErrorController {
 
     private final ErrorMessages errorMessages;
     private final LocaleResolver localeResolver;
-
-    ProblemDetailsErrorController(ErrorMessages errorMessages, LocaleResolver localeResolver) {
-        this.errorMessages = errorMessages;
-        this.localeResolver = localeResolver;
-    }
 
     @RequestMapping("${server.error.path:${error.path:/error}}")
     ResponseEntity<ProblemDetail> error(HttpServletRequest request) {

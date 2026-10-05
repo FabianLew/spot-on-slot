@@ -17,6 +17,7 @@ Read `docs/architecture.md` before larger changes. Decisions there are agreed wi
 - Paging (`shared.paging`): `PageQuery` + `PageResponse`, 0-based, `size` <= 100, `sort=field,asc|desc` checked against a per-endpoint allowlist.
 - Entities (`shared.persistence`): extend `BaseEntity` (UUID v7 `id`, `createdAt`, `updatedAt`, `version`). Migration columns: `id uuid primary key, created_at timestamptz not null, updated_at timestamptz not null, version bigint not null`.
 - Web (`shared.web`): `RequestIdFilter` (`X-Request-Id`, echoed in logs and errors); CORS via `spotonslot.cors.allowed-origins`. OpenAPI documents the problem schema automatically.
+- Lombok for boilerplate: `@Getter`/`@Setter`, `@RequiredArgsConstructor` for constructor injection, `@NoArgsConstructor(access = PROTECTED)` on entities, `@Slf4j` for loggers. Don't hand-write getters, setters or plain constructors. Entities never use `@Data`, `@EqualsAndHashCode` or `@ToString` (lazy loading); DTOs stay Java `record`s. `lombok.config` copies `@Qualifier`/`@Value` from fields to generated constructors.
 - Profiles: `dev` (default), `prod`, `test`.
 - Tests: use `@IntegrationTest`; test-only tables go in `src/test/resources/db/testmigration`; test controllers under `/test/...` must be `@Hidden`.
 
