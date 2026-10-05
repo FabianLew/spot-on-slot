@@ -57,4 +57,14 @@ describe("unwrap", () => {
       expect.objectContaining({ problem: expect.objectContaining({ code: "INTERNAL_ERROR", status: 503 }) }),
     );
   });
+
+  it("returns undefined without throwing for a successful no-body response (204)", () => {
+    expect(unwrap({ response: new Response(null, { status: 204 }) })).toBeUndefined();
+  });
+
+  it("throws INTERNAL_ERROR with the response status for a non-ok response without error body", () => {
+    expect(() => unwrap({ response: new Response(null, { status: 502 }) })).toThrow(
+      expect.objectContaining({ problem: expect.objectContaining({ code: "INTERNAL_ERROR", status: 502 }) }),
+    );
+  });
 });

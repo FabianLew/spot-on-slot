@@ -35,8 +35,9 @@ export function toApiProblem(error: unknown, status?: number): ApiProblem {
 
 /** Returns `data` of an openapi-fetch result or throws an `ApiProblemError`. */
 export function unwrap<T>(result: { data?: T; error?: unknown; response: Response }): T {
-  if (result.error !== undefined || result.data === undefined) {
+  if (result.error !== undefined || !result.response.ok) {
     throw new ApiProblemError(toApiProblem(result.error, result.response.status));
   }
-  return result.data;
+  // A successful no-body response (e.g. 204) legitimately has no data.
+  return result.data as T;
 }
