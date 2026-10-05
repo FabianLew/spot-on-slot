@@ -46,7 +46,10 @@ public class WaitlistService {
         try {
             transaction.executeWithoutResult(status -> register(command));
         } catch (DataIntegrityViolationException e) {
-            log.debug("Parallel waitlist sign-up for the same e-mail ignored");
+            // WARN because this branch also swallows violations other than the e-mail unique key. The exception
+            // message is not logged: the database detail would contain the e-mail address.
+            log.warn("Parallel waitlist sign-up for the same e-mail ignored ({})",
+                    e.getMostSpecificCause().getClass().getSimpleName());
         } catch (OptimisticLockingFailureException e) {
             log.debug("Parallel waitlist sign-up update for the same e-mail ignored");
         }
