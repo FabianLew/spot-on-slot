@@ -1,6 +1,6 @@
 # B1 + W1: konta (rejestracja, logowanie, weryfikacja e-maila, reset hasła)
 
-Status: do akceptacji przez Fabiana. Etap według `architektura/segmenty-mvp.md`: B1 (moduł `identity`) i W1 (ekrany w `apps/web`). Design: styl arcade z D1, ekran wyboru roli z makiet.
+Status: zaakceptowany przez Fabiana 2026-10-05. Etap według `architektura/segmenty-mvp.md`: B1 (moduł `identity`) i W1 (ekrany w `apps/web`). Design: styl arcade z D1, ekran wyboru roli z makiet.
 
 ## 1. Co użytkownik dostaje
 

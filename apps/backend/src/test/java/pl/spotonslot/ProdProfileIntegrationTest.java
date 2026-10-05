@@ -17,7 +17,9 @@ import pl.spotonslot.support.IntegrationTest;
     "CORS_ALLOWED_ORIGINS=https://app.spotonslot.pl",
     "MAIL_HOST=smtp.example.com",
     "MAIL_FROM=no-reply@spotonslot.pl",
-    "LANDING_BASE_URL=https://spotonslot.pl"
+    "LANDING_BASE_URL=https://spotonslot.pl",
+    "WEB_BASE_URL=https://app.spotonslot.pl",
+    "JWT_SECRET=prod-test-secret-0123456789abcdef0123456789"
 })
 class ProdProfileIntegrationTest {
 
