@@ -1,10 +1,7 @@
 import { get, type FieldValues, type Path, type UseFormReturn } from "react-hook-form";
 import type { ApiProblem } from "./api-error";
 
-/**
- * Pins `errors[]` of a problem onto the form's fields. Entries for fields the form does not know,
- * and problems without field errors, become the form's root error (`root.server`).
- */
+/** Turns `items[0].name` into the dotted form react-hook-form uses: `items.0.name`. */
 function normalizePath(path: string): string {
   return path.replace(/\[(\w+)\]/g, ".$1").replace(/^\./, "");
 }
@@ -18,6 +15,10 @@ function isKnownField<T extends FieldValues>(form: UseFormReturn<T>, path: strin
   return mounted?.has(path) === true || get(form.getValues(), path) !== undefined;
 }
 
+/**
+ * Pins `errors[]` of a problem onto the form's fields. Entries for fields the form does not know,
+ * and problems without field errors, become the form's root error (`root.server`).
+ */
 export function applyServerErrors<T extends FieldValues>(form: UseFormReturn<T>, problem: ApiProblem): void {
   const unknown: string[] = [];
   for (const entry of problem.errors ?? []) {
