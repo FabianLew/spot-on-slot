@@ -3,8 +3,10 @@ import { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
 import proxy from "./proxy";
 
-function get(path: string, acceptLanguage?: string) {
-  const headers = acceptLanguage ? { "accept-language": acceptLanguage } : undefined;
+function get(path: string, acceptLanguage?: string, cookie?: string) {
+  const headers: Record<string, string> = {};
+  if (acceptLanguage) headers["accept-language"] = acceptLanguage;
+  if (cookie) headers.cookie = cookie;
   return proxy(new NextRequest(new URL(path, "http://localhost:3001"), { headers }));
 }
 
@@ -25,6 +27,16 @@ describe("proxy", () => {
     const response = get("/");
     expect(response.status).toBe(307);
     expect(response.headers.get("location")).toBe("http://localhost:3001/pl");
+  });
+
+  it("ignores a NEXT_LOCALE cookie (shared with apps/web on localhost)", () => {
+    const response = get("/", undefined, "NEXT_LOCALE=en");
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("http://localhost:3001/pl");
+  });
+
+  it("does not set a locale cookie", () => {
+    expect(get("/en").headers.get("set-cookie")).toBeNull();
   });
 
   it("does not redirect an unknown locale, so the [locale] layout answers 404", () => {

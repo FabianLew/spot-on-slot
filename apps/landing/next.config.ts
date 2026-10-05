@@ -1,12 +1,18 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
+const PRODUCTION_REQUIRED_ENV = [
+  "NEXT_PUBLIC_SITE_URL",
+  "NEXT_PUBLIC_PRIVACY_CONTROLLER",
+  "NEXT_PUBLIC_PRIVACY_EMAIL",
+] as const;
+
 if (
   process.env.LANDING_ENV === "production" &&
-  (!process.env.NEXT_PUBLIC_PRIVACY_CONTROLLER || !process.env.NEXT_PUBLIC_PRIVACY_EMAIL)
+  PRODUCTION_REQUIRED_ENV.some((name) => !process.env[name]?.trim())
 ) {
   throw new Error(
-    "NEXT_PUBLIC_PRIVACY_CONTROLLER and NEXT_PUBLIC_PRIVACY_EMAIL are required for a production landing build",
+    "NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_PRIVACY_CONTROLLER and NEXT_PUBLIC_PRIVACY_EMAIL are required for a production landing build",
   );
 }
 
