@@ -11,10 +11,11 @@ import pl.spotonslot.waitlist.domain.WaitlistRole;
 
 /**
  * Waitlist sign-up form. {@code website} is a hidden honeypot field. Text fields are trimmed before validation.
+ * {@code role} is a string so an unknown value is a field validation error rather than an unreadable body.
  */
 public record SignupRequest(
         @NotBlank @Email @Size(max = 254) String email,
-        @NotNull WaitlistRole role,
+        @NotNull @Pattern(regexp = "ARTIST|BOOKER|VENUE") String role,
         @NotBlank @Size(min = 2, max = 100) String city,
         @NotNull @Pattern(regexp = "pl|en") String locale,
         @AssertTrue boolean consent,
@@ -26,6 +27,6 @@ public record SignupRequest(
     }
 
     SignupCommand toCommand() {
-        return new SignupCommand(email, role, city, locale, website);
+        return new SignupCommand(email, WaitlistRole.valueOf(role), city, locale, website);
     }
 }

@@ -3,6 +3,7 @@ package pl.spotonslot.waitlist;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -168,15 +169,45 @@ class WaitlistSignupIntegrationTest {
 
     @Test
     void rejectsInvalidBody() throws Exception {
-        signUp(body("not-an-email", "ARTIST", "a", "de", false, null))
+        signUp(body("not-an-email", "ADMIN", "a", "de", false, null))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith("application/problem+json"))
                 .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
                 .andExpect(jsonPath("$.errors[*].field")
-                        .value(containsInAnyOrder("email", "city", "locale", "consent")));
+                        .value(containsInAnyOrder("email", "role", "city", "locale", "consent")));
 
         assertThat(repository.count()).isZero();
         assertThat(events.list()).isEmpty();
+    }
+
+    @Test
+    void rejectsLowercaseRoleAsFieldError() throws Exception {
+        signUp(body(EMAIL, "artist", "Kraków", "pl", true, null))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
+                .andExpect(jsonPath("$.errors[*].field").value(containsInAnyOrder("role")));
+    }
+
+    @Test
+    void concurrentResendForSamePendingSignupIsAccepted() throws Exception {
+        signUp(body(EMAIL, "ARTIST", "Kraków", "pl", true, null)).andExpect(status().isAccepted());
+        moveTokenSentAtBack(Duration.ofMinutes(11));
+        var tokenHash = signup(EMAIL).getTokenHash();
+        // Simulates a parallel request that updated the row (and resent the e-mail) after this request loaded it.
+        doAnswer(invocation -> {
+            // Interface methods of the spied repository proxy cannot callRealMethod(); load through an unstubbed one.
+            var loaded = repository.findAll().stream().filter(s -> s.getEmail().equals(invocation.getArgument(0)))
+                    .findFirst();
+            jdbc.update("update waitlist_signup set version = version + 1");
+            return loaded;
+        }).when(repository).findByEmail(anyString());
+
+        signUp(body(EMAIL, "BOOKER", "Poznań", "en", true, null)).andExpect(status().isAccepted())
+                .andExpect(content().string(""));
+
+        var signup = signup(EMAIL);
+        assertThat(signup.getTokenHash()).isEqualTo(tokenHash);
+        assertThat(signup.getRole()).isEqualTo(WaitlistRole.ARTIST);
     }
 
     @Test

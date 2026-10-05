@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import pl.spotonslot.waitlist.WaitlistConfirmationRequested;
@@ -36,12 +37,15 @@ public class WaitlistService {
             log.debug("Waitlist sign-up with a filled honeypot ignored");
             return;
         }
-        // Programmatic transaction: a failed insert marks the transaction rollback-only, so the unique-constraint
-        // violation of a parallel sign-up can only be swallowed outside of it.
+        // Programmatic transaction: a failed write marks the transaction rollback-only, so a conflict with a parallel
+        // sign-up for the same e-mail can only be swallowed outside of it. Either way the other request already did
+        // the work (inserted the row or sent the e-mail), so this one is a no-op.
         try {
             transaction.executeWithoutResult(status -> register(command));
         } catch (DataIntegrityViolationException e) {
             log.debug("Parallel waitlist sign-up for the same e-mail ignored");
+        } catch (OptimisticLockingFailureException e) {
+            log.debug("Parallel waitlist sign-up update for the same e-mail ignored");
         }
     }
 
