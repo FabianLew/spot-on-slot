@@ -1,5 +1,5 @@
-import { act, renderHook } from "@testing-library/react";
-import { useForm } from "react-hook-form";
+import { act, render, renderHook } from "@testing-library/react";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { describe, expect, it } from "vitest";
 import type { ApiProblem } from "./api-error";
 import { applyServerErrors, translateFormError } from "./forms";
@@ -65,5 +65,54 @@ describe("translateFormError", () => {
     expect(translate("validation.required")).toBe("T:validation.required");
     expect(translate("validation.unknown")).toBe("validation.unknown");
     expect(translate("Konflikt")).toBe("Konflikt");
+  });
+});
+
+describe("applyServerErrors with registered fields", () => {
+  type Values = { nick?: string; address: { zip?: string }; items: { name?: string }[] };
+  let form: UseFormReturn<Values>;
+  let errors: Record<string, unknown>;
+
+  function Harness({ register }: { register: string[] }) {
+    form = useForm<Values>({ defaultValues: { address: {}, items: [{}] } });
+    errors = form.formState.errors;
+    return (
+      <form>
+        {register.map((name) => (
+          <input key={name} aria-label={name} {...form.register(name as never)} />
+        ))}
+      </form>
+    );
+  }
+  const problem = (field: string): ApiProblem => ({
+    ...base,
+    errors: [{ field, code: "X", message: "zły" }],
+  });
+
+  it("pins errors on a registered field whose value is undefined", () => {
+    render(<Harness register={["nick"]} />);
+    act(() => applyServerErrors(form, problem("nick")));
+    expect(errors.nick).toMatchObject({ message: "zły" });
+    expect(form.formState.errors.root).toBeUndefined();
+  });
+
+  it("pins errors on a nested registered field under an empty parent", () => {
+    render(<Harness register={["address.zip"]} />);
+    act(() => applyServerErrors(form, problem("address.zip")));
+    expect((errors.address as { zip?: { message: string } }).zip?.message).toBe("zły");
+    expect(form.formState.errors.root).toBeUndefined();
+  });
+
+  it("normalizes bracket paths to registered dotted names", () => {
+    render(<Harness register={["items.0.name"]} />);
+    act(() => applyServerErrors(form, problem("items[0].name")));
+    expect((errors.items as { name?: { message: string } }[])[0]?.name?.message).toBe("zły");
+    expect(form.formState.errors.root).toBeUndefined();
+  });
+
+  it("still sends unregistered fields to the root error", () => {
+    render(<Harness register={["nick"]} />);
+    act(() => applyServerErrors(form, problem("address.zip")));
+    expect(form.formState.errors.root?.server?.message).toBe("zły");
   });
 });
