@@ -125,3 +125,13 @@ describe("Toaster", () => {
     expect(await screen.findByText("Zapisano")).toBeInTheDocument();
   });
 });
+
+describe("Toaster error", () => {
+  it("renders an error toast together with an icon", async () => {
+    render(<Toaster />);
+    toast.error("Błąd");
+    const text = await screen.findByText("Błąd");
+    const item = text.closest("li");
+    expect(item?.querySelector("svg")).not.toBeNull();
+  });
+});
