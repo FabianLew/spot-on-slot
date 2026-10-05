@@ -85,7 +85,7 @@ Token to 32 losowe bajty w base64url. W bazie jest tylko jego hash.
 - `/` przekierowuje według `Accept-Language`: na `/en` dla angielskiego, w pozostałych przypadkach na `/pl`. Robi to `proxy.ts`, czyli middleware w Next 16.
 - Strony są generowane statycznie przez `generateStaticParams`.
 - Teksty są w `apps/landing/messages/{pl,en}.json`, a test pilnuje zgodności kluczy.
-- Przełącznik języka w nagłówku prowadzi na tę samą stronę w drugim języku.
+- Przełącznik języka w nagłówku prowadzi na tę samą stronę w drugim języku jako zwykły link (pełne przeładowanie, nie nawigacja kliencka): zmiana języka wymienia layout główny z `<html lang>`, a renderowanie go po stronie klienta nie uruchamia skryptu motywu next-themes i loguje błąd „Encountered a script tag while rendering React component”.
 - `<html lang>` odpowiada aktywnemu językowi. Metadane mają `alternates.languages`, czyli `hreflang`.
 
 **Motyw.** Hero jest zawsze ciemny (czarne tło, biały tekst), niezależnie od ustawień systemu. Sekcje poniżej używają tych samych tokenów co `apps/web`; kolor jasny lub ciemny wynika z ustawień systemu (next-themes, `defaultTheme="system"`), bez przełącznika na landingu.

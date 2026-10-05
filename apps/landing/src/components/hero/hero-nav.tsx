@@ -4,7 +4,7 @@ import { Menu } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { cn, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@spot-on-slot/ui";
-import { Link, usePathname } from "@/i18n/navigation";
+import { getPathname, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { ACTIVE_NAV_ITEM, HERO_SECTION_ID, NAV_ITEMS } from "./hero.config";
 import { useInView } from "./use-in-view";
@@ -17,10 +17,13 @@ function LocaleSwitch({ className }: { className?: string }) {
   const locale = useLocale();
   const pathname = usePathname();
   const other = routing.locales.find((candidate) => candidate !== locale) ?? routing.defaultLocale;
+  // A plain anchor on purpose: switching locale swaps the root layout (<html lang>), and a
+  // client-side transition would re-render it in React, which cannot run next-themes'
+  // inline theme script and logs "Encountered a script tag while rendering React component".
   return (
-    <Link href={pathname} locale={other} hrefLang={other} className={className}>
+    <a href={getPathname({ href: pathname, locale: other })} hrefLang={other} className={className}>
       {t("switchLocale")}
-    </Link>
+    </a>
   );
 }
 
