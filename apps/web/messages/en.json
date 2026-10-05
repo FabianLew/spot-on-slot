@@ -71,7 +71,8 @@
       "djProfile": "DJ profile",
       "bookDj": "Book DJ",
       "venuePanel": "Venue panel",
-      "upload": "Photo upload"
+      "upload": "Photo upload",
+      "location": "Location"
     },
     "profile": {
       "roles": "DJ, producer",
@@ -146,6 +147,28 @@
       "deleted": "Photo deleted.",
       "tooLarge": "A photo can be at most 10 MB.",
       "unsupported": "Choose a JPEG, PNG or WebP file."
+    },
+    "location": {
+      "intro": "Set your location from the browser or type a city or address. We only keep a point rounded to about 1 km and the town name.",
+      "search": "City or address",
+      "placeholder": "e.g. Kraków, Rynek Główny",
+      "useDevice": "Use my location",
+      "locating": "Finding your location…",
+      "searching": "Searching…",
+      "noResults": "Nothing found. Try typing just the city.",
+      "current": "Your location",
+      "none": "You have not set a location yet.",
+      "approx": "{latitude}, {longitude} (accurate to about 1 km)",
+      "sources": {
+        "DEVICE": "From the browser location",
+        "MANUAL": "Picked by hand"
+      },
+      "saved": "Location saved: {label}",
+      "delete": "Delete location",
+      "deleted": "Location deleted",
+      "denied": "Location access is blocked in your browser. Type your city above.",
+      "unavailable": "We could not find your location. Type your city above.",
+      "unsupported": "This browser does not share its location. Type your city above."
     }
   },
   "auth": {

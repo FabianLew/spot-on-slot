@@ -16,6 +16,7 @@ export default async function Page() {
     { href: "/design/book-dj", label: t("screens.bookDj"), icon: <PixelNote className="size-7 text-primary" /> },
     { href: "/design/venue-panel", label: t("screens.venuePanel"), icon: <PixelBlob className="size-7 text-primary" /> },
     { href: "/design/upload", label: t("screens.upload"), icon: <PixelPin className="size-7 text-primary" /> },
+    { href: "/design/location", label: t("screens.location"), icon: <PixelPin className="size-7 text-highlight" /> },
   ];
   return (
     <section className="flex flex-col gap-4">
