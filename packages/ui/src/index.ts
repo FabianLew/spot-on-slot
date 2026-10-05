@@ -58,3 +58,4 @@ export { SlotChip } from "./slot-chip";
 export { ActionTile, StatTile } from "./tiles";
 export { MonthCalendar, monthGrid, type DayState, type MonthCalendarLabels } from "./month-calendar";
 export { PixelBlob, PixelHeadphones, PixelNote, PixelPin, PixelSquare } from "./pixel-art";
+export { ImagePicker, type ImagePickerLabels } from "./image-picker";

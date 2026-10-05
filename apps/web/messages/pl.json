@@ -47,7 +47,8 @@
     "notFoundText": "Ta strona nie istnieje albo została przeniesiona.",
     "backToDashboard": "Wróć do pulpitu",
     "NETWORK_ERROR": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.",
-    "INTERNAL_ERROR": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie za chwilę."
+    "INTERNAL_ERROR": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie za chwilę.",
+    "MEDIA_UPLOAD_FAILED": "Nie udało się wysłać pliku do magazynu. Spróbuj ponownie."
   },
   "validation": {
     "required": "To pole jest wymagane.",
@@ -69,7 +70,8 @@
       "role": "Wybór roli",
       "djProfile": "Profil DJ-a",
       "bookDj": "Rezerwacja DJ-a",
-      "venuePanel": "Panel lokalu"
+      "venuePanel": "Panel lokalu",
+      "upload": "Wgrywanie zdjęcia"
     },
     "profile": {
       "roles": "DJ, producentka",
@@ -124,6 +126,26 @@
         "main": "Sala główna",
         "b": "Sala B"
       }
+    },
+    "upload": {
+      "intro": "Wgraj zdjęcie, żeby sprawdzić cały przepływ: plik trafia prosto do magazynu, a serwer zapisuje trzy rozmiary WebP bez metadanych. Zdjęcie możesz potem usunąć.",
+      "choose": "Wybierz zdjęcie",
+      "drop": "albo przeciągnij je tutaj",
+      "hint": "JPEG, PNG lub WebP, do 10 MB",
+      "uploading": "Wysyłanie…",
+      "previewAlt": "Podgląd wgranego zdjęcia",
+      "variants": "Zapisane rozmiary",
+      "variant": "{name}: {width} × {height} px",
+      "names": {
+        "small": "Mały",
+        "medium": "Średni",
+        "large": "Duży"
+      },
+      "open": "Otwórz",
+      "delete": "Usuń zdjęcie",
+      "deleted": "Zdjęcie usunięte.",
+      "tooLarge": "Zdjęcie może mieć najwyżej 10 MB.",
+      "unsupported": "Wybierz plik JPEG, PNG albo WebP."
     }
   },
   "auth": {

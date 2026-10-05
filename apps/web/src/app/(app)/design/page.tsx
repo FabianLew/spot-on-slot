@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ActionTile, PageHeader, Panel, PixelBlob, PixelHeadphones, PixelNote, PixelSquare } from "@spot-on-slot/ui";
+import { ActionTile, PageHeader, Panel, PixelBlob, PixelHeadphones, PixelNote, PixelPin, PixelSquare } from "@spot-on-slot/ui";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("design");
@@ -15,6 +15,7 @@ export default async function Page() {
     { href: "/design/dj-profile", label: t("screens.djProfile"), icon: <PixelHeadphones className="size-7 text-primary" /> },
     { href: "/design/book-dj", label: t("screens.bookDj"), icon: <PixelNote className="size-7 text-primary" /> },
     { href: "/design/venue-panel", label: t("screens.venuePanel"), icon: <PixelBlob className="size-7 text-primary" /> },
+    { href: "/design/upload", label: t("screens.upload"), icon: <PixelPin className="size-7 text-primary" /> },
   ];
   return (
     <section className="flex flex-col gap-4">

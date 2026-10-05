@@ -145,3 +145,5 @@ export function unwrap<T>(result: { data?: T; error?: unknown; response: Respons
   // A successful no-body response (e.g. 204) legitimately has no data.
   return result.data as T;
 }
+
+export { uploadImage, type MediaImage } from "./upload";
