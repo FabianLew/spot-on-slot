@@ -73,4 +73,16 @@ describe("SettingsForm", () => {
     expect(setLocale).not.toHaveBeenCalled();
     expect(setTheme).toHaveBeenCalledWith("light");
   });
+
+  it("shows an alert and no success toast when saving the locale fails", async () => {
+    setLocale.mockRejectedValue(new Error("boom"));
+    renderForm();
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("combobox", { name: "Język" }));
+    await user.click(await screen.findByRole("option", { name: "English" }));
+    await user.click(screen.getByRole("button", { name: "Zapisz" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(pl.errors.INTERNAL_ERROR);
+    expect(toastSuccess).not.toHaveBeenCalled();
+    expect(setTheme).not.toHaveBeenCalled();
+  });
 });

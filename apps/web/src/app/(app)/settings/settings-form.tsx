@@ -25,7 +25,9 @@ import { SUPPORTED_LOCALES } from "@spot-on-slot/shared";
 import { setLocale } from "@/i18n/actions";
 import { isLocale } from "@/i18n/locale";
 import { THEMES, type ThemePreference } from "@/components/theme/theme-provider";
+import { toApiProblem } from "@/lib/api-error";
 import { translateFormError } from "@/lib/forms";
+import { fallbackMessage } from "@/lib/problem-text";
 import { settingsSchema, type SettingsValues } from "./settings-schema";
 
 function toThemePreference(value: string | undefined): ThemePreference {
@@ -46,7 +48,16 @@ export function SettingsForm() {
   });
 
   async function onSubmit(values: SettingsValues) {
-    if (values.locale !== locale) await setLocale(values.locale);
+    try {
+      if (values.locale !== locale) await setLocale(values.locale);
+    } catch (error) {
+      const problem = toApiProblem(error);
+      form.setError("root.server", {
+        type: "server",
+        message: problem.detail || problem.title || fallbackMessage(t, problem),
+      });
+      return;
+    }
     setTheme(values.theme);
     router.refresh();
     toast.success(t("settings.saved"));
