@@ -7,13 +7,15 @@ export type ApiSchemas = components["schemas"];
 export interface ApiClientOptions {
   baseUrl: string;
   getAccessToken?: () => string | null | undefined | Promise<string | null | undefined>;
+  /** Active UI language; sent as `Accept-Language` so the backend localizes problem texts. */
+  getLocale?: () => string | undefined;
 }
 
 /**
  * Typed client generated from the backend OpenAPI spec.
  * Shared by the web app and, later, the Expo mobile app.
  */
-export function createApiClient({ baseUrl, getAccessToken }: ApiClientOptions) {
+export function createApiClient({ baseUrl, getAccessToken, getLocale }: ApiClientOptions) {
   const client = createClient<paths>({ baseUrl });
 
   if (getAccessToken) {
@@ -27,6 +29,19 @@ export function createApiClient({ baseUrl, getAccessToken }: ApiClientOptions) {
       },
     };
     client.use(auth);
+  }
+
+  if (getLocale) {
+    const locale: Middleware = {
+      onRequest({ request }) {
+        const lang = getLocale();
+        if (lang) {
+          request.headers.set("Accept-Language", lang);
+        }
+        return request;
+      },
+    };
+    client.use(locale);
   }
 
   return client;

@@ -34,5 +34,15 @@
   },
   "pages": {
     "placeholder": "Ta sekcja jest w przygotowaniu."
+  },
+  "errors": {
+    "title": "Coś poszło nie tak",
+    "retry": "Spróbuj ponownie",
+    "requestId": "ID zgłoszenia: {id}",
+    "notFoundTitle": "Nie znaleziono strony",
+    "notFoundText": "Ta strona nie istnieje albo została przeniesiona.",
+    "backToDashboard": "Wróć do pulpitu",
+    "NETWORK_ERROR": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.",
+    "INTERNAL_ERROR": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie za chwilę."
   }
 }

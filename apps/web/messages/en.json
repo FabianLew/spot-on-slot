@@ -34,5 +34,15 @@
   },
   "pages": {
     "placeholder": "This section is coming soon."
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "retry": "Try again",
+    "requestId": "Request ID: {id}",
+    "notFoundTitle": "Page not found",
+    "notFoundText": "This page doesn't exist or has been moved.",
+    "backToDashboard": "Back to dashboard",
+    "NETWORK_ERROR": "Can't reach the server. Check your connection and try again.",
+    "INTERNAL_ERROR": "An unexpected error occurred. Please try again in a moment."
   }
 }
