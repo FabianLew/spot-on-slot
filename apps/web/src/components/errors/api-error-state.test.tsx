@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
+import { NetworkError } from "@spot-on-slot/api-client";
 import { describe, expect, it, vi } from "vitest";
 import messages from "../../../messages/pl.json";
 import { ApiProblemError, toApiProblem } from "@/lib/api-error";
@@ -32,7 +33,7 @@ describe("ApiErrorState", () => {
   });
 
   it("falls back to the translated network message and omits the request id", () => {
-    renderState(toApiProblem(new TypeError("Failed to fetch")));
+    renderState(toApiProblem(new NetworkError()));
     expect(screen.getByText(messages.errors.title)).toBeInTheDocument();
     expect(screen.getByText(messages.errors.NETWORK_ERROR)).toBeInTheDocument();
     expect(screen.queryByText(/ID zgłoszenia/)).not.toBeInTheDocument();

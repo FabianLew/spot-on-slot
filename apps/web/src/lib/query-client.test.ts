@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { ApiProblemError, toApiProblem } from "./api-error";
+import { NetworkError } from "@spot-on-slot/api-client";
+import { ApiProblemError } from "./api-error";
 import { createQueryClient } from "./query-client";
 
 const problemError = (status: number) =>
@@ -23,9 +24,15 @@ describe("createQueryClient retry", () => {
     expect(retry(1, problemError(500))).toBe(true);
     expect(retry(2, problemError(500))).toBe(false);
   });
-  it("retries network errors and unknown errors", () => {
-    expect(retryFn()(0, new TypeError("Failed to fetch"))).toBe(true);
-    expect(toApiProblem(new TypeError("x")).status).toBe(0);
+  it("retries network errors", () => {
+    expect(retryFn()(0, new NetworkError())).toBe(true);
+  });
+  it("retries unknown errors (status 500) up to twice, code-bug TypeErrors included", () => {
+    const retry = retryFn();
+    expect(retry(0, new Error("x"))).toBe(true);
+    expect(retry(2, new Error("x"))).toBe(false);
+    expect(retry(0, new TypeError("x is not a function"))).toBe(true);
+    expect(retry(2, new TypeError("x is not a function"))).toBe(false);
   });
 });
 

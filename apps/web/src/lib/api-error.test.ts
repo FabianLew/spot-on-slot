@@ -1,3 +1,4 @@
+import { NetworkError } from "@spot-on-slot/api-client";
 import { describe, expect, it } from "vitest";
 import { ApiProblemError, toApiProblem, unwrap, type ApiProblem } from "./api-error";
 
@@ -15,9 +16,14 @@ describe("toApiProblem", () => {
     expect(toApiProblem(backend, 404)).toBe(backend);
   });
 
-  it("maps a fetch TypeError to NETWORK_ERROR with status 0", () => {
-    const p = toApiProblem(new TypeError("Failed to fetch"));
+  it("maps a NetworkError to NETWORK_ERROR with status 0", () => {
+    const p = toApiProblem(new NetworkError());
     expect(p).toMatchObject({ code: "NETWORK_ERROR", status: 0, title: "", requestId: "" });
+  });
+
+  it("maps a code-bug TypeError to INTERNAL_ERROR, not a network error", () => {
+    const p = toApiProblem(new TypeError("x is not a function"));
+    expect(p).toMatchObject({ code: "INTERNAL_ERROR", status: 500 });
   });
 
   it("maps a non-problem body (HTML string) to INTERNAL_ERROR keeping the HTTP status", () => {

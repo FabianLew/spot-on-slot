@@ -4,6 +4,17 @@ import type { components, paths } from "./schema";
 export type { components, paths };
 export type ApiSchemas = components["schemas"];
 
+/** Thrown when a request never got a response (offline, DNS, CORS, connection reset). */
+export class NetworkError extends Error {
+  readonly code = "NETWORK_ERROR";
+  readonly status = 0;
+
+  constructor(options?: ErrorOptions) {
+    super("Network request failed", options);
+    this.name = "NetworkError";
+  }
+}
+
 export interface ApiClientOptions {
   baseUrl: string;
   getAccessToken?: () => string | null | undefined | Promise<string | null | undefined>;
@@ -17,6 +28,14 @@ export interface ApiClientOptions {
  */
 export function createApiClient({ baseUrl, getAccessToken, getLocale }: ApiClientOptions) {
   const client = createClient<paths>({ baseUrl });
+
+  // Only a failed `fetch` reaches onError, so this is the one place a network failure is recognised.
+  const network: Middleware = {
+    onError({ error }) {
+      return new NetworkError({ cause: error });
+    },
+  };
+  client.use(network);
 
   if (getAccessToken) {
     const auth: Middleware = {

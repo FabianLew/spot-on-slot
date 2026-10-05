@@ -1,4 +1,4 @@
-import type { ApiSchemas } from "@spot-on-slot/api-client";
+import { NetworkError, type ApiSchemas } from "@spot-on-slot/api-client";
 
 export type ApiProblem = ApiSchemas["ProblemDetail"];
 
@@ -24,12 +24,12 @@ function fallback(code: string, status: number): ApiProblem {
 
 /**
  * Normalizes anything thrown or returned as `error` into a problem. Backend problems pass through;
- * texts for network and unknown failures are left empty so the UI uses `errors.<code>` messages.
+ * a `NetworkError` (failed fetch, see api-client) becomes NETWORK_ERROR; anything else unrecognised is INTERNAL_ERROR, so code bugs are never shown as connectivity problems. Texts for both are left empty so the UI uses `errors.<code>` messages.
  */
 export function toApiProblem(error: unknown, status?: number): ApiProblem {
   if (error instanceof ApiProblemError) return error.problem;
+  if (error instanceof NetworkError) return fallback("NETWORK_ERROR", 0);
   if (isProblem(error)) return error;
-  if (error instanceof TypeError) return fallback("NETWORK_ERROR", 0);
   return fallback("INTERNAL_ERROR", status ?? 500);
 }
 
