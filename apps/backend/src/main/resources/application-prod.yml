@@ -9,6 +9,15 @@ springdoc:
   swagger-ui:
     enabled: false
 
+spring:
+  mail:
+    # Required in prod: no defaults, startup fails without them.
+    host: ${MAIL_HOST}
+
 spotonslot:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+  mail:
+    from: ${MAIL_FROM}
+  landing:
+    base-url: ${LANDING_BASE_URL}

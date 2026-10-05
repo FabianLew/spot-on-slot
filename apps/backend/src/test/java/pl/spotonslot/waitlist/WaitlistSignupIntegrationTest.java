@@ -5,11 +5,14 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import jakarta.mail.Session;
+import jakarta.mail.internet.MimeMessage;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +25,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -50,8 +55,13 @@ class WaitlistSignupIntegrationTest {
     @Autowired
     RecordedEvents events;
 
+    /** Sign-ups trigger the confirmation e-mail; keep it off the network. */
+    @MockitoBean
+    JavaMailSenderImpl mailSender;
+
     @BeforeEach
     void setUp() {
+        when(mailSender.createMimeMessage()).thenAnswer(invocation -> new MimeMessage((Session) null));
         repository.deleteAll();
         events.clear();
     }
