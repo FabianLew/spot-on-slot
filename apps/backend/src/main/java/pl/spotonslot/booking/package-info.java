@@ -1,5 +1,5 @@
 /**
- * Booking: request, offer, accept/decline, confirmed, completed (state machine).
+ * Booking: requests between venues and artists, offers and counter-offers, acceptance and its history.
  */
 @ApplicationModule(displayName = "Booking")
 package pl.spotonslot.booking;

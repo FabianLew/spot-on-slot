@@ -195,6 +195,38 @@ public class AvailabilityService {
                 .filter(o -> o.isFree() && o.covers(from, to))
                 .findFirst()
                 .orElseThrow(AvailabilityErrors.NotFree::new);
+        take(ownerId, free, bookingId);
+    }
+
+    /**
+     * Books {@code [from, to)} for a booking: free time covering it turns booked as a whole; with nothing in the
+     * calendar overlapping it, a booked slot of exactly that time is added. Returns false (changing nothing) when
+     * other time overlaps it only in part or is booked.
+     */
+    @Transactional
+    public boolean hold(UUID ownerId, Instant from, Instant to, UUID bookingId) {
+        lock(ownerId);
+        var overlapping = occurrences(ownerId, from, to);
+        var free = overlapping.stream().filter(o -> o.isFree() && o.covers(from, to)).findFirst();
+        if (free.isPresent()) {
+            take(ownerId, free.get(), bookingId);
+            return true;
+        }
+        if (!overlapping.isEmpty()) {
+            return false;
+        }
+        slots.save(AvailabilitySlot.booked(ownerId, from, to, null, bookingId));
+        changed(ownerId);
+        return true;
+    }
+
+    /** Whether any booked time of the artist overlaps {@code [from, to)}. */
+    @Transactional(readOnly = true)
+    public boolean isBooked(UUID ownerId, Instant from, Instant to) {
+        return slots.findOverlapping(List.of(ownerId), from, to).stream().anyMatch(AvailabilitySlot::isBooked);
+    }
+
+    private void take(UUID ownerId, Occurrence free, UUID bookingId) {
         if (free.source() == Occurrence.Source.SLOT) {
             slots.findById(free.slotId()).orElseThrow().occupy(bookingId);
         } else {
