@@ -1,6 +1,6 @@
 # W2: kreator po rejestracji
 
-Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: W2 (`apps/web`), na backendzie B3, B4 i B5. Na karcie decyzji z 2026-10-06 polecam wariant „kreator można pominąć”.
+Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: W2 (`apps/web`), na backendzie B3, B4 i B5. Kreator można pominąć (Fabian wybrał 2026-10-06).
 
 ## 1. Co użytkownik dostaje
 
@@ -56,7 +56,7 @@ Poza zakresem:
 
 ## 4. Decyzje domyślne (do zmiany jednym słowem)
 
-1. Kreator można pominąć, a pulpit przypomina o profilu (do potwierdzenia na karcie decyzji).
+1. Kreator można pominąć, a pulpit przypomina o profilu.
 2. Kreator pyta tylko o to, co potrzebne do publikacji; resztę uzupełnia się w W3 i W4.
 3. Na końcu kreatora użytkownik sam wybiera publikację albo szkic.
 4. Każdy krok zapisuje się od razu, a powrót trafia do pierwszego brakującego kroku.
