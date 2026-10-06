@@ -54,7 +54,7 @@ Poza zakresem:
 
 ## 3. Web
 
-W tym etapie tylko nowe typy w `@spot-on-slot/api-client`. Formularz edycji i stronę `/a/{slug}` zbuduje W3 według makiety „Profil DJ-a”, po kreatorze W2.
+W tym etapie tylko nowe typy w `@spot-on-slot/api-client`. Formularz edycji i stronę `/a/{slug}` zbuduje W3 według makiety „Profil DJ-a”, po kreatorze W2. Architektura przewiduje publiczne profile SEO na landingu; gdzie stanie `/a/{slug}` (web czy landing), ustalimy w W3, bo endpoint publiczny jest ten sam.
 
 ## 4. Testy
 
