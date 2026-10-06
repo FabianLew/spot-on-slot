@@ -78,7 +78,7 @@ export default async function Page() {
           <SectionTitle>{t("venue.quickActions")}</SectionTitle>
           <div className="grid grid-cols-2 gap-3">
             <ActionTile asChild icon={<PixelNote className={iconClass} />}>
-              <Link href="/listings">{t("venue.postOpenSlot")}</Link>
+              <Link href="/listings?add=1">{t("venue.postOpenSlot")}</Link>
             </ActionTile>
             <ActionTile asChild icon={<PixelSquare className={iconClass} />}>
               <Link href="/messages">{t("venue.inbox")}</Link>
