@@ -39,7 +39,8 @@ export function LocationPicker<T extends { label: string }>({
   suggestions: T[];
   searching?: boolean;
   onSelect: (place: T) => void;
-  onUseDevice: () => void;
+  /** Omit to hide the "use my location" button (e.g. for a business address). */
+  onUseDevice?: () => void;
   locating?: boolean;
   error?: string;
   minQueryLength?: number;
@@ -139,10 +140,12 @@ export function LocationPicker<T extends { label: string }>({
           </p>
         )}
       </div>
-      <Button type="button" variant="outline" onClick={onUseDevice} disabled={locating} className="self-start">
-        <LocateFixed className="size-4" aria-hidden="true" />
-        {locating ? labels.locating : labels.useDevice}
-      </Button>
+      {onUseDevice && (
+        <Button type="button" variant="outline" onClick={onUseDevice} disabled={locating} className="self-start">
+          <LocateFixed className="size-4" aria-hidden="true" />
+          {locating ? labels.locating : labels.useDevice}
+        </Button>
+      )}
       {error && (
         <p role="alert" className="flex items-start gap-1.5 text-sm text-danger">
           <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />

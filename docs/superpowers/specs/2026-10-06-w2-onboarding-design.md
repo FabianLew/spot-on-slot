@@ -1,6 +1,6 @@
 # W2: kreator po rejestracji
 
-Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: W2 (`apps/web`), na backendzie B3, B4 i B5. Kreator można pominąć (Fabian wybrał 2026-10-06).
+Status: zaakceptowany przez Fabiana 2026-10-06. Etap według `architektura/segmenty-mvp.md`: W2 (`apps/web`), na backendzie B3, B4 i B5. Kreator można pominąć (Fabian wybrał 2026-10-06).
 
 ## 1. Co użytkownik dostaje
 
