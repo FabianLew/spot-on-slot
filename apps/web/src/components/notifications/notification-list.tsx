@@ -39,7 +39,7 @@ export function NotificationList({ onNavigate }: { onNavigate?: () => void }) {
         <Button
           variant="outline"
           size="sm"
-          className="self-end"
+          className="h-auto max-w-full self-end whitespace-normal py-2 text-center"
           disabled={markAllRead.isPending}
           onClick={() => markAllRead.mutate()}
         >
