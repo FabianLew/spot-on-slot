@@ -50,9 +50,12 @@ class PhotonGeocoderTest {
         var places = geocoder.search("krak", PL);
 
         assertThat(places).containsExactly(
-                new Place("Kraków, małopolskie", "Kraków", "małopolskie", "PL", new GeoPoint(50.0619474, 19.9368564)),
-                new Place("Rynek Główny 1, Kraków", "Kraków", "małopolskie", "PL", new GeoPoint(50.0617, 19.9372)),
-                new Place("Krakowska, Kraków", "Kraków", "małopolskie", "PL", new GeoPoint(50.05, 19.95)));
+                new Place(Place.Kind.CITY, "Kraków, małopolskie", null, null, "Kraków", "małopolskie", "PL",
+                        new GeoPoint(50.0619474, 19.9368564)),
+                new Place(Place.Kind.HOUSE, "Rynek Główny 1, Kraków", "Rynek Główny 1", "31-042", "Kraków",
+                        "małopolskie", "PL", new GeoPoint(50.0617, 19.9372)),
+                new Place(Place.Kind.STREET, "Krakowska, Kraków", "Krakowska", null, "Kraków", "małopolskie", "PL",
+                        new GeoPoint(50.05, 19.95)));
     }
 
     @Test

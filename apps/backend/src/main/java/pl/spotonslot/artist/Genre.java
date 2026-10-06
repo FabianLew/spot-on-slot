@@ -1,6 +1,6 @@
-package pl.spotonslot.artist.domain;
+package pl.spotonslot.artist;
 
-/** Genres an artist can pick (1–5 per profile); names are translated by the clients. */
+/** The genre catalogue artists and venues pick from (1–5 per profile); names are translated by the clients. */
 public enum Genre {
     TECHNO,
     MELODIC_TECHNO,

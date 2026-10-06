@@ -16,10 +16,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 import pl.spotonslot.artist.domain.ArtistDetails;
 import pl.spotonslot.artist.domain.ArtistErrors;
 import pl.spotonslot.artist.domain.ArtistProfile;
-import pl.spotonslot.artist.domain.Slugs;
 import pl.spotonslot.artist.infrastructure.ArtistProfileRepository;
 import pl.spotonslot.location.Locations;
 import pl.spotonslot.media.MediaLibrary;
+import pl.spotonslot.shared.text.Slugs;
 
 /** Artists' own profiles: saving, the public address, publication. */
 @Service
@@ -169,7 +169,7 @@ public class ArtistProfileService {
     }
 
     private String freeSlug(String stageName) {
-        var base = Slugs.fromStageName(stageName);
+        var base = Slugs.fromName(stageName, "artist");
         for (var attempt = 1; attempt <= MAX_SLUG_ATTEMPTS; attempt++) {
             var candidate = Slugs.candidate(base, attempt);
             if (!profiles.existsBySlug(candidate)) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import pl.spotonslot.artist.Genre;
 
 /** The editable part of a profile, already validated. Rates in grosze. */
 public record ArtistDetails(

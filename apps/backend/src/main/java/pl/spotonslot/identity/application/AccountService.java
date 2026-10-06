@@ -17,7 +17,7 @@ import pl.spotonslot.identity.UserRegistered;
 import pl.spotonslot.identity.domain.AccountStatus;
 import pl.spotonslot.identity.domain.IdentityErrors;
 import pl.spotonslot.identity.domain.OneTimeToken;
-import pl.spotonslot.identity.domain.SecretToken;
+import pl.spotonslot.shared.security.SecretToken;
 import pl.spotonslot.identity.domain.TokenType;
 import pl.spotonslot.identity.domain.UserAccount;
 import pl.spotonslot.identity.infrastructure.OneTimeTokenRepository;

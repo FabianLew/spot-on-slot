@@ -11,6 +11,7 @@ import jakarta.mail.Part;
 import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -26,6 +27,8 @@ import pl.spotonslot.identity.AccountAlreadyExists;
 import pl.spotonslot.identity.EmailVerificationRequested;
 import pl.spotonslot.identity.PasswordResetRequested;
 import pl.spotonslot.support.IntegrationTest;
+import pl.spotonslot.venue.VenueInvitationSent;
+import pl.spotonslot.venue.VenueRole;
 
 @IntegrationTest
 class AccountMailerIntegrationTest {
@@ -74,6 +77,26 @@ class AccountMailerIntegrationTest {
 
         assertThat(message.getSubject()).isEqualTo("Masz już konto w Spot On Slot");
         assertThat(part(message, "text/plain")).contains("http://localhost:3000/login").contains("Nie pamiętam hasła");
+    }
+
+    @Test
+    void sendsVenueInvitationWithVenueNameRoleAndWebLink() throws Exception {
+        var message = publishAndCapture(new VenueInvitationSent(EMAIL, "pl", TOKEN, "Klub <Pod> Ziemią",
+                VenueRole.MANAGER, Instant.parse("2026-10-13T08:00:00Z")));
+
+        assertThat(message.getSubject()).isEqualTo("Zaproszenie do zespołu lokalu Klub <Pod> Ziemią w Spot On Slot");
+        var link = "http://localhost:3000/venue-invitation?token=" + TOKEN;
+        assertThat(part(message, "text/plain")).contains("jako menedżer").contains("7 dni").contains(link);
+        assertThat(part(message, "text/html")).contains("Klub &lt;Pod&gt; Ziemią").contains("href=\"" + link + "\"");
+    }
+
+    @Test
+    void sendsEnglishVenueInvitation() throws Exception {
+        var message = publishAndCapture(new VenueInvitationSent(EMAIL, "en", TOKEN, "Basement", VenueRole.OWNER,
+                Instant.parse("2026-10-13T08:00:00Z")));
+
+        assertThat(message.getSubject()).isEqualTo("Invitation to the Basement team on Spot On Slot");
+        assertThat(part(message, "text/plain")).contains("as owner").contains("valid for 7 days");
     }
 
     private MimeMessage publishAndCapture(Object event) throws Exception {

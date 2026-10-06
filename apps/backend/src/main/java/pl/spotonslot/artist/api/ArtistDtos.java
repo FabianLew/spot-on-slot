@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import pl.spotonslot.artist.application.ArtistProfileService.Requirement;
-import pl.spotonslot.artist.domain.Genre;
+import pl.spotonslot.artist.Genre;
 import pl.spotonslot.artist.domain.LinkKind;
 
 /** Request and response shapes of the artist API. */

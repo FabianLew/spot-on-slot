@@ -33,7 +33,8 @@ class LocationController {
     @GetMapping("/search")
     List<PlaceResponse> search(@RequestParam @NotBlank @Size(min = 3, max = 100) String q, Locale locale) {
         return locationService.search(q, locale).stream()
-                .map(place -> new PlaceResponse(place.label(), place.city(), place.region(), place.countryCode(),
+                .map(place -> new PlaceResponse(place.kind(), place.label(), place.street(),
+                        place.postalCode(), place.city(), place.region(), place.countryCode(),
                         place.point().latitude(), place.point().longitude()))
                 .toList();
     }

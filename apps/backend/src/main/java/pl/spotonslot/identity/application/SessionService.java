@@ -13,7 +13,7 @@ import pl.spotonslot.identity.IdentityProperties;
 import pl.spotonslot.identity.domain.AccountStatus;
 import pl.spotonslot.identity.domain.IdentityErrors;
 import pl.spotonslot.identity.domain.RefreshToken;
-import pl.spotonslot.identity.domain.SecretToken;
+import pl.spotonslot.shared.security.SecretToken;
 import pl.spotonslot.identity.domain.UserAccount;
 import pl.spotonslot.identity.infrastructure.AccessTokenIssuer;
 import pl.spotonslot.identity.infrastructure.RefreshTokenRepository;
