@@ -173,20 +173,23 @@ const fetchMock = vi.fn(async (request: Request) => {
   }
   if (route === "GET /api/v1/locations/search") return Response.json(places);
   if (route === "GET /api/v1/venues/mine") return Response.json(venues);
-  if (route === "POST /api/v1/venues" || route === "PUT /api/v1/venues/v1") {
+  const venuePut = /^PUT \/api\/v1\/venues\/(v\d+)$/.exec(route);
+  if (route === "POST /api/v1/venues" || venuePut) {
     const { avatarMediaId, address, ...rest } = body as Record<string, unknown> & { address?: Venue["address"] };
     const located =
       address && address.latitude === undefined && geocodes
         ? { ...address, latitude: 50.06, longitude: 19.93 }
         : // Like the real backend, a missing point comes back as null.
           address && ({ latitude: null, longitude: null, ...address } as unknown as Venue["address"]);
+    const current = venuePut ? venues.find((item) => item.id === venuePut[1]) : undefined;
     const saved = venue({
-      ...venues[0],
+      ...current,
+      id: current?.id ?? `v${venues.length + 1}`,
       ...(rest as Partial<Venue>),
       address: located,
       avatar: avatarMediaId ? { ...image, id: avatarMediaId as string } : undefined,
     });
-    venues = [saved];
+    venues = current ? venues.map((item) => (item.id === saved.id ? saved : item)) : [...venues, saved];
     return Response.json(saved, {
       status: request.method === "POST" ? 201 : 200,
     });
@@ -479,6 +482,28 @@ describe("VenueWizard", () => {
     await userEvent.click(screen.getByRole("button", { name: pl.onboarding.summary.publish }));
     await waitFor(() => expect(router.push).toHaveBeenCalledWith("/dashboard"));
     expect(saves("/api/v1/venues/v1/publish")).toHaveLength(1);
+  });
+
+  it("adds another venue without touching the first one", async () => {
+    role = "VENUE";
+    venues = [venue({ published: true })];
+    renderWith(<VenueWizard fresh />);
+    const name = await screen.findByLabelText(pl.onboarding.venue.basics.name);
+    expect(name).toHaveValue("");
+    await userEvent.type(name, "Druga Scena");
+    await pickType(pl.venueTypes.PUB);
+    await userEvent.click(screen.getByRole("button", { name: pl.onboarding.next }));
+
+    expect(await screen.findByRole("heading", { name: pl.onboarding.venue.address.title })).toBeInTheDocument();
+    expect(screen.getByLabelText(pl.onboarding.venue.address.street)).toHaveValue("");
+    await userEvent.type(screen.getByLabelText(pl.onboarding.venue.address.street), "Długa 1");
+    await userEvent.type(screen.getByLabelText(pl.onboarding.venue.address.city), "Kraków");
+    await userEvent.click(screen.getByRole("button", { name: pl.onboarding.next }));
+
+    expect(await screen.findByRole("heading", { name: pl.onboarding.venue.music.title })).toBeInTheDocument();
+    expect(saves("/api/v1/venues")).toHaveLength(1);
+    expect(saves("/api/v1/venues/v2")[0].body).toMatchObject({ name: "Druga Scena", address: { street: "Długa 1" } });
+    expect(saves("/api/v1/venues/v1")).toEqual([]);
   });
 });
 

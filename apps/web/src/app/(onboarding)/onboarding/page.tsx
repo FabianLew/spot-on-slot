@@ -7,6 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title") };
 }
 
-export default function Page() {
-  return <OnboardingScreen />;
+export default async function Page({ searchParams }: PageProps<"/onboarding">) {
+  const { new: added } = await searchParams;
+  return <OnboardingScreen newVenue={added === "venue"} />;
 }

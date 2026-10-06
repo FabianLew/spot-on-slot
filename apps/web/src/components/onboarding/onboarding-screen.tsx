@@ -9,8 +9,11 @@ import { ArtistWizard } from "./artist-wizard";
 import { skipOnboarding } from "./skip";
 import { VenueWizard } from "./venue-wizard";
 
-/** The wizard for the signed-in role, with "later" that remembers the choice in this browser. */
-export function OnboardingScreen() {
+/**
+ * The wizard for the signed-in role, with "later" that remembers the choice in this browser. With `newVenue` a venue
+ * account adds another venue, and leaving goes back to the profile.
+ */
+export function OnboardingScreen({ newVenue = false }: { newVenue?: boolean }) {
   const t = useTranslations("onboarding");
   const router = useRouter();
   const { session } = useSession();
@@ -28,22 +31,29 @@ export function OnboardingScreen() {
     );
   }
 
+  const adding = newVenue && user.role === "VENUE";
   return (
     <section className="flex flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <h1 className="font-display text-2xl text-heading sm:text-3xl">{t("title")}</h1>
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => {
-            skipOnboarding(user.id);
-            router.push("/dashboard");
-          }}
-        >
-          {t("skip")}
-        </Button>
+        <h1 className="font-display text-2xl text-heading sm:text-3xl">{t(adding ? "titleNew" : "title")}</h1>
+        {adding ? (
+          <Button type="button" variant="ghost" onClick={() => router.push("/profile")}>
+            {t("cancelNew")}
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => {
+              skipOnboarding(user.id);
+              router.push("/dashboard");
+            }}
+          >
+            {t("skip")}
+          </Button>
+        )}
       </div>
-      {user.role === "ARTIST" ? <ArtistWizard /> : <VenueWizard />}
+      {user.role === "ARTIST" ? <ArtistWizard /> : <VenueWizard fresh={adding} />}
     </section>
   );
 }

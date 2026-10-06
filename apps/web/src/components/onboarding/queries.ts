@@ -1,7 +1,7 @@
 "use client";
 
 import { unwrap } from "@spot-on-slot/api-client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type { ArtistProfile, Venue } from "./profile-requests";
 
@@ -62,4 +62,18 @@ function progress(profile: { published: boolean; missingForPublication: unknown[
   if (!profile) return { status: "missing" };
   if (profile.published) return { status: "published" };
   return { status: "draft", missing: profile.missingForPublication.length };
+}
+
+/** Puts a saved venue into the cached list of mine (replaced in place, or added last like `GET /venues/mine`). */
+export function storeVenue(queryClient: QueryClient, saved: Venue) {
+  queryClient.setQueryData<Venue[]>(MY_VENUES, (list = []) =>
+    list.some((item) => item.id === saved.id)
+      ? list.map((item) => (item.id === saved.id ? saved : item))
+      : [...list, saved],
+  );
+}
+
+/** Takes a venue out of the cached list (deleted, or the account left its team). */
+export function dropVenue(queryClient: QueryClient, id: string) {
+  queryClient.setQueryData<Venue[]>(MY_VENUES, (list = []) => list.filter((item) => item.id !== id));
 }
