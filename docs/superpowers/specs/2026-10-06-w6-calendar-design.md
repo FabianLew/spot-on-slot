@@ -40,7 +40,7 @@ Status: szkic do akceptacji Fabiana; widok tygodnia jako lista dni (wybór Fabia
 - **Strona publiczna:** chipy terminów pochodzą z `GET /api/v1/public/artists/{slug}/availability` i renderują się na serwerze.
 - **`packages/ui`:**
   - `MonthCalendar` dostaje stan „zarezerwowany” i tryb, w którym każdy dzień da się wybrać (dzisiejsze użycie w makiecie „Rezerwacja DJ-a” działa bez zmian);
-  - dochodzi `WeekdayPicker`, czyli wybór dni tygodnia dla reguły.
+  - wybór dni tygodnia dla reguły korzysta z istniejącego `ChoiceChips`.
 - **Kod:** komponenty w `components/calendar`, teksty PL/EN w `messages` (`calendar.*`).
 
 ## 4. Testy
