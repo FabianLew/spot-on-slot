@@ -62,3 +62,5 @@ export { ImagePicker, type ImagePickerLabels } from "./image-picker";
 export { LocationPicker, type LocationPickerLabels } from "./location-picker";
 export { Stepper } from "./stepper";
 export { ChoiceChips } from "./choice-chips";
+export { TagInput, type TagInputLabels } from "./tag-input";
+export { SkillSlider } from "./skill-slider";

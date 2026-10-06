@@ -60,7 +60,13 @@
     "passwordEqualsEmail": "The password can't be the same as the email.",
     "privacyRequired": "Confirm that you have read how your data is processed.",
     "genresRequired": "Pick at least one genre.",
-    "tooLong": "This text is too long."
+    "tooLong": "This text is too long.",
+    "https": "Enter a full address starting with https://.",
+    "slug": "Use lowercase letters, digits and hyphens (3–40 characters).",
+    "number": "Enter a whole number.",
+    "rateOrder": "The “from” fee cannot be higher than “up to”.",
+    "rateMax": "At most PLN 100,000.",
+    "travelRange": "From 0 to 500 km."
   },
   "design": {
     "title": "Design preview",
@@ -350,7 +356,8 @@
       "publish": "Publish profile",
       "draft": "Keep as draft",
       "published": "Profile published.",
-      "later": "You can add a bio, links and other details when editing your profile."
+      "later": "You can add a bio, links and other details when editing your profile.",
+      "editMore": "Fill in the rest of your profile"
     },
     "missing": {
       "STAGE_NAME": "a stage name",
@@ -402,5 +409,114 @@
     "EVENT_HALL": "Event hall",
     "RESTAURANT": "Restaurant",
     "OTHER": "Other"
+  },
+  "artistProfile": {
+    "view": {
+      "radius": "Travels up to {km} km",
+      "skills": "Skills",
+      "about": "About",
+      "links": "Listen and follow",
+      "rate": "Fee",
+      "rateRange": "PLN {from}–{to}",
+      "rateFrom": "from PLN {from}",
+      "rateTo": "up to PLN {to}",
+      "rateOpen": "On request",
+      "gallery": "Gallery",
+      "photoAlt": "Photo {index} of {total}",
+      "avatarAlt": "{name}, main photo",
+      "noBio": "The artist has not added a description yet.",
+      "linkNames": {
+        "soundcloud": "SoundCloud",
+        "spotify": "Spotify",
+        "instagram": "Instagram",
+        "youtube": "YouTube"
+      }
+    },
+    "skill": {
+      "tempo": "Tempo (BPM)",
+      "experience": "Experience",
+      "energy": "Energy",
+      "vinyl": "Vinyl",
+      "cdj": "CDJ",
+      "production": "Production"
+    },
+    "mine": {
+      "title": "My profile",
+      "draft": "Draft: only you can see your profile.",
+      "published": "Published: anyone with the link can see your profile.",
+      "missingTitle": "Still missing before you can publish:",
+      "edit": "Edit profile",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "publishedToast": "Profile published.",
+      "unpublishedToast": "Profile unpublished. The public page is offline.",
+      "copyLink": "Copy link",
+      "copied": "Link copied.",
+      "copyFailed": "Could not copy. Link: {url}",
+      "open": "Open public page",
+      "none": "You don't have an artist profile yet.",
+      "start": "Create profile",
+      "venue": "The venue profile comes in the next stage. For now, set up your venue in the wizard.",
+      "toWizard": "Go to the wizard",
+      "other": "This account has no profile to show."
+    },
+    "edit": {
+      "title": "Edit profile",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Profile saved.",
+      "cancel": "Cancel",
+      "leave": "You have unsaved changes. Leave anyway?",
+      "sections": {
+        "basics": "Basics",
+        "music": "Music",
+        "about": "About",
+        "photos": "Photos",
+        "links": "Links",
+        "rate": "Fee and travel",
+        "skills": "Skills",
+        "location": "Location"
+      },
+      "stageName": "Stage name",
+      "slug": "Profile address",
+      "slugHint": "Lowercase letters, digits and hyphens, 3 to 40 characters.",
+      "slugFree": "This address is free.",
+      "slugTaken": "This address is already taken.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "privateHint": "Only you can see your name; it is not shown on your profile.",
+      "genres": "Genres",
+      "genresHint": "Pick 1 to 5.",
+      "tags": "Your own tags",
+      "tagsHint": "E.g. vinyl only, open air. Enter adds a tag, up to 10.",
+      "tagsPlaceholder": "Type a tag",
+      "removeTag": "Remove tag {tag}",
+      "bio": "Description",
+      "bioCount": "{count} / 2000",
+      "avatar": "Main photo",
+      "gallery": "Gallery",
+      "galleryHint": "Up to 12 photos. Use the arrows to change the order.",
+      "galleryFull": "The gallery is full.",
+      "addPhoto": "Add a photo to the gallery",
+      "moveLeft": "Move photo {index} earlier",
+      "moveRight": "Move photo {index} later",
+      "removePhoto": "Remove photo {index}",
+      "linksHint": "Full addresses starting with https://.",
+      "rateFrom": "Fee from (PLN)",
+      "rateTo": "Fee up to (PLN)",
+      "rateHint": "Roughly per performance. Leave empty for on request.",
+      "travel": "Travel radius (km)",
+      "skillsHint": "Your own rating from 1 to 10. Leave 0 to keep it hidden.",
+      "unset": "none",
+      "locationCurrent": "Currently: {label}",
+      "locationNone": "No location set.",
+      "locationSaved": "Location saved."
+    },
+    "public": {
+      "notFoundTitle": "No such profile",
+      "notFoundText": "The profile may have been unpublished, or the address is wrong.",
+      "home": "Home",
+      "description": "{name} on Spot On Slot: {genres}."
+    }
   }
 }

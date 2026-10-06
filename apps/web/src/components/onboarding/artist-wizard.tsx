@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toApiProblem, unwrap } from "@spot-on-slot/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,7 +20,6 @@ import {
   FormMessage,
   FormRootError,
   Input,
-  LocationPicker,
   toast,
   translateFormError,
 } from "@spot-on-slot/ui";
@@ -32,8 +32,8 @@ import { PhotoField } from "./photo-field";
 import { artistRequest, type ArtistProfile, type ArtistRequest, type Genre } from "./profile-requests";
 import { ARTIST_PROFILE, useArtistProfile } from "./queries";
 import { SummaryBody } from "./summary-step";
-import { usePlaceSearch } from "./use-place-search";
 import { WizardFrame } from "./wizard-frame";
+import { ArtistLocationPicker } from "./artist-location-picker";
 
 type Step = "basics" | "photo" | "location" | "summary";
 const STEPS: Step[] = ["basics", "photo", "location", "summary"];
@@ -212,88 +212,18 @@ function PhotoStep({ frame, profile, save, onDone }: StepProps & { save: Save; o
   );
 }
 
-type Source = "DEVICE" | "MANUAL";
-
 function LocationStep({ frame, profile, onDone }: StepProps & { onDone: () => void }) {
   const t = useTranslations();
-  const queryClient = useQueryClient();
-  const places = usePlaceSearch();
-  const [locating, setLocating] = useState(false);
   const [error, setError] = useState<string>();
-
-  const save = useMutation({
-    mutationFn: async (body: { latitude: number; longitude: number; source: Source }) =>
-      unwrap(await api.PUT("/api/v1/locations/me", { body })),
-    meta: { handlesErrors: true },
-    // The profile shows the town from the location module, so it is read again.
-    onSuccess: async () => {
-      places.setQuery("");
-      await queryClient.invalidateQueries({ queryKey: ARTIST_PROFILE });
-    },
-    onError: (failure) => setError(problemMessage(t, failure)),
-  });
-
-  function onUseDevice() {
-    setError(undefined);
-    if (!("geolocation" in navigator)) return setError(t("onboarding.location.unsupported"));
-    setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocating(false);
-        save.mutate({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          source: "DEVICE",
-        });
-      },
-      (failure) => {
-        setLocating(false);
-        setError(
-          t(
-            failure.code === failure.PERMISSION_DENIED
-              ? "onboarding.location.denied"
-              : "onboarding.location.unavailable",
-          ),
-        );
-      },
-      { enableHighAccuracy: false, timeout: 10_000, maximumAge: 300_000 },
-    );
-  }
-
   const label = profile?.location?.label;
   return (
     <WizardFrame
       {...frame}
       title={t("onboarding.artist.location.title")}
       intro={t("onboarding.artist.location.intro")}
-      busy={save.isPending}
       onNext={() => (label ? onDone() : setError(t("onboarding.location.required")))}
     >
-      <LocationPicker
-        labels={{
-          search: t("onboarding.location.search"),
-          placeholder: t("onboarding.location.placeholder"),
-          useDevice: t("onboarding.location.useDevice"),
-          locating: t("onboarding.location.locating"),
-          searching: t("onboarding.location.searching"),
-          noResults: t("onboarding.location.noResults"),
-        }}
-        query={places.query}
-        onQueryChange={places.setQuery}
-        suggestions={places.suggestions}
-        searching={places.searching}
-        onSelect={(place) => {
-          setError(undefined);
-          save.mutate({
-            latitude: place.latitude,
-            longitude: place.longitude,
-            source: "MANUAL",
-          });
-        }}
-        onUseDevice={onUseDevice}
-        locating={locating || save.isPending}
-        error={error ?? (places.error ? problemMessage(t, places.error) : undefined)}
-      />
+      <ArtistLocationPicker error={error} onChange={() => setError(undefined)} />
       {label && (
         <p role="status" className="font-display text-base">
           {t("onboarding.artist.location.current", { label })}
@@ -345,6 +275,12 @@ function ArtistSummary({ frame, profile }: StepProps) {
         </div>
       )}
       <SummaryBody missing={missing} />
+      <Link
+        href="/profile/edit"
+        className="self-start text-sm font-bold uppercase underline underline-offset-4 hover:text-primary"
+      >
+        {t("summary.editMore")}
+      </Link>
     </WizardFrame>
   );
 }

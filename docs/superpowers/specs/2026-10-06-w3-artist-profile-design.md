@@ -1,6 +1,6 @@
 # W3: profil artysty w aplikacji
 
-Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: W3 (`apps/web`), na backendzie B4 (bez zmian w API).
+Status: zaakceptowany przez Fabiana 2026-10-06 (strona publiczna w aplikacji web). Etap według `architektura/segmenty-mvp.md`: W3 (`apps/web`), na backendzie B4 (bez zmian w API).
 
 ## 1. Co użytkownik dostaje
 
