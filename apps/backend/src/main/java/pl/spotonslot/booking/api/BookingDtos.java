@@ -109,7 +109,8 @@ final class BookingDtos {
             @Schema(requiredMode = REQUIRED) Instant endsAt,
             @Schema(requiredMode = REQUIRED, description = "Grosze") long amount,
             @Schema(requiredMode = REQUIRED) int revision,
-            @Schema(description = "While pending: when it expires without an answer") Instant respondBy,
+            @Schema(description = "While pending: when it expires unanswered (72 h after the latest proposal, or its "
+                    + "start if sooner)") Instant respondBy,
             String message,
             @Schema(requiredMode = REQUIRED) ArtistRef artist,
             @Schema(requiredMode = REQUIRED) VenueRef venue,
@@ -122,7 +123,7 @@ final class BookingDtos {
             return new BookingResponse(booking.getId(), view.status(), view.awaiting(), view.viewer(),
                     pending && view.awaiting() == view.viewer(), pending && view.proposer() == view.viewer(),
                     booking.getInitiator(), booking.getListingId(), booking.getStartsAt(), booking.getEndsAt(),
-                    booking.getAmount(), booking.getRevision(), pending ? booking.getRespondBy() : null,
+                    booking.getAmount(), booking.getRevision(), pending ? booking.timedOutAt() : null,
                     view.message(), new ArtistRef(view.artistSlug(), booking.getArtistStageName()),
                     new VenueRef(booking.getVenueId(), view.venueSlug(), booking.getVenueName()),
                     view.steps().stream().map(step -> new StepResponse(step.type(), step.party(), step.mine(),

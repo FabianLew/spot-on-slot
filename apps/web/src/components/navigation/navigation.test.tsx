@@ -14,6 +14,8 @@ vi.mock("next/navigation", () => ({
 }));
 vi.mock("next-themes", () => ({ useTheme: () => ({ theme: "light", setTheme: vi.fn() }) }));
 vi.mock("@/i18n/actions", () => ({ setLocale: vi.fn() }));
+let awaiting = 0;
+vi.mock("@/components/bookings/queries", () => ({ useAwaitingCount: () => ({ data: awaiting }) }));
 const signOut = vi.fn();
 vi.mock("@/components/session/session-provider", () => ({
   useSession: () => ({
@@ -32,6 +34,7 @@ function renderIntl(ui: ReactNode) {
 
 beforeEach(() => {
   pathname = "/calendar";
+  awaiting = 0;
   signOut.mockClear();
 });
 
@@ -98,5 +101,21 @@ describe("MoreSheet", () => {
     const link = within(await screen.findByRole("dialog")).getByRole("link", { name: "Profil" });
     expect(link).toHaveAttribute("aria-current", "page");
     expect(link.querySelector("[data-active-indicator]")).not.toBeNull();
+  });
+});
+
+describe("bookings counter", () => {
+  it("shows how many bookings wait for an answer, in the sidebar and on the More button", async () => {
+    awaiting = 2;
+    renderIntl(<Sidebar />);
+    expect(screen.getByRole("link", { name: "Bookingi: 2 bookingi czekają na Ciebie" })).toBeInTheDocument();
+
+    renderIntl(<BottomTabs />);
+    expect(screen.getByRole("button", { name: "Więcej: 2 bookingi czekają na Ciebie" })).toBeInTheDocument();
+  });
+
+  it("is hidden when nothing waits", () => {
+    renderIntl(<Sidebar />);
+    expect(screen.getByRole("link", { name: "Bookingi" })).toBeInTheDocument();
   });
 });

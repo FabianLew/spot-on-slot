@@ -119,6 +119,7 @@ beforeEach(() => {
       note: "Klub Pod Ziemią",
       source: "SLOT",
       slotId: "s1",
+      bookingId: "b1",
     },
     {
       startsAt: "2026-10-20T17:00:00Z",
@@ -173,13 +174,14 @@ describe("CalendarScreen, month", () => {
     expect(within(entry).getByText("Co tydzień")).toBeInTheDocument();
   });
 
-  it("keeps booked time read-only", async () => {
+  it("keeps booked time read-only and links it to its booking", async () => {
     const user = userEvent.setup();
     renderScreen();
     await user.click(await day(/^17 października 2026/));
     const entry = (await screen.findByText("22:00–03:00")).closest("li")!;
     expect(within(entry).getByText(pl.calendar.bookedHint)).toBeInTheDocument();
     expect(within(entry).queryByRole("button")).not.toBeInTheDocument();
+    expect(within(entry).getByRole("link", { name: "Zobacz booking" })).toHaveAttribute("href", "/bookings/b1");
   });
 
   it("adds a single slot across midnight", async () => {

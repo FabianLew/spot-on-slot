@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ArtistProfileView } from "@/components/artist/artist-profile-view";
+import { BookingCta } from "@/components/bookings/booking-cta";
 import { NEXT_FREE_DAYS } from "@/components/calendar/next-free-slots";
 import { findPublicArtist, findPublicAvailability } from "@/lib/public-profiles";
 
@@ -35,5 +36,12 @@ export default async function Page({ params }: PageProps<"/a/[slug]">) {
   const artist = await findPublicArtist(slug);
   if (!artist) notFound();
   const freeTime = await findPublicAvailability(slug, NEXT_FREE_DAYS);
-  return <ArtistProfileView profile={artist} headingLevel={1} freeTime={freeTime} />;
+  return (
+    <ArtistProfileView
+      profile={artist}
+      headingLevel={1}
+      freeTime={freeTime}
+      action={<BookingCta target={{ kind: "artist", slug }} className="self-start" />}
+    />
+  );
 }

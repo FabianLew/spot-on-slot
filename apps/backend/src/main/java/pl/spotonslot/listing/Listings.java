@@ -35,8 +35,8 @@ public class Listings {
         return listings.findActiveWithin(search);
     }
 
-    /** Closes an active listing as taken by a booking; fails with {@code LISTING_NOT_ACTIVE}. */
-    public void markFilled(UUID listingId) {
-        listings.markFilled(listingId);
+    /** Closes an active listing as taken by {@code bookingId}; fails with {@code LISTING_NOT_ACTIVE}. */
+    public void markFilled(UUID listingId, UUID bookingId) {
+        listings.markFilled(listingId, bookingId);
     }
 }

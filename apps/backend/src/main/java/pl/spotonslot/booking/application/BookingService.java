@@ -182,7 +182,7 @@ public class BookingService {
                             other.getStartsAt(), other.getEndsAt(), BookingParty.SYSTEM, null));
                 });
         if (booking.getListingId() != null && listings.findActive(booking.getListingId()).isPresent()) {
-            listings.markFilled(booking.getListingId());
+            listings.markFilled(booking.getListingId(), booking.getId());
         }
         return view(booking, party, new Lookups());
     }
@@ -261,8 +261,9 @@ public class BookingService {
                             ? cb.equal(root.get("artistId"), userId)
                             : cb.or(cb.equal(root.get("artistId"), userId), root.get("venueId").in(scope));
             predicates.add(mine);
-            if (filter.status() != null) {
-                predicates.add(inStatus(root, cb, filter.status(), now));
+            if (!filter.statuses().isEmpty()) {
+                predicates.add(cb.or(filter.statuses().stream()
+                        .map(status -> inStatus(root, cb, status, now)).toArray(Predicate[]::new)));
             }
             if (filter.from() != null) {
                 predicates.add(cb.greaterThan(root.get("endsAt"), filter.from()));

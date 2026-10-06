@@ -48,12 +48,13 @@ class BookingController {
     private final BookingService bookings;
 
     /**
-     * The caller's bookings, soonest first. {@code status} filters by the status as of now, {@code from}/{@code to}
+     * The caller's bookings, soonest first. {@code status} (repeatable: any of) filters by the status as of now,
+     * {@code from}/{@code to}
      * by overlapping time, {@code awaitingMe} keeps those waiting for the caller's answer.
      */
     @GetMapping
     PageResponse<BookingResponse> list(@AuthenticationPrincipal Jwt jwt,
-            @RequestParam(required = false) BookingStatus status, @RequestParam(required = false) UUID venueId,
+            @RequestParam(required = false) Set<BookingStatus> status, @RequestParam(required = false) UUID venueId,
             @RequestParam(required = false) Instant from, @RequestParam(required = false) Instant to,
             @RequestParam(defaultValue = "false") boolean awaitingMe, @Valid @ParameterObject PageQuery query) {
         var page = bookings.list(user(jwt), new BookingFilter(status, venueId, from, to, awaitingMe),

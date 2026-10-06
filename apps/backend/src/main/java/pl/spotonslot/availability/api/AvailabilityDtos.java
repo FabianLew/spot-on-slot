@@ -77,7 +77,10 @@ final class AvailabilityDtos {
         }
     }
 
-    /** A slot ({@code slotId}) or one date of a rule ({@code ruleId} + {@code date}) in the artist's own calendar. */
+    /**
+     * A slot ({@code slotId}) or one date of a rule ({@code ruleId} + {@code date}) in the artist's own calendar;
+     * booked time names its booking.
+     */
     record OccurrenceResponse(
             @Schema(requiredMode = REQUIRED) Instant startsAt,
             @Schema(requiredMode = REQUIRED) Instant endsAt,
@@ -86,12 +89,13 @@ final class AvailabilityDtos {
             @Schema(requiredMode = REQUIRED) Occurrence.Source source,
             UUID slotId,
             UUID ruleId,
-            LocalDate date) {
+            LocalDate date,
+            UUID bookingId) {
 
         static OccurrenceResponse of(Occurrence occurrence) {
             return new OccurrenceResponse(occurrence.startsAt(), occurrence.endsAt(), occurrence.status(),
                     occurrence.note(), occurrence.source(), occurrence.slotId(), occurrence.ruleId(),
-                    occurrence.date());
+                    occurrence.date(), occurrence.bookingId());
         }
     }
 

@@ -167,6 +167,12 @@ class BookingIntegrationTest {
                 .isEqualTo("BOOKED");
         assertThat(jdbc.queryForObject("SELECT booking_id FROM availability_slot WHERE id = ?::uuid", UUID.class,
                 slot)).hasToString(id);
+        // The artist's own calendar links the booked time to its booking.
+        as(ARTIST, "ARTIST", get("/api/v1/availability/me").param("from", at(4, "00:00").toString())
+                .param("to", at(6, "00:00").toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].status").value("BOOKED"))
+                .andExpect(jsonPath("$[0].bookingId").value(id));
         assertThat(events.stream(BookingAccepted.class)).singleElement()
                 .satisfies(event -> assertThat(event.by()).isEqualTo(BookingParty.VENUE));
         assertThat(bookings.venueHasAcceptedBetween(VENUE, at(4, "23:00"), at(5, "01:00"))).isTrue();
@@ -227,6 +233,10 @@ class BookingIntegrationTest {
                 String.class, id)).isEqualTo("BOOKED");
         assertThat(jdbc.queryForObject("SELECT status FROM listing WHERE id = ?::uuid", String.class, listing))
                 .isEqualTo("FILLED");
+        as(OWNER, "VENUE", get("/api/v1/venues/" + VENUE + "/listings"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].status").value("FILLED"))
+                .andExpect(jsonPath("$.content[0].bookingId").value(id));
 
         // Booked time cannot be offered again.
         var another = seek(OTHER_OWNER, OTHER_VENUE, at(5, "22:00"), at(6, "03:00"));
@@ -301,6 +311,14 @@ class BookingIntegrationTest {
                 Timestamp.from(at(5, "21:00")))).isEqualTo("FREE");
         assertThat(events.stream(BookingCancelled.class)).singleElement()
                 .satisfies(event -> assertThat(event.by()).isEqualTo(BookingParty.ARTIST));
+
+        // Several statuses at once (the "Historia" filter), newest first.
+        as(OWNER, "VENUE", get("/api/v1/bookings").param("status", "DECLINED", "CANCELLED")
+                .param("sort", "startsAt,desc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.content[0].id").value(booked))
+                .andExpect(jsonPath("$.content[1].id").value(declined));
     }
 
     @Test
