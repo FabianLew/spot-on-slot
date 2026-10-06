@@ -45,6 +45,12 @@ public class Locations {
                         location.getCountryCode()));
     }
 
+    /** The stored (approximated, ~1 km) point of a user's location, if they set one. */
+    @Transactional(readOnly = true)
+    public Optional<GeoPoint> findPointForUser(UUID userId) {
+        return repository.findBySubjectTypeAndSubjectId(SubjectType.USER, userId).map(location -> location.point());
+    }
+
     /**
      * Subjects of {@code type} within {@code radiusKm} of {@code center}, nearest first. Distances are measured to
      * the stored (for people, approximated) points.
