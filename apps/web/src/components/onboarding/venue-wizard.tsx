@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toApiProblem, unwrap, type ApiSchemas } from "@spot-on-slot/api-client";
+import { toApiProblem, unwrap } from "@spot-on-slot/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CircleAlert, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -20,7 +20,6 @@ import {
   FormMessage,
   FormRootError,
   Input,
-  LocationPicker,
   Select,
   SelectContent,
   SelectItem,
@@ -36,12 +35,11 @@ import { problemMessage } from "@/lib/problem-text";
 import { GENRES, MAX_GENRES, VENUE_TYPES } from "./options";
 import { PhotoField } from "./photo-field";
 import { venueRequest, type Genre, type Venue, type VenueRequest } from "./profile-requests";
-import { MY_VENUES, useMyVenues } from "./queries";
+import { storeVenue, useMyVenues } from "./queries";
 import { SummaryBody } from "./summary-step";
-import { usePlaceSearch } from "./use-place-search";
+import { located, VenueAddressFields, type Point } from "./venue-address-fields";
 import { WizardFrame } from "./wizard-frame";
 
-type Address = ApiSchemas["VenueAddress"];
 type Step = "basics" | "address" | "music" | "summary";
 const STEPS: Step[] = ["basics", "address", "music", "summary"];
 
@@ -68,10 +66,14 @@ const addressSchema = z.object({
 });
 type AddressValues = z.infer<typeof addressSchema>;
 
-/** The wizard sets up the account's first venue; more venues and the team come with W4. */
-export function VenueWizard() {
+/**
+ * The wizard sets up the account's first venue, or with `fresh` another one ("Dodaj lokal"); it then follows the
+ * venue its first save created.
+ */
+export function VenueWizard({ fresh = false }: { fresh?: boolean }) {
   const venues = useMyVenues();
   const t = useTranslations("onboarding");
+  const [createdId, setCreatedId] = useState<string>();
   if (venues.isPending) {
     return (
       <p role="status" className="font-display text-lg">
@@ -80,11 +82,26 @@ export function VenueWizard() {
     );
   }
   if (venues.isError) return <ApiErrorState error={venues.error} onRetry={() => venues.refetch()} />;
-  const venue = venues.data[0] ?? null;
-  return <VenueSteps venue={venue} initialStep={firstVenueStep(venue)} />;
+  const venue = fresh ? (venues.data.find((item) => item.id === createdId) ?? null) : (venues.data[0] ?? null);
+  return (
+    <VenueSteps
+      venue={venue}
+      initialStep={fresh ? 0 : firstVenueStep(venue)}
+      onCreated={setCreatedId}
+      exitTo={(saved) => (fresh && saved ? `/profile?venue=${saved.id}` : "/dashboard")}
+    />
+  );
 }
 
-function VenueSteps({ venue, initialStep }: { venue: Venue | null; initialStep: number }) {
+interface StepsProps {
+  venue: Venue | null;
+  initialStep: number;
+  onCreated: (id: string) => void;
+  /** Where the summary leaves to. */
+  exitTo: (venue: Venue | null) => string;
+}
+
+function VenueSteps({ venue, initialStep, onCreated, exitTo }: StepsProps) {
   const t = useTranslations("onboarding");
   const queryClient = useQueryClient();
   const [step, setStep] = useState(initialStep);
@@ -103,12 +120,10 @@ function VenueSteps({ venue, initialStep }: { venue: Venue | null; initialStep: 
         : unwrap(await api.POST("/api/v1/venues", { body }));
     },
     meta: { handlesErrors: true },
-    onSuccess: (saved) =>
-      queryClient.setQueryData<Venue[]>(MY_VENUES, (list = []) =>
-        list.some((item) => item.id === saved.id)
-          ? list.map((item) => (item.id === saved.id ? saved : item))
-          : [saved, ...list],
-      ),
+    onSuccess: (saved) => {
+      storeVenue(queryClient, saved);
+      onCreated(saved.id);
+    },
   });
 
   const frame = {
@@ -126,7 +141,7 @@ function VenueSteps({ venue, initialStep }: { venue: Venue | null; initialStep: 
     case "music":
       return <MusicStep frame={frame} venue={venue} save={save.mutateAsync} onDone={next} />;
     default:
-      return <VenueSummary frame={frame} venue={venue} />;
+      return <VenueSummary frame={frame} venue={venue} exitTo={exitTo(venue)} />;
   }
 }
 
@@ -216,14 +231,8 @@ function BasicsStep({ frame, venue, save, onDone }: EditStepProps) {
   );
 }
 
-function located(address: Address | undefined) {
-  // The backend sends null for a missing point.
-  return address?.latitude != null && address.longitude != null;
-}
-
 function AddressStep({ frame, venue, save, onDone }: EditStepProps) {
   const t = useTranslations();
-  const places = usePlaceSearch();
   const saved = venue?.address;
   const form = useForm<AddressValues>({
     resolver: zodResolver(addressSchema),
@@ -234,7 +243,7 @@ function AddressStep({ frame, venue, save, onDone }: EditStepProps) {
     },
   });
   // A picked suggestion carries its point; typing in a field drops it, so the backend geocodes the text instead.
-  const [point, setPoint] = useState<{ latitude: number; longitude: number }>();
+  const [point, setPoint] = useState<Point>();
   // Set once the backend could not place the address, so a second "Next" continues with it anyway.
   const [unlocated, setUnlocated] = useState(false);
 
@@ -261,29 +270,6 @@ function AddressStep({ frame, venue, save, onDone }: EditStepProps) {
     }
   }
 
-  const field = (name: keyof AddressValues, label: string, autoComplete: string) => (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field: input }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <Input
-              {...input}
-              autoComplete={autoComplete}
-              onChange={(event) => {
-                edited();
-                input.onChange(event);
-              }}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-
   return (
     <Form {...form} translateError={translateFormError(t as Parameters<typeof translateFormError>[0])}>
       <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
@@ -293,39 +279,15 @@ function AddressStep({ frame, venue, save, onDone }: EditStepProps) {
           intro={t("onboarding.venue.address.intro")}
           footer={<NextButton busy={form.formState.isSubmitting} />}
         >
-          <LocationPicker
-            labels={{
-              search: t("onboarding.venue.address.search"),
-              placeholder: t("onboarding.venue.address.placeholder"),
-              useDevice: "",
-              locating: t("onboarding.location.locating"),
-              searching: t("onboarding.location.searching"),
-              noResults: t("onboarding.location.noResults"),
-            }}
-            query={places.query}
-            onQueryChange={places.setQuery}
-            suggestions={places.suggestions}
-            searching={places.searching}
-            onSelect={(place) => {
-              form.setValue("street", place.street ?? "", {
-                shouldValidate: true,
-              });
-              form.setValue("postalCode", place.postalCode ?? "");
-              form.setValue("city", place.city, { shouldValidate: true });
-              setPoint({
-                latitude: place.latitude,
-                longitude: place.longitude,
-              });
+          <VenueAddressFields
+            form={form}
+            names={{ street: "street", postalCode: "postalCode", city: "city" }}
+            onEdit={edited}
+            onPick={(picked) => {
+              setPoint(picked);
               setUnlocated(false);
-              places.setQuery("");
             }}
-            error={places.error ? problemMessage(t, places.error) : undefined}
           />
-          <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
-            {field("street", t("onboarding.venue.address.street"), "street-address")}
-            {field("postalCode", t("onboarding.venue.address.postalCode"), "postal-code")}
-          </div>
-          {field("city", t("onboarding.venue.address.city"), "address-level2")}
           {unlocated ? (
             <div role="alert" className="flex items-start gap-2 text-sm text-danger">
               <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
@@ -417,7 +379,7 @@ function MusicStep({ frame, venue, save, onDone }: EditStepProps) {
   );
 }
 
-function VenueSummary({ frame, venue }: StepProps) {
+function VenueSummary({ frame, venue, exitTo }: StepProps & { exitTo: string }) {
   const t = useTranslations();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -432,11 +394,9 @@ function VenueSummary({ frame, venue }: StepProps) {
         }),
       ),
     onSuccess: (saved) => {
-      queryClient.setQueryData<Venue[]>(MY_VENUES, (list = []) =>
-        list.map((item) => (item.id === saved.id ? saved : item)),
-      );
+      storeVenue(queryClient, saved);
       toast.success(t("onboarding.summary.published"));
-      router.push("/dashboard");
+      router.push(exitTo);
     },
   });
 
@@ -447,7 +407,7 @@ function VenueSummary({ frame, venue }: StepProps) {
       busy={publish.isPending}
       footer={
         <div className="flex flex-wrap gap-3">
-          <Button type="button" variant="outline" onClick={() => router.push("/dashboard")}>
+          <Button type="button" variant="outline" onClick={() => router.push(exitTo)}>
             {t("onboarding.summary.draft")}
           </Button>
           {owner && (

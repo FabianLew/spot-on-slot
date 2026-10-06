@@ -66,7 +66,8 @@
     "number": "Podaj liczbę całkowitą.",
     "rateOrder": "Stawka „od” nie może być wyższa niż „do”.",
     "rateMax": "Najwyżej 100 000 zł.",
-    "travelRange": "Od 0 do 500 km."
+    "travelRange": "Od 0 do 500 km.",
+    "capacity": "Od 1 do 100 000 osób."
   },
   "design": {
     "title": "Podgląd designu",
@@ -256,6 +257,8 @@
   },
   "onboarding": {
     "title": "Twój profil",
+    "titleNew": "Nowy lokal",
+    "cancelNew": "Anuluj",
     "progress": "Krok {current} z {total}",
     "next": "Dalej",
     "back": "Wstecz",
@@ -444,20 +447,11 @@
       "title": "Mój profil",
       "draft": "Szkic: profil widzisz tylko Ty.",
       "published": "Opublikowany: profil widzi każdy, kto ma link.",
-      "missingTitle": "Do publikacji brakuje jeszcze:",
       "edit": "Edytuj profil",
-      "publish": "Opublikuj",
-      "unpublish": "Wycofaj publikację",
       "publishedToast": "Profil opublikowany.",
       "unpublishedToast": "Profil wycofany. Strona publiczna jest niedostępna.",
-      "copyLink": "Kopiuj link",
-      "copied": "Link skopiowany.",
-      "copyFailed": "Nie udało się skopiować. Link: {url}",
-      "open": "Otwórz stronę publiczną",
       "none": "Nie masz jeszcze profilu artysty.",
       "start": "Utwórz profil",
-      "venue": "Profil lokalu przyjdzie w kolejnym etapie. Na razie lokal ustawisz w kreatorze.",
-      "toWizard": "Przejdź do kreatora",
       "other": "To konto nie ma profilu do pokazania."
     },
     "edit": {
@@ -517,6 +511,130 @@
       "notFoundText": "Profil mógł zostać wycofany albo adres jest błędny.",
       "home": "Strona główna",
       "description": "{name} na Spot On Slot: {genres}."
+    }
+  },
+  "profileStatus": {
+    "missingTitle": "Do publikacji brakuje jeszcze:",
+    "publish": "Opublikuj",
+    "unpublish": "Wycofaj publikację",
+    "copyLink": "Kopiuj link",
+    "copied": "Link skopiowany.",
+    "copyFailed": "Nie udało się skopiować. Link: {url}",
+    "open": "Otwórz stronę publiczną",
+    "ownerOnly": "Publikację włącza i wycofuje tylko właściciel lokalu."
+  },
+  "venueProfile": {
+    "view": {
+      "about": "O lokalu",
+      "noDescription": "Lokal nie dodał jeszcze opisu.",
+      "capacity": "Do {capacity} osób",
+      "address": "Adres",
+      "links": "Strona i social media",
+      "gallery": "Galeria",
+      "photoAlt": "Zdjęcie {index} z {total}",
+      "avatarAlt": "{name}, zdjęcie główne",
+      "linkNames": {
+        "website": "Strona www",
+        "instagram": "Instagram",
+        "facebook": "Facebook"
+      }
+    },
+    "mine": {
+      "draft": "Szkic: lokal widzi tylko jego zespół.",
+      "published": "Opublikowany: lokal widzi każdy, kto ma link.",
+      "edit": "Edytuj lokal",
+      "team": "Zespół",
+      "switch": "Wybierz lokal",
+      "add": "Dodaj lokal",
+      "limit": "Masz już 10 lokali, to limit na jedno konto.",
+      "none": "Nie masz jeszcze lokalu. Dodaj go w kreatorze albo przyjmij zaproszenie z e-maila.",
+      "publishedToast": "Lokal opublikowany.",
+      "unpublishedToast": "Lokal wycofany. Strona publiczna jest niedostępna.",
+      "yourRole": "Twoja rola: {role}",
+      "notFound": "Nie ma takiego lokalu albo nie należysz już do jego zespołu.",
+      "back": "Wróć do profilu"
+    },
+    "role": {
+      "OWNER": "Właściciel",
+      "MANAGER": "Menedżer"
+    },
+    "edit": {
+      "title": "Edycja lokalu",
+      "sections": {
+        "basics": "Podstawy",
+        "address": "Adres",
+        "music": "Muzyka",
+        "description": "Opis",
+        "photos": "Zdjęcia",
+        "links": "Linki",
+        "danger": "Usuwanie lokalu"
+      },
+      "name": "Nazwa",
+      "type": "Typ lokalu",
+      "slug": "Adres profilu",
+      "capacity": "Pojemność (osób)",
+      "capacityHint": "Opcjonalnie, od 1 do 100 000.",
+      "addressHint": "Adres jest publiczny. Wybierz podpowiedź, żeby lokal trafił dokładnie na mapę.",
+      "genres": "Gatunki grane w lokalu",
+      "tagsHint": "Np. techno w piątki, ogródek. Enter dodaje tag, najwyżej 10.",
+      "description": "Opis",
+      "linksHint": "Pełne adresy zaczynające się od https://.",
+      "saved": "Lokal zapisany.",
+      "savedUnlocated": "Lokal zapisany, ale nie znaleźliśmy adresu na mapie. Bez tego lokalu nie da się opublikować.",
+      "deleteText": "Usunięcia nie da się cofnąć: znikną profil lokalu, jego zespół i zaproszenia.",
+      "deleteConfirm": "Wpisz nazwę lokalu ({name}), żeby potwierdzić",
+      "delete": "Usuń lokal",
+      "deleting": "Usuwam…",
+      "deleted": "Lokal usunięty."
+    },
+    "team": {
+      "title": "Zespół lokalu",
+      "members": "Członkowie",
+      "invitations": "Oczekujące zaproszenia",
+      "noInvitations": "Brak oczekujących zaproszeń.",
+      "you": "To Ty",
+      "joined": "w zespole od {date}",
+      "expires": "ważne do {date}",
+      "noEmail": "Konto bez adresu e-mail",
+      "invite": "Zaproś do zespołu",
+      "inviteHint": "Zaproszona osoba dostanie link na e-mail i dołączy kontem lokalu z tym adresem. Ponowne zaproszenie zastępuje poprzednie.",
+      "email": "E-mail",
+      "role": "Rola",
+      "roleHint": {
+        "OWNER": "Wszystko: edycja, publikacja, zespół i usunięcie lokalu.",
+        "MANAGER": "Edycja profilu lokalu."
+      },
+      "send": "Wyślij zaproszenie",
+      "sending": "Wysyłam…",
+      "sent": "Zaproszenie wysłane na {email}.",
+      "revoke": "Cofnij",
+      "revokeLabel": "Cofnij zaproszenie dla {email}",
+      "revoked": "Zaproszenie cofnięte.",
+      "remove": "Usuń",
+      "removeLabel": "Usuń {email} z zespołu",
+      "removeConfirm": "Usunąć {email} z zespołu lokalu?",
+      "removed": "Usunięto z zespołu.",
+      "leave": "Opuść zespół",
+      "leaveConfirm": "Opuścić zespół lokalu {name}? Wrócisz tylko z nowym zaproszeniem.",
+      "left": "Nie należysz już do zespołu lokalu {name}.",
+      "lastOwner": "Jesteś jedynym właścicielem. Zanim odejdziesz, zaproś innego właściciela.",
+      "managerNote": "Zespołem zarządza właściciel lokalu."
+    },
+    "invitation": {
+      "title": "Zaproszenie do zespołu lokalu",
+      "text": "Zalogowano jako {email}. Po dołączeniu lokal pojawi się w zakładce „Profil”.",
+      "accept": "Dołącz do zespołu",
+      "accepting": "Dołączam…",
+      "accepted": "Dołączono do zespołu lokalu {name}.",
+      "missingToken": "W linku brakuje kodu zaproszenia. Otwórz go jeszcze raz z e-maila.",
+      "otherAccount": "Zaproszenie przyszło na inny adres? Wyloguj się i zaloguj kontem lokalu z tym adresem.",
+      "signOut": "Wyloguj się",
+      "toDashboard": "Przejdź do pulpitu"
+    },
+    "public": {
+      "notFoundTitle": "Nie ma takiego lokalu",
+      "notFoundText": "Lokal mógł zostać wycofany albo adres jest błędny.",
+      "description": "{name} ({type}, {city}) na Spot On Slot."
     }
   }
 }

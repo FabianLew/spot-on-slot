@@ -23,3 +23,16 @@ export const findPublicArtist = cache(async (slug: string): Promise<PublicArtist
   if (result.response.status === 404) return null;
   return unwrap(result);
 });
+
+export type PublicVenue = ApiSchemas["PublicVenueResponse"];
+
+/** A published venue by slug, or null when there is none; cached per request like `findPublicArtist`. */
+export const findPublicVenue = cache(async (slug: string): Promise<PublicVenue | null> => {
+  if (slug.length < 3 || slug.length > 40 || !SLUG.test(slug)) return null;
+  const result = await publicApi.GET("/api/v1/public/venues/{slug}", {
+    params: { path: { slug } },
+    cache: "no-store",
+  });
+  if (result.response.status === 404) return null;
+  return unwrap(result);
+});

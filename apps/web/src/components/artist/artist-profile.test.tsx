@@ -143,7 +143,7 @@ describe("MyProfile", () => {
     renderWith(<MyProfile />);
     expect(await screen.findByText(pl.artistProfile.mine.draft)).toBeInTheDocument();
     expect(screen.getByText(/zdjęcia głównego/)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: pl.artistProfile.mine.publish })).toBeDisabled();
+    expect(screen.getByRole("button", { name: pl.profileStatus.publish })).toBeDisabled();
     expect(screen.getByRole("link", { name: pl.artistProfile.mine.edit })).toHaveAttribute("href", "/profile/edit");
   });
 
@@ -151,14 +151,14 @@ describe("MyProfile", () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
     renderWith(<MyProfile />);
-    await userEvent.click(await screen.findByRole("button", { name: pl.artistProfile.mine.publish }));
+    await userEvent.click(await screen.findByRole("button", { name: pl.profileStatus.publish }));
     expect(await screen.findByText(pl.artistProfile.mine.published)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: pl.artistProfile.mine.open })).toHaveAttribute("href", "/a/weronika");
+    expect(screen.getByRole("link", { name: pl.profileStatus.open })).toHaveAttribute("href", "/a/weronika");
 
-    await userEvent.click(screen.getByRole("button", { name: pl.artistProfile.mine.copyLink }));
+    await userEvent.click(screen.getByRole("button", { name: pl.profileStatus.copyLink }));
     expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/a/weronika`);
 
-    await userEvent.click(screen.getByRole("button", { name: pl.artistProfile.mine.unpublish }));
+    await userEvent.click(screen.getByRole("button", { name: pl.profileStatus.unpublish }));
     expect(await screen.findByText(pl.artistProfile.mine.draft)).toBeInTheDocument();
   });
 
@@ -169,12 +169,6 @@ describe("MyProfile", () => {
       "href",
       "/onboarding",
     );
-  });
-
-  it("tells venues their profile comes later", () => {
-    role = "VENUE";
-    renderWith(<MyProfile />);
-    expect(screen.getByText(pl.artistProfile.mine.venue)).toBeInTheDocument();
   });
 });
 

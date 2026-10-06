@@ -1,6 +1,7 @@
 import type { ApiSchemas } from "@spot-on-slot/api-client";
 import { useFormatter, useTranslations } from "next-intl";
 import { Panel, PixelHeadphones, PixelPin, SkillMeter, Tag } from "@spot-on-slot/ui";
+import { ExternalLinks, PhotoGalleryView } from "@/components/profile/public-parts";
 
 type PublicProfile = ApiSchemas["PublicProfileResponse"];
 
@@ -107,53 +108,24 @@ export function ArtistProfileView({ profile, headingLevel = 2 }: { profile: Arti
               {profile.bio || <span className="text-muted-foreground">{t("artistProfile.view.noBio")}</span>}
             </p>
           </Panel>
-          {links.length > 0 && (
-            <Panel title={t("artistProfile.view.links")} headingLevel={3}>
-              <ul className="flex flex-wrap gap-2">
-                {links.map((key) => (
-                  <li key={key}>
-                    <a
-                      href={profile.links[key]}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                      className="inline-flex border-2 border-border px-3 py-1.5 text-xs font-bold uppercase hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      {t(`artistProfile.view.linkNames.${key}`)} ↗
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </Panel>
-          )}
+          <ExternalLinks
+            title={t("artistProfile.view.links")}
+            links={links.map((key) => ({
+              key,
+              href: profile.links[key]!,
+              label: t(`artistProfile.view.linkNames.${key}`),
+            }))}
+          />
           <Panel title={t("artistProfile.view.rate")} headingLevel={3}>
             <p className="font-display text-lg">{rateText}</p>
           </Panel>
         </div>
       </div>
-      {profile.photos.length > 0 && (
-        <Panel title={t("artistProfile.view.gallery")} headingLevel={3}>
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {profile.photos.map((photo, index) => (
-              <li key={photo.id}>
-                <a
-                  href={photo.large}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- public WebP variant from the media module */}
-                  <img
-                    src={photo.small}
-                    alt={t("artistProfile.view.photoAlt", { index: index + 1, total: profile.photos.length })}
-                    loading="lazy"
-                    className="aspect-square w-full border-2 border-border object-cover"
-                  />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </Panel>
-      )}
+      <PhotoGalleryView
+        title={t("artistProfile.view.gallery")}
+        photos={profile.photos}
+        alt={(index, total) => t("artistProfile.view.photoAlt", { index, total })}
+      />
     </div>
   );
 }

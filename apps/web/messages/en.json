@@ -66,7 +66,8 @@
     "number": "Enter a whole number.",
     "rateOrder": "The “from” fee cannot be higher than “up to”.",
     "rateMax": "At most PLN 100,000.",
-    "travelRange": "From 0 to 500 km."
+    "travelRange": "From 0 to 500 km.",
+    "capacity": "From 1 to 100,000 people."
   },
   "design": {
     "title": "Design preview",
@@ -256,6 +257,8 @@
   },
   "onboarding": {
     "title": "Your profile",
+    "titleNew": "New venue",
+    "cancelNew": "Cancel",
     "progress": "Step {current} of {total}",
     "next": "Next",
     "back": "Back",
@@ -444,20 +447,11 @@
       "title": "My profile",
       "draft": "Draft: only you can see your profile.",
       "published": "Published: anyone with the link can see your profile.",
-      "missingTitle": "Still missing before you can publish:",
       "edit": "Edit profile",
-      "publish": "Publish",
-      "unpublish": "Unpublish",
       "publishedToast": "Profile published.",
       "unpublishedToast": "Profile unpublished. The public page is offline.",
-      "copyLink": "Copy link",
-      "copied": "Link copied.",
-      "copyFailed": "Could not copy. Link: {url}",
-      "open": "Open public page",
       "none": "You don't have an artist profile yet.",
       "start": "Create profile",
-      "venue": "The venue profile comes in the next stage. For now, set up your venue in the wizard.",
-      "toWizard": "Go to the wizard",
       "other": "This account has no profile to show."
     },
     "edit": {
@@ -517,6 +511,130 @@
       "notFoundText": "The profile may have been unpublished, or the address is wrong.",
       "home": "Home",
       "description": "{name} on Spot On Slot: {genres}."
+    }
+  },
+  "profileStatus": {
+    "missingTitle": "Still missing before you can publish:",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "copyLink": "Copy link",
+    "copied": "Link copied.",
+    "copyFailed": "Could not copy. Link: {url}",
+    "open": "Open public page",
+    "ownerOnly": "Only the venue owner can publish or unpublish."
+  },
+  "venueProfile": {
+    "view": {
+      "about": "About the venue",
+      "noDescription": "The venue has not added a description yet.",
+      "capacity": "Up to {capacity} people",
+      "address": "Address",
+      "links": "Website and social media",
+      "gallery": "Gallery",
+      "photoAlt": "Photo {index} of {total}",
+      "avatarAlt": "{name}, main photo",
+      "linkNames": {
+        "website": "Website",
+        "instagram": "Instagram",
+        "facebook": "Facebook"
+      }
+    },
+    "mine": {
+      "draft": "Draft: only the venue team can see it.",
+      "published": "Published: anyone with the link can see the venue.",
+      "edit": "Edit venue",
+      "team": "Team",
+      "switch": "Choose venue",
+      "add": "Add venue",
+      "limit": "You already have 10 venues, the limit for one account.",
+      "none": "You don't have a venue yet. Add one in the wizard or accept an invitation from your e-mail.",
+      "publishedToast": "Venue published.",
+      "unpublishedToast": "Venue unpublished. The public page is offline.",
+      "yourRole": "Your role: {role}",
+      "notFound": "This venue does not exist or you are no longer in its team.",
+      "back": "Back to profile"
+    },
+    "role": {
+      "OWNER": "Owner",
+      "MANAGER": "Manager"
+    },
+    "edit": {
+      "title": "Edit venue",
+      "sections": {
+        "basics": "Basics",
+        "address": "Address",
+        "music": "Music",
+        "description": "Description",
+        "photos": "Photos",
+        "links": "Links",
+        "danger": "Delete venue"
+      },
+      "name": "Name",
+      "type": "Venue type",
+      "slug": "Profile address",
+      "capacity": "Capacity (people)",
+      "capacityHint": "Optional, from 1 to 100,000.",
+      "addressHint": "The address is public. Pick a suggestion so the venue lands exactly on the map.",
+      "genres": "Genres played at the venue",
+      "tagsHint": "E.g. techno Fridays, beer garden. Enter adds a tag, up to 10.",
+      "description": "Description",
+      "linksHint": "Full addresses starting with https://.",
+      "saved": "Venue saved.",
+      "savedUnlocated": "Venue saved, but we could not find the address on the map. Without it the venue cannot be published.",
+      "deleteText": "Deleting cannot be undone: the venue profile, its team and invitations will be gone.",
+      "deleteConfirm": "Type the venue name ({name}) to confirm",
+      "delete": "Delete venue",
+      "deleting": "Deleting…",
+      "deleted": "Venue deleted."
+    },
+    "team": {
+      "title": "Venue team",
+      "members": "Members",
+      "invitations": "Pending invitations",
+      "noInvitations": "No pending invitations.",
+      "you": "That's you",
+      "joined": "in the team since {date}",
+      "expires": "valid until {date}",
+      "noEmail": "Account without an e-mail address",
+      "invite": "Invite to the team",
+      "inviteHint": "The invited person gets a link by e-mail and joins with a venue account for that address. Inviting again replaces the previous invitation.",
+      "email": "E-mail",
+      "role": "Role",
+      "roleHint": {
+        "OWNER": "Everything: editing, publishing, the team and deleting the venue.",
+        "MANAGER": "Editing the venue profile."
+      },
+      "send": "Send invitation",
+      "sending": "Sending…",
+      "sent": "Invitation sent to {email}.",
+      "revoke": "Revoke",
+      "revokeLabel": "Revoke the invitation for {email}",
+      "revoked": "Invitation revoked.",
+      "remove": "Remove",
+      "removeLabel": "Remove {email} from the team",
+      "removeConfirm": "Remove {email} from the venue team?",
+      "removed": "Removed from the team.",
+      "leave": "Leave the team",
+      "leaveConfirm": "Leave the team of {name}? You can only come back with a new invitation.",
+      "left": "You are no longer in the team of {name}.",
+      "lastOwner": "You are the only owner. Invite another owner before you leave.",
+      "managerNote": "The venue owner manages the team."
+    },
+    "invitation": {
+      "title": "Invitation to a venue team",
+      "text": "Signed in as {email}. Once you join, the venue shows up in the “Profile” tab.",
+      "accept": "Join the team",
+      "accepting": "Joining…",
+      "accepted": "You joined the team of {name}.",
+      "missingToken": "The link has no invitation code. Open it again from the e-mail.",
+      "otherAccount": "Was the invitation sent to another address? Sign out and sign in with the venue account for it.",
+      "signOut": "Sign out",
+      "toDashboard": "Go to the dashboard"
+    },
+    "public": {
+      "notFoundTitle": "No such venue",
+      "notFoundText": "The venue may have been unpublished, or the address is wrong.",
+      "description": "{name} ({type}, {city}) on Spot On Slot."
     }
   }
 }
