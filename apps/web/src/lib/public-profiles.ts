@@ -50,3 +50,18 @@ export async function findPublicAvailability(slug: string, days: number, now = n
   });
   return result.response.ok && result.data ? result.data : [];
 }
+
+export type PublicListing = ApiSchemas["ListingResponse"];
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** An active listing by id, or null when there is none (closed, expired, unpublished author); cached per request. */
+export const findPublicListing = cache(async (id: string): Promise<PublicListing | null> => {
+  if (!UUID.test(id)) return null;
+  const result = await publicApi.GET("/api/v1/public/listings/{id}", {
+    params: { path: { id } },
+    cache: "no-store",
+  });
+  if (result.response.status === 404) return null;
+  return unwrap(result);
+});

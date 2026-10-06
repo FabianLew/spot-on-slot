@@ -737,5 +737,103 @@
       "saved": "Time saved.",
       "savedRule": "Regular time saved."
     }
+  },
+  "listings": {
+    "title": "Listings",
+    "otherRole": "Listings are posted by artists (“I'm free”) and venues (“Looking for an artist”).",
+    "artistNotPublished": "An “I'm free” listing needs a published artist profile.",
+    "venueNotPublished": "{name} is not published yet. Publish it to post listings.",
+    "noVenue": "Add a venue first to look for artists.",
+    "goProfile": "Go to profile",
+    "filter": "Show listings",
+    "scopes": {
+      "active": "Active",
+      "ended": "Ended"
+    },
+    "empty": {
+      "active": "You have no active listings.",
+      "ended": "You have no ended listings."
+    },
+    "addArtist": "Add “I'm free”",
+    "addVenue": "Add “Looking for an artist”",
+    "kind": {
+      "ARTIST_AVAILABLE": "I'm free",
+      "VENUE_SEEKING": "Looking for an artist"
+    },
+    "status": {
+      "ACTIVE": "Active",
+      "CLOSED": "Closed",
+      "EXPIRED": "Expired",
+      "FILLED": "Filled"
+    },
+    "nextDay": "+1",
+    "genres": "Genres",
+    "rate": "Rate",
+    "budget": "Budget",
+    "place": "Place",
+    "cityRadius": "{city}, travels up to {km} km",
+    "price": {
+      "range": "{from}–{to} PLN",
+      "from": "from {amount} PLN",
+      "to": "up to {amount} PLN",
+      "open": "To be agreed"
+    },
+    "edit": "Edit",
+    "editAt": "Edit listing {when}",
+    "close": "Close",
+    "closeAt": "Close listing {when}",
+    "closeConfirm": "Close listing {when}? It cannot be reopened.",
+    "closed": "Listing closed.",
+    "open": "View",
+    "similar": "Post similar",
+    "similarAt": "Post a listing similar to {when}",
+    "announce": "Announce",
+    "announceAt": "Announce {time}",
+    "announced": "Announced",
+    "dialog": {
+      "artistTitle": "I'm free",
+      "venueTitle": "Looking for an artist",
+      "editTitle": "Edit listing",
+      "pickTitle": "Free time",
+      "pickHint": "Pick free time from your calendar (next 90 days).",
+      "artistHint": "Venues will see the time, genres, rate and description. The listing expires by itself when the time leaves your calendar.",
+      "venueHint": "Artists will see the time, genres, budget and description. The place is the venue's address.",
+      "loading": "Loading free time…",
+      "noFree": "You have no free time in the next 90 days. Add free time in your calendar first.",
+      "goCalendar": "Open calendar",
+      "announced": "Already announced",
+      "term": "Time",
+      "changeTerm": "Change time",
+      "date": "Date",
+      "from": "From",
+      "to": "To",
+      "nextDay": "Ends the next day.",
+      "genres": "Genres",
+      "genresHint": "1 to 5.",
+      "rateFrom": "Rate from (PLN)",
+      "rateTo": "Rate to (PLN)",
+      "budgetFrom": "Budget from (PLN)",
+      "budgetTo": "Budget to (PLN)",
+      "radius": "Travel (km)",
+      "priceHint": "Leave empty for “to be agreed”.",
+      "description": "Description",
+      "artistPlaceholder": "E.g. 3-hour set, I bring my own gear.",
+      "venuePlaceholder": "E.g. main room, 300 people, sound system on site.",
+      "count": "{count}/{max} characters",
+      "publish": "Publish",
+      "save": "Save",
+      "saving": "Saving…",
+      "published": "Listing published.",
+      "updated": "Changes saved."
+    },
+    "public": {
+      "artist": "Artist",
+      "venue": "Venue",
+      "seeProfile": "View profile",
+      "bookingSoon": "Replying to listings is coming soon.",
+      "notFoundTitle": "No such listing",
+      "notFoundText": "The listing was closed, has expired, or the link is wrong.",
+      "home": "Home page"
+    }
   }
 }

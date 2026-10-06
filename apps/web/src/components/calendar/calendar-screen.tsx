@@ -2,12 +2,14 @@
 
 import { unwrap } from "@spot-on-slot/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CalendarCheck, Pencil, Plus, RotateCcw, Trash2, X } from "lucide-react";
+import { CalendarCheck, Megaphone, Pencil, Plus, RotateCcw, Trash2, X } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { Button, MonthCalendar, PageHeader, Panel, Tag, toast } from "@spot-on-slot/ui";
 import { ApiErrorState } from "@/components/errors/api-error-state";
+import { ListingDialog, type ListingDialogTarget } from "@/components/listings/listing-dialog";
+import { announcing, LISTINGS, useArtistListings } from "@/components/listings/queries";
 import { useArtistProfile } from "@/components/onboarding/queries";
 import { useSession } from "@/components/session/session-provider";
 import { api } from "@/lib/api";
@@ -64,11 +66,24 @@ function ArtistCalendar() {
   return <CalendarBody />;
 }
 
+/** "Ogłoś" on free time, for artists whose profile is published (listings need one). */
+type Announce = { announced: (entry: Entry) => boolean; onAnnounce: (entry: Entry) => void };
+
 function CalendarBody() {
   const t = useTranslations("calendar");
   const [view, setView] = useState<View>("month");
   const [day, setDay] = useState(() => today());
   const [dialog, setDialog] = useState<SlotDialogTarget | null>(null);
+  const [listing, setListing] = useState<ListingDialogTarget | null>(null);
+  const profile = useArtistProfile().data;
+  const published = profile?.published === true;
+  const listings = useArtistListings("active", published);
+  const announce: Announce | undefined = published
+    ? {
+        announced: (entry) => announcing(listings.data, entry) != null,
+        onAnnounce: (entry) => setListing({ mode: "new", term: entry }),
+      }
+    : undefined;
 
   return (
     <>
@@ -103,12 +118,25 @@ function CalendarBody() {
         </Button>
       </div>
       {view === "month" ? (
-        <MonthView day={day} onDay={setDay} onEdit={setDialog} />
+        <MonthView day={day} onDay={setDay} onEdit={setDialog} announce={announce} />
       ) : (
-        <WeekView day={day} onDay={setDay} onEdit={setDialog} />
+        <WeekView day={day} onDay={setDay} onEdit={setDialog} announce={announce} />
       )}
       <RulesPanel onEdit={(rule) => setDialog({ kind: "rule", rule })} />
       <SlotDialog target={dialog} onClose={() => setDialog(null)} />
+      {profile && (
+        <ListingDialog
+          target={listing}
+          author={{
+            kind: "ARTIST_AVAILABLE",
+            genres: profile.genres,
+            priceFrom: profile.rate?.from,
+            priceTo: profile.rate?.to,
+            travelRadiusKm: profile.travelRadiusKm,
+          }}
+          onClose={() => setListing(null)}
+        />
+      )}
     </>
   );
 }
@@ -130,10 +158,12 @@ function MonthView({
   day,
   onDay,
   onEdit,
+  announce,
 }: {
   day: string;
   onDay: (day: string) => void;
   onEdit: (target: SlotDialogTarget) => void;
+  announce?: Announce;
 }) {
   const t = useTranslations("calendar");
   const format = useFormatter();
@@ -182,7 +212,7 @@ function MonthView({
           title={format.dateTime(dayDate(day), { weekday: "long", day: "numeric", month: "long" })}
           headingLevel={2}
         >
-          <DayEntries day={day} entries={byDay?.get(day)} onEdit={onEdit} />
+          <DayEntries day={day} entries={byDay?.get(day)} onEdit={onEdit} announce={announce} />
         </Panel>
       )}
     </div>
@@ -193,10 +223,12 @@ function WeekView({
   day,
   onDay,
   onEdit,
+  announce,
 }: {
   day: string;
   onDay: (day: string) => void;
   onEdit: (target: SlotDialogTarget) => void;
+  announce?: Announce;
 }) {
   const t = useTranslations("calendar");
   const format = useFormatter();
@@ -275,7 +307,7 @@ function WeekView({
                     </button>
                   )}
                 </div>
-                <DayEntries day={date} entries={byDay?.get(date)} onEdit={onEdit} compact />
+                <DayEntries day={date} entries={byDay?.get(date)} onEdit={onEdit} announce={announce} compact />
               </li>
             );
           })}
@@ -290,17 +322,25 @@ function DayEntries({
   day,
   entries,
   onEdit,
+  announce,
   compact = false,
 }: {
   day: string;
   entries: Entry[] | undefined;
   onEdit: (target: SlotDialogTarget) => void;
+  announce?: Announce;
   compact?: boolean;
 }) {
   const t = useTranslations("calendar");
+  const tl = useTranslations("listings");
   const queryClient = useQueryClient();
   const rules = useRules();
-  const refresh = () => queryClient.invalidateQueries({ queryKey: AVAILABILITY });
+  // Removing free time can expire listings announcing it.
+  const refresh = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: AVAILABILITY }),
+      queryClient.invalidateQueries({ queryKey: LISTINGS }),
+    ]);
 
   const removeSlot = useMutation({
     mutationFn: async (id: string) =>
@@ -341,6 +381,8 @@ function DayEntries({
         const booked = entry.status === "BOOKED";
         const rule = entry.ruleId ? rules.data?.find((r) => r.id === entry.ruleId) : undefined;
         const time = `${start.time}–${end.time}`;
+        const free = !booked && !entry.skipped && !started;
+        const announced = free && announce?.announced(entry);
         return (
           <li
             key={`${entry.startsAt}-${entry.slotId ?? entry.ruleId}`}
@@ -377,11 +419,25 @@ function DayEntries({
                 </Tag>
               )}
               {entry.skipped && <Tag className="bg-transparent text-[0.625rem]">{t("skippedTag")}</Tag>}
+              {announced && (
+                <Tag className="bg-transparent text-[0.625rem]">
+                  <Megaphone className="mr-1 size-3" aria-hidden="true" />
+                  {tl("announced")}
+                </Tag>
+              )}
             </div>
             {entry.note && !compact && <p className="text-xs break-words">{entry.note}</p>}
             {booked && !compact && <p className="text-xs text-muted-foreground">{t("bookedHint")}</p>}
             {!started && !booked && (
               <div className="flex flex-wrap gap-1">
+                {free && announce && !announced && (
+                  <IconButton
+                    label={tl("announceAt", { time })}
+                    text={compact ? undefined : tl("announce")}
+                    icon={<Megaphone className="size-3.5" aria-hidden="true" />}
+                    onClick={() => announce.onAnnounce(entry)}
+                  />
+                )}
                 {entry.source === "SLOT" && entry.slotId && (
                   <>
                     <IconButton

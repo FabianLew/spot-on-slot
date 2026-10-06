@@ -737,5 +737,103 @@
       "saved": "Termin zapisany.",
       "savedRule": "Stały termin zapisany."
     }
+  },
+  "listings": {
+    "title": "Ogłoszenia",
+    "otherRole": "Ogłoszenia dodają artyści („Jestem wolny”) i lokale („Szukam artysty”).",
+    "artistNotPublished": "Ogłoszenie „Jestem wolny” wymaga opublikowanego profilu artysty.",
+    "venueNotPublished": "Lokal {name} nie jest jeszcze opublikowany. Opublikuj go, żeby dodawać ogłoszenia.",
+    "noVenue": "Najpierw dodaj lokal, żeby szukać artystów.",
+    "goProfile": "Przejdź do profilu",
+    "filter": "Pokaż ogłoszenia",
+    "scopes": {
+      "active": "Aktywne",
+      "ended": "Zakończone"
+    },
+    "empty": {
+      "active": "Nie masz aktywnych ogłoszeń.",
+      "ended": "Nie masz zakończonych ogłoszeń."
+    },
+    "addArtist": "Dodaj „Jestem wolny”",
+    "addVenue": "Dodaj „Szukam artysty”",
+    "kind": {
+      "ARTIST_AVAILABLE": "Jestem wolny",
+      "VENUE_SEEKING": "Szukam artysty"
+    },
+    "status": {
+      "ACTIVE": "Aktywne",
+      "CLOSED": "Zamknięte",
+      "EXPIRED": "Wygasłe",
+      "FILLED": "Obsadzone"
+    },
+    "nextDay": "+1",
+    "genres": "Gatunki",
+    "rate": "Stawka",
+    "budget": "Budżet",
+    "place": "Miejsce",
+    "cityRadius": "{city}, dojazd do {km} km",
+    "price": {
+      "range": "{from}–{to} zł",
+      "from": "od {amount} zł",
+      "to": "do {amount} zł",
+      "open": "Do ustalenia"
+    },
+    "edit": "Edytuj",
+    "editAt": "Edytuj ogłoszenie {when}",
+    "close": "Zamknij",
+    "closeAt": "Zamknij ogłoszenie {when}",
+    "closeConfirm": "Zamknąć ogłoszenie {when}? Nie da się go wznowić.",
+    "closed": "Ogłoszenie zamknięte.",
+    "open": "Zobacz",
+    "similar": "Dodaj podobne",
+    "similarAt": "Dodaj ogłoszenie podobne do {when}",
+    "announce": "Ogłoś",
+    "announceAt": "Ogłoś termin {time}",
+    "announced": "Ogłoszony",
+    "dialog": {
+      "artistTitle": "Jestem wolny",
+      "venueTitle": "Szukam artysty",
+      "editTitle": "Edytuj ogłoszenie",
+      "pickTitle": "Wolne terminy",
+      "pickHint": "Wybierz wolny termin z kalendarza (najbliższe 90 dni).",
+      "artistHint": "Lokale zobaczą termin, gatunki, stawkę i opis. Ogłoszenie wygaśnie samo, gdy termin zniknie z kalendarza.",
+      "venueHint": "Artyści zobaczą termin, gatunki, budżet i opis. Adres to adres lokalu.",
+      "loading": "Wczytuję wolne terminy…",
+      "noFree": "Nie masz wolnych terminów w najbliższych 90 dniach. Najpierw dodaj wolny termin w kalendarzu.",
+      "goCalendar": "Otwórz kalendarz",
+      "announced": "Już ogłoszony",
+      "term": "Termin",
+      "changeTerm": "Zmień termin",
+      "date": "Data",
+      "from": "Od",
+      "to": "Do",
+      "nextDay": "Kończy się następnego dnia.",
+      "genres": "Gatunki",
+      "genresHint": "Od 1 do 5.",
+      "rateFrom": "Stawka od (zł)",
+      "rateTo": "Stawka do (zł)",
+      "budgetFrom": "Budżet od (zł)",
+      "budgetTo": "Budżet do (zł)",
+      "radius": "Dojazd (km)",
+      "priceHint": "Puste pola oznaczają „do ustalenia”.",
+      "description": "Opis",
+      "artistPlaceholder": "Np. set 3 godziny, mam własny sprzęt.",
+      "venuePlaceholder": "Np. sala główna, 300 osób, nagłośnienie na miejscu.",
+      "count": "{count}/{max} znaków",
+      "publish": "Opublikuj",
+      "save": "Zapisz",
+      "saving": "Zapisuję…",
+      "published": "Ogłoszenie opublikowane.",
+      "updated": "Zapisano zmiany."
+    },
+    "public": {
+      "artist": "Artysta",
+      "venue": "Lokal",
+      "seeProfile": "Zobacz profil",
+      "bookingSoon": "Odpowiadanie na ogłoszenia pojawi się wkrótce.",
+      "notFoundTitle": "Nie ma takiego ogłoszenia",
+      "notFoundText": "Ogłoszenie zostało zamknięte, wygasło albo link jest błędny.",
+      "home": "Strona główna"
+    }
   }
 }

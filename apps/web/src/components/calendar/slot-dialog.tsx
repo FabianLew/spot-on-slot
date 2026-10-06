@@ -29,6 +29,7 @@ import {
   translateFormError,
 } from "@spot-on-slot/ui";
 import { showServerError } from "@/components/auth/server-error";
+import { LISTINGS } from "@/components/listings/queries";
 import { api } from "@/lib/api";
 import { AVAILABILITY, hhmm, type Occurrence, type Rule } from "./queries";
 import { addDays, instantAt, ISO_WEEKDAYS, local, weekdayIndex, type Weekday } from "./warsaw-time";
@@ -178,7 +179,10 @@ function SlotForm({ target, onDone }: { target: SlotDialogTarget; onDone: () => 
             : await api.POST("/api/v1/availability/me/slots", { body }),
         );
       }
-      await queryClient.invalidateQueries({ queryKey: AVAILABILITY });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: AVAILABILITY }),
+        queryClient.invalidateQueries({ queryKey: LISTINGS }),
+      ]);
       toast.success(t(values.repeat ? "calendar.dialog.savedRule" : "calendar.dialog.saved"));
       onDone();
     } catch (failure) {
