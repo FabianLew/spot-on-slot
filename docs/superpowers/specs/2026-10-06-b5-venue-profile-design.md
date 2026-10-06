@@ -1,6 +1,6 @@
 # B5: profil lokalu
 
-Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: B5 (moduł `venue`). Spec zakłada wariant „jedno konto może prowadzić kilka lokali”, polecany na karcie decyzji z 2026-10-06.
+Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: B5 (moduł `venue`). Jedno konto może prowadzić kilka lokali (Fabian wybrał 2026-10-06).
 
 ## 1. Co użytkownik dostaje
 
@@ -72,7 +72,7 @@ W tym etapie tylko nowe typy w `@spot-on-slot/api-client`. Ekrany edycji, zespo�
 
 ## 5. Decyzje domyślne (do zmiany jednym słowem)
 
-1. Jedno konto VENUE może prowadzić do 10 lokali (do potwierdzenia na karcie decyzji).
+1. Jedno konto VENUE może prowadzić do 10 lokali.
 2. Role w zespole: właściciel i menedżer.
 3. Adres lokalu publiczny i dokładny (dane firmy).
 4. Do publikacji potrzebne są: nazwa, typ, adres z punktem, gatunek i zdjęcie główne.
