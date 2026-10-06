@@ -67,7 +67,8 @@ public class Locations {
         }
         return repository.findWithin(type.name(), center.latitude(), center.longitude(), radiusKm * 1000, limit)
                 .stream()
-                .map(row -> new Nearby(row.getSubjectId(), row.getDistance()))
+                .map(row -> new Nearby(row.getSubjectId(), new GeoPoint(row.getLatitude(), row.getLongitude()),
+                        row.getCity(), row.getDistance()))
                 .toList();
     }
 }

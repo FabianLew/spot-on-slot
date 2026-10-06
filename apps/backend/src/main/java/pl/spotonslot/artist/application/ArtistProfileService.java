@@ -2,6 +2,7 @@ package pl.spotonslot.artist.application;
 
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -141,6 +142,11 @@ public class ArtistProfileService {
     @Transactional(readOnly = true)
     public Optional<ArtistProfile> findPublishedBySlug(String slug) {
         return profiles.findBySlug(slug).filter(ArtistProfile::isPublished);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ArtistProfile> findPublishedByOwners(Collection<UUID> ownerIds) {
+        return ownerIds.isEmpty() ? List.of() : profiles.findPublishedByOwnerIdIn(ownerIds);
     }
 
     @Transactional(readOnly = true)

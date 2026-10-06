@@ -2,6 +2,7 @@ package pl.spotonslot.venue.application;
 
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -184,6 +185,12 @@ public class VenueService {
     @Transactional(readOnly = true)
     public Optional<Venue> findPublished(UUID venueId) {
         return venues.findById(venueId).filter(Venue::isPublished);
+    }
+
+    /** Published venues of the ids, genres loaded, in no particular order. */
+    @Transactional(readOnly = true)
+    public List<Venue> findPublished(Collection<UUID> venueIds) {
+        return venueIds.isEmpty() ? List.of() : venues.findPublishedByIdIn(venueIds);
     }
 
     @Transactional(readOnly = true)

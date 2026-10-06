@@ -22,8 +22,11 @@ import pl.spotonslot.artist.ArtistSummary;
 import pl.spotonslot.artist.Genre;
 import pl.spotonslot.availability.Availability;
 import pl.spotonslot.listing.ActiveListing;
+import pl.spotonslot.listing.ListingCard;
 import pl.spotonslot.listing.ListingKind;
 import pl.spotonslot.listing.ListingPublished;
+import pl.spotonslot.listing.ListingSearch;
+import pl.spotonslot.listing.NearbyListing;
 import pl.spotonslot.listing.domain.Listing;
 import pl.spotonslot.listing.domain.ListingDetails;
 import pl.spotonslot.listing.domain.ListingErrors;
@@ -169,6 +172,35 @@ public class ListingService {
                         listing.point()));
     }
 
+    /** Active listings near a point, nearest first, at most {@code search.limit()}. */
+    @Transactional(readOnly = true)
+    public List<NearbyListing> findActiveWithin(ListingSearch search) {
+        var center = search.center();
+        var anyTime = search.from() == null || search.to() == null;
+        var rows = listings.findActiveWithin(center.latitude(), center.longitude(), search.radiusKm() * 1000, now(),
+                search.kind() == null, search.kind() == null ? "" : search.kind().name(), anyTime,
+                anyTime ? Instant.EPOCH : search.from(), anyTime ? Instant.EPOCH : search.to(),
+                search.genres().isEmpty(),
+                search.genres().isEmpty() ? List.of("") : search.genres().stream().map(Genre::name).toList(),
+                search.budget() == null, search.budget() == null ? 0 : search.budget(), search.limit());
+        if (rows.isEmpty()) {
+            return List.of();
+        }
+        var byId = new HashMap<UUID, Listing>();
+        listings.findWithGenresByIdIn(rows.stream().map(ListingRepository.NearbyRow::getId).toList())
+                .forEach(listing -> byId.put(listing.getId(), listing));
+        return rows.stream().filter(row -> byId.containsKey(row.getId()))
+                .map(row -> new NearbyListing(card(byId.get(row.getId())), row.getDistance()))
+                .toList();
+    }
+
+    private static ListingCard card(Listing listing) {
+        return new ListingCard(listing.getId(), listing.getKind(), listing.getArtistId(), listing.getVenueId(),
+                listing.getStartsAt(), listing.getEndsAt(), Set.copyOf(listing.getGenres()),
+                listing.getDescription(), listing.getPriceFrom(), listing.getPriceTo(), listing.getTravelRadiusKm(),
+                listing.getCity(), listing.point());
+    }
+
     /** Marks an active listing as taken by a booking; fails with {@code LISTING_NOT_ACTIVE}. */
     @Transactional
     public void markFilled(UUID listingId) {
@@ -180,6 +212,9 @@ public class ListingService {
     /** Expires the artist's upcoming listings whose time is no longer free in their calendar. */
     @Transactional
     public int expireNotFree(UUID artistId) {
+        // Several calendar changes in a row are handled in parallel; one at a time per artist, so each sees the
+        // expiries of the others instead of failing on their version.
+        lock(artistId);
         var now = now();
         var gone = listings.findUpcomingOfArtist(artistId, now).stream()
                 .filter(listing -> !availability.isFree(artistId, listing.getStartsAt(), listing.getEndsAt()))

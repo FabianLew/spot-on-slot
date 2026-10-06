@@ -20,7 +20,7 @@ public interface LocationRepository extends JpaRepository<Location, UUID> {
 
     /** Subjects of one type within {@code meters} of the point, nearest first. Uses the GIST index on {@code point}. */
     @Query(nativeQuery = true, value = """
-            SELECT l.subject_id AS subjectId,
+            SELECT l.subject_id AS subjectId, l.latitude AS latitude, l.longitude AS longitude, l.city AS city,
                    ST_Distance(l.point, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography) AS distance
             FROM location l
             WHERE l.subject_type = :subjectType
@@ -33,6 +33,12 @@ public interface LocationRepository extends JpaRepository<Location, UUID> {
 
     interface NearbyRow {
         UUID getSubjectId();
+
+        double getLatitude();
+
+        double getLongitude();
+
+        String getCity();
 
         double getDistance();
     }

@@ -1,4 +1,4 @@
-package pl.spotonslot.venue.domain;
+package pl.spotonslot.venue;
 
 /** Kind of place; names are translated by the clients. */
 public enum VenueType {

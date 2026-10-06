@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.spotonslot.artist.Genre;
 import pl.spotonslot.shared.persistence.BaseEntity;
+import pl.spotonslot.venue.VenueType;
 
 /** A club, bar or hall with its team: a draft until published, then public under {@code /v/{slug}}. */
 @Getter

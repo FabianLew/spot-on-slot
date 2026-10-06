@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import pl.spotonslot.venue.VenueType;
 import pl.spotonslot.venue.api.VenueDtos.AcceptInvitationRequest;
 import pl.spotonslot.venue.api.VenueDtos.InvitationResponse;
 import pl.spotonslot.venue.api.VenueDtos.InviteRequest;
@@ -30,7 +31,6 @@ import pl.spotonslot.venue.api.VenueDtos.TeamResponse;
 import pl.spotonslot.venue.api.VenueDtos.VenueResponse;
 import pl.spotonslot.venue.application.VenueService;
 import pl.spotonslot.venue.application.VenueTeamService;
-import pl.spotonslot.venue.domain.VenueType;
 
 /** Venues of the signed-in VENUE account; a venue outside the caller's teams answers 404. */
 @RestController
