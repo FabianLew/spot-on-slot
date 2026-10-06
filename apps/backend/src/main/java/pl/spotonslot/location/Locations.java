@@ -1,12 +1,14 @@
 package pl.spotonslot.location;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.spotonslot.location.infrastructure.LocationRepository;
 
-/** The module's facade for other modules (profiles, search): who is near a point. */
+/** The module's facade for other modules (profiles, search): where a user is and who is near a point. */
 @Service
 @RequiredArgsConstructor
 public class Locations {
@@ -23,6 +25,14 @@ public class Locations {
      *
      * @throws IllegalArgumentException for a radius outside 1–500 km or a limit outside 1–1000
      */
+    /** The town a user set as their location, if any. */
+    @Transactional(readOnly = true)
+    public Optional<LocationSummary> findForUser(UUID userId) {
+        return repository.findBySubjectTypeAndSubjectId(SubjectType.USER, userId)
+                .map(location -> new LocationSummary(location.getLabel(), location.getCity(), location.getRegion(),
+                        location.getCountryCode()));
+    }
+
     @Transactional(readOnly = true)
     public List<Nearby> findWithin(SubjectType type, GeoPoint center, double radiusKm, int limit) {
         if (!(radiusKm >= MIN_RADIUS_KM && radiusKm <= MAX_RADIUS_KM)) {

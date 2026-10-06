@@ -118,6 +118,7 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 - **Fundament backendu (B0):** błędy (RFC 9457 problem+json), paginacja, `BaseEntity`, request ID, CORS i profile opisuje [specyfikacja B0](superpowers/specs/2026-10-04-b0-backend-foundation-design.md).
 - **Szkielet aplikacji web (W0):** nawigację, i18n, motyw, klienta API, błędy i formularze opisuje [specyfikacja W0](superpowers/specs/2026-10-05-w0-web-shell-design.md).
 - **Zdjęcia (B2):** wgrywanie przez podpisany link prosto do magazynu i rozmiary WebP opisuje [specyfikacja mediów](superpowers/specs/2026-10-05-b2-media-design.md).
+- **Profil artysty (B4):** szkic do publikacji, publiczny profil pod `/a/{slug}` dla każdego z linkiem (Fabian wybrał 2026-10-06); szczegóły w [specyfikacji profilu artysty](superpowers/specs/2026-10-05-b4-artist-profile-design.md).
 - **Lokalizacja (B3):** lokalizacja osoby zapisana tylko jako punkt przybliżony do około 1 km plus miejscowość, zapytania w promieniu przez PostGIS; szczegóły w [specyfikacji lokalizacji](superpowers/specs/2026-10-05-b3-location-design.md).
 - **Konta (B1 + W1):** rejestracja, weryfikacja e-maila, logowanie, odświeżanie sesji i reset hasła opisuje [specyfikacja kont](superpowers/specs/2026-10-05-b1-w1-accounts-design.md).
 - **Landing z listą oczekujących:** routing `/pl` + `/en`, formularz zapisu i potwierdzenie e-mailem opisuje [specyfikacja landingu](superpowers/specs/2026-10-05-landing-waitlist-design.md).

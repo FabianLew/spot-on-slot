@@ -1,6 +1,6 @@
 # B4: profil artysty
 
-Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: B4 (moduł `artist`). Widoczność profilu publicznego: każdy z linkiem (Fabian wybrał 2026-10-06).
+Status: zaakceptowany przez Fabiana 2026-10-06. Etap według `architektura/segmenty-mvp.md`: B4 (moduł `artist`). Widoczność profilu publicznego: każdy z linkiem (Fabian wybrał 2026-10-06).
 
 ## 1. Co użytkownik dostaje
 
