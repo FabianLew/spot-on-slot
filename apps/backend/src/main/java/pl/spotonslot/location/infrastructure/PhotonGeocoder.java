@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.client.RestClient;
@@ -27,7 +27,9 @@ import pl.spotonslot.location.domain.Place;
 public class PhotonGeocoder implements Geocoder {
 
     /** Photon feature types precise enough to suggest; countries, states and other objects are skipped. */
-    private static final Set<String> SUGGESTED_TYPES = Set.of("city", "district", "locality", "street", "house");
+    private static final Map<String, Place.Kind> SUGGESTED_TYPES = Map.of("city", Place.Kind.CITY,
+            "district", Place.Kind.DISTRICT, "locality", Place.Kind.LOCALITY, "street", Place.Kind.STREET,
+            "house", Place.Kind.HOUSE);
     private static final String VOIVODESHIP_PREFIX = "województwo ";
 
     private final RestClient restClient;
@@ -47,13 +49,15 @@ public class PhotonGeocoder implements Geocoder {
         for (var feature : features) {
             var properties = feature.path("properties");
             var city = city(properties);
-            if (!SUGGESTED_TYPES.contains(text(properties, "type")) || city == null) {
+            var kind = SUGGESTED_TYPES.get(String.valueOf(text(properties, "type")));
+            if (kind == null || city == null) {
                 continue;
             }
             var coordinates = feature.path("geometry").path("coordinates");
             var point = new GeoPoint(coordinates.path(1).asDouble(), coordinates.path(0).asDouble());
             var region = region(properties);
-            places.add(new Place(label(properties, city, region), city, region, countryCode(properties), point));
+            places.add(new Place(kind, label(properties, city, region), street(kind, properties),
+                    text(properties, "postcode"), city, region, countryCode(properties), point));
         }
         return places;
     }
@@ -98,6 +102,19 @@ public class PhotonGeocoder implements Geocoder {
             return text(properties, "name");
         }
         return text(properties, "city");
+    }
+
+    /** "Rynek Główny 1" for an address, "Krakowska" for a street, null for a town or district. */
+    private static String street(Place.Kind kind, JsonNode properties) {
+        return switch (kind) {
+            case HOUSE -> {
+                var street = text(properties, "street");
+                var number = text(properties, "housenumber");
+                yield street == null || number == null ? street : street + " " + number;
+            }
+            case STREET -> text(properties, "name");
+            default -> null;
+        };
     }
 
     private static String region(JsonNode properties) {

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.spotonslot.artist.api.ArtistDtos.ProfileResponse;
 import pl.spotonslot.artist.api.ArtistDtos.SaveProfileRequest;
 import pl.spotonslot.artist.application.ArtistProfileService;
-import pl.spotonslot.artist.domain.Genre;
+import pl.spotonslot.artist.Genre;
 
 @RestController
 @RequestMapping("/api/v1/artists")

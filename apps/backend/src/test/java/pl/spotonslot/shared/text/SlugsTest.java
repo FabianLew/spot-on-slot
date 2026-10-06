@@ -1,4 +1,4 @@
-package pl.spotonslot.artist.domain;
+package pl.spotonslot.shared.text;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,18 +18,18 @@ class SlugsTest {
             "MC_Ögur 2000, mc-ogur-2000",
     })
     void turnsAStageNameIntoASlug(String stageName, String slug) {
-        assertThat(Slugs.fromStageName(stageName)).isEqualTo(slug);
+        assertThat(Slugs.fromName(stageName, "artist")).isEqualTo(slug);
     }
 
     @Test
     void cutsLongNamesAtFortyCharactersWithoutATrailingDash() {
-        var slug = Slugs.fromStageName("The Very Long Stage Name Of An Artist Who Plays Everything");
+        var slug = Slugs.fromName("The Very Long Stage Name Of An Artist Who Plays Everything", "artist");
         assertThat(slug).hasSizeLessThanOrEqualTo(40).doesNotEndWith("-").startsWith("the-very-long-stage-name");
     }
 
     @Test
     void namesWithoutLettersOrDigitsFallBackToArtist() {
-        assertThat(Slugs.fromStageName("!!!")).isEqualTo("artist");
+        assertThat(Slugs.fromName("!!!", "artist")).isEqualTo("artist");
     }
 
     @Test

@@ -19,7 +19,7 @@ import pl.spotonslot.artist.api.ArtistDtos.SkillValues;
 import pl.spotonslot.artist.application.ArtistProfileService;
 import pl.spotonslot.artist.domain.ArtistDetails;
 import pl.spotonslot.artist.domain.ArtistProfile;
-import pl.spotonslot.artist.domain.Genre;
+import pl.spotonslot.artist.Genre;
 import pl.spotonslot.artist.domain.LinkKind;
 import pl.spotonslot.artist.domain.Skills;
 import pl.spotonslot.location.Locations;

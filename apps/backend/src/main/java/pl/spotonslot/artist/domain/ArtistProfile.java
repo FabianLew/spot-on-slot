@@ -25,6 +25,7 @@ import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pl.spotonslot.artist.Genre;
 import pl.spotonslot.shared.persistence.BaseEntity;
 
 /** An artist's profile: a draft until published, then public under {@code /a/{slug}}. */

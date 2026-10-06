@@ -1,6 +1,6 @@
 # B5: profil lokalu
 
-Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: B5 (moduł `venue`). Jedno konto może prowadzić kilka lokali (Fabian wybrał 2026-10-06).
+Status: zaakceptowany przez Fabiana 2026-10-06. Etap według `architektura/segmenty-mvp.md`: B5 (moduł `venue`). Jedno konto może prowadzić kilka lokali (Fabian wybrał 2026-10-06).
 
 ## 1. Co użytkownik dostaje
 
@@ -38,7 +38,7 @@ Poza zakresem:
 | `POST /api/v1/venues/{id}/publish`, `.../unpublish` | publikacja (422 `VENUE_PROFILE_INCOMPLETE` z listą brakujących pól) i wycofanie (właściciel) |
 | `DELETE /api/v1/venues/{id}` | usunięcie lokalu (właściciel) |
 | `GET /api/v1/venues/{id}/team`, `POST .../team/invitations`, `DELETE .../team/{userId}`, `DELETE .../team/invitations/{id}` | zespół i zaproszenia (właściciel; lista także dla menedżera) |
-| `POST /api/v1/venues/invitations/{token}/accept` | przyjęcie zaproszenia po zalogowaniu |
+| `POST /api/v1/venues/invitations/accept` (token w treści żądania, nie w adresie, żeby nie trafiał do logów) | przyjęcie zaproszenia po zalogowaniu |
 | `GET /api/v1/venues/slugs/{slug}` | 204, gdy adres jest wolny, albo 409 `VENUE_SLUG_TAKEN` |
 | `GET /api/v1/venues/types` | lista typów (kody; nazwy PL/EN tłumaczy web) |
 | `GET /api/v1/public/venues/{slug}` | profil publiczny bez logowania, tylko opublikowany (inaczej 404) |

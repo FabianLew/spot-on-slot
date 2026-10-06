@@ -151,7 +151,11 @@ class LocationIntegrationTest {
                 .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$[0].label").value("Kraków, małopolskie"))
                 .andExpect(jsonPath("$[0].latitude").value(50.0619474))
-                .andExpect(jsonPath("$[1].label").value("Rynek Główny 1, Kraków"));
+                .andExpect(jsonPath("$[0].kind").value("CITY"))
+                .andExpect(jsonPath("$[1].label").value("Rynek Główny 1, Kraków"))
+                .andExpect(jsonPath("$[1].kind").value("HOUSE"))
+                .andExpect(jsonPath("$[1].street").value("Rynek Główny 1"))
+                .andExpect(jsonPath("$[1].postalCode").value("31-042"));
         assertThat(photon.requests().getLast().getQuery()).contains("lang=default");
 
         as(get("/api/v1/locations/search").param("q", "krak").header("Accept-Language", "en"))
@@ -208,6 +212,34 @@ class LocationIntegrationTest {
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> locations.findWithin(SubjectType.USER, KRAKOW, 10, 0))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void geocodesAnAddressToItsExactPoint() {
+        var found = locations.geocodeAddress("Rynek Główny 1, 31-042 Kraków", Locale.forLanguageTag("pl"));
+
+        assertThat(found).contains(new GeocodedAddress("Rynek Główny 1", "31-042", "Kraków", "małopolskie", "PL",
+                new GeoPoint(50.0617, 19.9372)));
+        assertThat(photon.requests().getLast().getQuery()).contains("q=Rynek G");
+    }
+
+    @Test
+    void anAddressThatOnlyMatchesATownIsNotFound() {
+        photon.respondWith(200, """
+                {"type": "FeatureCollection", "features": [{"type": "Feature",
+                 "geometry": {"type": "Point", "coordinates": [19.93, 50.06]},
+                 "properties": {"type": "city", "name": "Kraków", "countrycode": "PL"}}]}
+                """);
+
+        assertThat(locations.geocodeAddress("Nieistniejąca 999, Kraków", Locale.forLanguageTag("pl"))).isEmpty();
+    }
+
+    @Test
+    void geocodingWhileTheGeocoderIsDownFails() {
+        photon.respondWith(502, "bad gateway");
+
+        assertThatThrownBy(() -> locations.geocodeAddress("Rynek Główny 1, Kraków", Locale.forLanguageTag("pl")))
+                .isInstanceOf(pl.spotonslot.shared.error.ServiceUnavailableException.class);
     }
 
     private UUID save(GeoPoint point) {

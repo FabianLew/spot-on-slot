@@ -1,4 +1,4 @@
-package pl.spotonslot.identity.domain;
+package pl.spotonslot.shared.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

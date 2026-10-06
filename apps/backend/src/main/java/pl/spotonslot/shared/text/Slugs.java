@@ -1,11 +1,11 @@
-package pl.spotonslot.artist.domain;
+package pl.spotonslot.shared.text;
 
 import java.text.Normalizer;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-/** Public profile addresses ({@code /a/{slug}}): 3–40 lowercase letters, digits and single dashes. */
+/** Public profile addresses ({@code /a/{slug}}, {@code /v/{slug}}): 3–40 lowercase letters, digits and single dashes. */
 public final class Slugs {
 
     public static final int MIN_LENGTH = 3;
@@ -14,7 +14,6 @@ public final class Slugs {
     private static final Pattern VALID = Pattern.compile("[a-z0-9]+(-[a-z0-9]+)*");
     private static final Pattern MARKS = Pattern.compile("\\p{M}+");
     private static final Pattern SEPARATORS = Pattern.compile("[^a-z0-9]+");
-    private static final String FALLBACK = "artist";
 
     /** Words that would collide with app routes or look official. */
     private static final Set<String> RESERVED = Set.of(
@@ -25,16 +24,16 @@ public final class Slugs {
     private Slugs() {
     }
 
-    /** "Łukasz Żółć" becomes "lukasz-zolc"; a name without letters or digits becomes "artist". */
-    public static String fromStageName(String stageName) {
+    /** "Łukasz Żółć" becomes "lukasz-zolc"; a name without letters or digits becomes {@code fallback}. */
+    public static String fromName(String name, String fallback) {
         // ł/Ł have no decomposition, so NFD alone would drop them.
-        var folded = stageName.replace('ł', 'l').replace('Ł', 'L');
+        var folded = name.replace('ł', 'l').replace('Ł', 'L');
         var ascii = MARKS.matcher(Normalizer.normalize(folded, Normalizer.Form.NFD)).replaceAll("");
         var slug = trimDashes(SEPARATORS.matcher(ascii.toLowerCase(Locale.ROOT)).replaceAll("-"));
         if (slug.length() > MAX_LENGTH) {
             slug = trimDashes(slug.substring(0, MAX_LENGTH));
         }
-        return slug.isEmpty() ? FALLBACK : slug;
+        return slug.isEmpty() ? fallback : slug;
     }
 
     /**
