@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { PageHeader, Panel } from "@spot-on-slot/ui";
+import { NotificationSettings } from "@/components/notifications/notification-settings";
 import { navMetadata } from "@/lib/nav-metadata";
 import { SettingsForm } from "./settings-form";
 
@@ -12,6 +13,7 @@ export default function Page() {
         <p className="text-sm text-muted-foreground">{t("settings.description")}</p>
         <SettingsForm />
       </Panel>
+      <NotificationSettings />
     </section>
   );
 }

@@ -88,13 +88,15 @@ class NearbyListingMailer {
         var locale = Locale.forLanguageTag(account.locale());
         var link = properties.web().baseUrl() + "/o/" + alert.listingId();
         var unsubscribe = properties.web().baseUrl() + "/unsubscribe?token=" + token;
+        // Mail clients POST here for one-click unsubscribe (RFC 8058); the web app forwards it to the API.
+        var oneClick = properties.web().baseUrl() + "/api/unsubscribe?token=" + token;
         var when = when(alert, locale);
 
         mailSender.send(account.email(),
                 text("subject." + alert.kind(), locale, alert.authorName(), when),
                 plainText(alert, when, locale, link, unsubscribe),
                 html(alert, when, locale, link, unsubscribe),
-                Map.of("List-Unsubscribe", "<" + unsubscribe + ">",
+                Map.of("List-Unsubscribe", "<" + oneClick + ">",
                         "List-Unsubscribe-Post", "List-Unsubscribe=One-Click"));
         notification.markEmailed(now);
         log.info("Sent a listing alert e-mail (locale {})", account.locale());

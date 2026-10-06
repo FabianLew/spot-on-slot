@@ -294,7 +294,7 @@ class NearbyListingAlertIntegrationTest {
         assertThat(part(polish, "text/html")).contains("href=\"http://localhost:3000/o/" + listing + "\"");
         var token = text.substring(text.indexOf("unsubscribe?token=") + 18).split("\\s")[0];
         assertThat(polish.getHeader("List-Unsubscribe")[0])
-                .isEqualTo("<http://localhost:3000/unsubscribe?token=" + token + ">");
+                .isEqualTo("<http://localhost:3000/api/unsubscribe?token=" + token + ">");
         assertThat(polish.getHeader("List-Unsubscribe-Post")[0]).isEqualTo("List-Unsubscribe=One-Click");
 
         var english = messages.stream().filter(message -> to(message).equals(email(FAR))).findFirst().orElseThrow();
