@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import pl.spotonslot.artist.Genre;
+import pl.spotonslot.venue.VenueType;
 
 /** The editable part of a venue, already validated. {@code address} may be null. */
 public record VenueDetails(

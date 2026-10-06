@@ -1,5 +1,6 @@
 package pl.spotonslot.artist.infrastructure;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +18,11 @@ public interface ArtistProfileRepository extends JpaRepository<ArtistProfile, UU
     boolean existsBySlug(String slug);
 
     boolean existsByOwnerId(UUID ownerId);
+
+    /** Published profiles of the owners, genres loaded. */
+    @Query("SELECT DISTINCT p FROM ArtistProfile p LEFT JOIN FETCH p.genres"
+            + " WHERE p.ownerId IN :ownerIds AND p.publishedAt IS NOT NULL")
+    List<ArtistProfile> findPublishedByOwnerIdIn(@Param("ownerIds") Collection<UUID> ownerIds);
 
     @Query("SELECT DISTINCT p FROM ArtistProfile p LEFT JOIN p.photoMediaIds photo"
             + " WHERE p.avatarMediaId = :mediaId OR photo = :mediaId")

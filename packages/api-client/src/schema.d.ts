@@ -580,6 +580,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/search/venues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["venues"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/search/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/search/artists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["artists"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/public/venues/{slug}": {
         parameters: {
             query?: never;
@@ -1237,6 +1285,151 @@ export interface components {
         SystemInfo: {
             name?: string;
             version?: string;
+        };
+        PageResponseSearchVenue: {
+            content?: components["schemas"]["SearchVenue"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
+        SearchImage: {
+            /** Format: uuid */
+            id: string;
+            /** Format: int32 */
+            width: number;
+            /** Format: int32 */
+            height: number;
+            /** @description 320 px WebP */
+            small: string;
+            /** @description 800 px WebP */
+            medium: string;
+            /** @description 1600 px WebP */
+            large: string;
+        };
+        SearchVenue: {
+            slug: string;
+            name: string;
+            /** @enum {string} */
+            type: "CLUB" | "BAR" | "PUB" | "CONCERT_HALL" | "EVENT_HALL" | "RESTAURANT" | "OTHER";
+            city?: string;
+            genres: ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
+            /** Format: int32 */
+            capacity?: number;
+            avatar?: components["schemas"]["SearchImage"];
+            /**
+             * Format: double
+             * @description From the centre, one decimal
+             */
+            distanceKm: number;
+            /** Format: double */
+            latitude: number;
+            /** Format: double */
+            longitude: number;
+        };
+        PageResponseSearchListing: {
+            content?: components["schemas"]["SearchListing"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
+        SearchListing: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "ARTIST_AVAILABLE" | "VENUE_SEEKING";
+            /** Format: date-time */
+            startsAt: string;
+            /** Format: date-time */
+            endsAt: string;
+            genres: ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
+            description?: string;
+            /**
+             * Format: int64
+             * @description Grosze
+             */
+            priceFrom?: number;
+            /**
+             * Format: int64
+             * @description Grosze
+             */
+            priceTo?: number;
+            /**
+             * Format: int32
+             * @description Artists only
+             */
+            travelRadiusKm?: number;
+            city?: string;
+            artist?: components["schemas"]["SearchListingArtist"];
+            venue?: components["schemas"]["SearchListingVenue"];
+            /**
+             * Format: double
+             * @description From the centre, one decimal
+             */
+            distanceKm: number;
+            /**
+             * Format: double
+             * @description Artists: approximated (~1 km); venues: exact
+             */
+            latitude: number;
+            /** Format: double */
+            longitude: number;
+        };
+        SearchListingArtist: {
+            slug: string;
+            stageName: string;
+        };
+        SearchListingVenue: {
+            slug: string;
+            name: string;
+        };
+        PageResponseSearchArtist: {
+            content?: components["schemas"]["SearchArtist"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
+        SearchArtist: {
+            slug: string;
+            stageName: string;
+            city: string;
+            genres: ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
+            avatar?: components["schemas"]["SearchImage"];
+            /**
+             * Format: int64
+             * @description Grosze
+             */
+            rateFrom?: number;
+            /**
+             * Format: int64
+             * @description Grosze
+             */
+            rateTo?: number;
+            /** Format: int32 */
+            travelRadiusKm: number;
+            /**
+             * Format: double
+             * @description From the centre, one decimal
+             */
+            distanceKm: number;
+            /** Format: double */
+            latitude: number;
+            /** Format: double */
+            longitude: number;
         };
         PublicVenueResponse: {
             slug: string;
@@ -4550,6 +4743,252 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SystemInfo"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    venues: {
+        parameters: {
+            query?: {
+                /** @example 50.0614 */
+                lat?: number;
+                /** @example 19.9366 */
+                lng?: number;
+                /** @description Defaults to 50 km */
+                radiusKm?: number;
+                /** @description Any of these */
+                genres?: ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
+                /** @description Any of these */
+                types?: ("CLUB" | "BAR" | "PUB" | "CONCERT_HALL" | "EVENT_HALL" | "RESTAURANT" | "OTHER")[];
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PageResponseSearchVenue"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    listings: {
+        parameters: {
+            query?: {
+                /** @example 50.0614 */
+                lat?: number;
+                /** @example 19.9366 */
+                lng?: number;
+                /** @description Defaults to 50 km */
+                radiusKm?: number;
+                kind?: "ARTIST_AVAILABLE" | "VENUE_SEEKING";
+                /** @description Any of these */
+                genres?: ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
+                /** @description With to: listings overlapping this time */
+                from?: string;
+                to?: string;
+                /** @description Grosze; venues' top amount reaches it, artists' bottom amount stays within it; listings without amounts always match */
+                budget?: number;
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PageResponseSearchListing"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    artists: {
+        parameters: {
+            query?: {
+                /** @example 50.0614 */
+                lat?: number;
+                /** @example 19.9366 */
+                lng?: number;
+                /** @description Defaults to 50 km */
+                radiusKm?: number;
+                /** @description Any of these */
+                genres?: ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
+                /** @description With to: free for the whole time, at most 24 h */
+                from?: string;
+                to?: string;
+                /** @description Grosze; rates starting above it are left out */
+                budget?: number;
+                /** @description Only artists whose travel radius reaches the centre */
+                willTravel?: boolean;
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PageResponseSearchArtist"];
                 };
             };
             /** @description Invalid request */

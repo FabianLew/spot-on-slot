@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.UUID;
 import pl.spotonslot.artist.Genre;
 import pl.spotonslot.venue.VenueRole;
+import pl.spotonslot.venue.VenueType;
 import pl.spotonslot.venue.application.VenueService.Requirement;
 import pl.spotonslot.venue.domain.VenueLinkKind;
-import pl.spotonslot.venue.domain.VenueType;
 
 /** Request and response shapes of the venue API. */
 final class VenueDtos {
