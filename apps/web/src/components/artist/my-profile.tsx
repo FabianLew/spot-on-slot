@@ -3,8 +3,11 @@
 import { unwrap } from "@spot-on-slot/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import Link from "next/link";
 import { Button, PageHeader, Panel, toast } from "@spot-on-slot/ui";
+import { NEXT_FREE_DAYS } from "@/components/calendar/next-free-slots";
+import { useCalendar } from "@/components/calendar/queries";
 import { ApiErrorState } from "@/components/errors/api-error-state";
 import { ARTIST_PROFILE, useArtistProfile } from "@/components/onboarding/queries";
 import { StatusBar } from "@/components/profile/status-bar";
@@ -39,6 +42,11 @@ function ArtistSection() {
   const t = useTranslations();
   const queryClient = useQueryClient();
   const profile = useArtistProfile();
+  const [range] = useState(() => {
+    const now = new Date();
+    return { from: now, to: new Date(now.getTime() + NEXT_FREE_DAYS * 86_400_000) };
+  });
+  const freeTime = useCalendar(range.from, range.to, profile.data != null);
 
   const toggle = useMutation({
     mutationFn: async (publish: boolean) =>
@@ -75,7 +83,7 @@ function ArtistSection() {
         onToggle={(publish) => toggle.mutate(publish)}
         toggling={toggle.isPending}
       />
-      <ArtistProfileView profile={data} />
+      <ArtistProfileView profile={data} freeTime={freeTime.data} />
     </>
   );
 }

@@ -136,10 +136,39 @@ describe("MonthCalendar", () => {
     expect(screen.getByRole("button", { name: "25 października, dostępny" })).toHaveFocus();
   });
 
+  it("lets every day be picked in selectAny mode and marks booked days", async () => {
+    const onSelect = vi.fn();
+    render(
+      <MonthCalendar
+        month={october}
+        labels={{ ...labels, booked: "zarezerwowany" }}
+        dayState={dayState}
+        isBooked={(d) => d.getDate() === 25}
+        selectAny
+        selected={new Date(2026, 9, 5)}
+        onSelect={onSelect}
+        onMonthChange={vi.fn()}
+      />,
+    );
+    const empty = screen.getByRole("button", { name: "5 października, niedostępny, wybrany" });
+    expect(empty).toBeEnabled();
+    expect(empty).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "25 października, dostępny, zarezerwowany" })).toBeEnabled();
+    await userEvent.click(screen.getByRole("button", { name: "6 października, niedostępny" }));
+    expect(onSelect).toHaveBeenCalledWith(new Date(2026, 9, 6));
+    expect(screen.getByText("zarezerwowany")).toBeInTheDocument();
+  });
+
   it("asks for the neighbouring month", async () => {
     const onMonthChange = vi.fn();
     render(
-      <MonthCalendar month={october} labels={labels} dayState={dayState} onSelect={vi.fn()} onMonthChange={onMonthChange} />,
+      <MonthCalendar
+        month={october}
+        labels={labels}
+        dayState={dayState}
+        onSelect={vi.fn()}
+        onMonthChange={onMonthChange}
+      />,
     );
     await userEvent.click(screen.getByRole("button", { name: "Następny miesiąc" }));
     expect(onMonthChange).toHaveBeenCalledWith(new Date(2026, 10, 1));

@@ -1,6 +1,7 @@
 import type { ApiSchemas } from "@spot-on-slot/api-client";
 import { useFormatter, useTranslations } from "next-intl";
 import { Panel, PixelHeadphones, PixelPin, SkillMeter, Tag } from "@spot-on-slot/ui";
+import { NextFreeSlots, type FreeTime } from "@/components/calendar/next-free-slots";
 import { ExternalLinks, PhotoGalleryView } from "@/components/profile/public-parts";
 
 type PublicProfile = ApiSchemas["PublicProfileResponse"];
@@ -26,9 +27,19 @@ export const LINKS = ["soundcloud", "spotify", "instagram", "youtube"] as const;
 
 /**
  * The artist profile in the "DJ profile" mockup layout. It uses no client hooks, so the public page renders it on
- * the server and the artist's own preview in the app.
+ * the server and the artist's own preview in the app. `freeTime` (left out while unknown) feeds the next free dates.
  */
-export function ArtistProfileView({ profile, headingLevel = 2 }: { profile: ArtistViewData; headingLevel?: 1 | 2 }) {
+export function ArtistProfileView({
+  profile,
+  headingLevel = 2,
+  freeTime,
+  now = new Date(),
+}: {
+  profile: ArtistViewData;
+  headingLevel?: 1 | 2;
+  freeTime?: FreeTime[];
+  now?: Date;
+}) {
   const t = useTranslations();
   const format = useFormatter();
   const Heading = headingLevel === 1 ? "h1" : "h2";
@@ -119,6 +130,7 @@ export function ArtistProfileView({ profile, headingLevel = 2 }: { profile: Arti
           <Panel title={t("artistProfile.view.rate")} headingLevel={3}>
             <p className="font-display text-lg">{rateText}</p>
           </Panel>
+          {freeTime && <NextFreeSlots occurrences={freeTime} now={now} />}
         </div>
       </div>
       <PhotoGalleryView
