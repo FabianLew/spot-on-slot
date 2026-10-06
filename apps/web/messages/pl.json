@@ -835,5 +835,65 @@
       "notFoundText": "Ogłoszenie zostało zamknięte, wygasło albo link jest błędny.",
       "home": "Strona główna"
     }
+  },
+  "search": {
+    "title": "Szukaj",
+    "tabsLabel": "Czego szukasz",
+    "tabs": {
+      "artists": "Artyści",
+      "venues": "Lokale",
+      "listings": "Ogłoszenia"
+    },
+    "place": {
+      "label": "Miejsce",
+      "area": "Obszar mapy",
+      "picked": "Wybrane miejsce",
+      "none": "Nie wybrano",
+      "change": "Zmień",
+      "cancel": "Anuluj",
+      "search": "Miejsce wyszukiwania",
+      "placeholder": "np. Kraków albo adres",
+      "useDevice": "Moja lokalizacja",
+      "device": "Moja lokalizacja"
+    },
+    "radius": "Promień",
+    "radiusKm": "{km} km",
+    "needPlace": "Wybierz miejsce albo ustaw lokalizację w profilu.",
+    "filters": {
+      "open": "Filtry",
+      "genres": "Gatunki",
+      "types": "Typ lokalu",
+      "kind": "Rodzaj",
+      "anyKind": "Wszystkie",
+      "when": "Termin",
+      "date": "Data",
+      "from": "Od",
+      "to": "Do",
+      "artistTime": "Pokazujemy artystów wolnych przez cały ten czas. Koniec przed początkiem oznacza następny dzień.",
+      "listingTime": "Ogłoszenia, które zachodzą na ten czas; sama data to cały dzień.",
+      "budget": "Budżet (zł)",
+      "budgetHint": "Bez kwoty pokazujemy też oferty „do ustalenia”.",
+      "willTravel": "Tylko ci, którzy dojadą"
+    },
+    "count": "{count, plural, one {# wynik} few {# wyniki} many {# wyników} other {# wyniku}}",
+    "results": "Wyniki",
+    "more": "Pokaż więcej",
+    "empty": "Nic tu nie ma. Zwiększ promień albo poluzuj filtry.",
+    "view": {
+      "label": "Widok",
+      "list": "Lista",
+      "map": "Mapa"
+    },
+    "autoArea": "Szukaj przy przesuwaniu mapy",
+    "searchArea": "Szukaj w tym obszarze",
+    "map": {
+      "label": "Mapa wyników",
+      "approximate": "położenie przybliżone (~1 km)",
+      "group": "{count, plural, one {# wynik} few {# wyniki} many {# wyników} other {# wyniku}} w tym miejscu"
+    },
+    "distance": "{km} km stąd",
+    "approximate": "{city} i okolice",
+    "travel": "Dojazd do {km} km",
+    "capacity": "Do {count} osób"
   }
 }
