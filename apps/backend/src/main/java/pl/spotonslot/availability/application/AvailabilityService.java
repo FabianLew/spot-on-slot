@@ -15,10 +15,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.spotonslot.artist.ArtistProfiles;
+import pl.spotonslot.availability.AvailabilityChanged;
 import pl.spotonslot.availability.domain.AvailabilityErrors;
 import pl.spotonslot.availability.domain.AvailabilityRule;
 import pl.spotonslot.availability.domain.AvailabilitySlot;
@@ -49,6 +51,7 @@ public class AvailabilityService {
     private final AvailabilityRuleRepository rules;
     private final ArtistProfiles artistProfiles;
     private final JdbcTemplate jdbc;
+    private final ApplicationEventPublisher events;
     private final Clock clock;
 
     // ---- the artist's own calendar
@@ -81,6 +84,7 @@ public class AvailabilityService {
         checkFree(ownerId, List.of(new Occurrence(startsAt, endsAt, null, null, null, null, null, null)),
                 o -> slotId.equals(o.slotId()));
         slot.change(startsAt, endsAt, note);
+        changed(ownerId);
         return slot;
     }
 
@@ -88,6 +92,7 @@ public class AvailabilityService {
     public void deleteSlot(UUID ownerId, UUID slotId) {
         requireProfile(ownerId);
         slots.delete(changeableSlot(ownerId, slotId));
+        changed(ownerId);
     }
 
     @Transactional(readOnly = true)
@@ -117,6 +122,7 @@ public class AvailabilityService {
         checkRule(details, rule);
         rule.update(details);
         checkRuleFree(rule);
+        changed(ownerId);
         return rule;
     }
 
@@ -124,6 +130,7 @@ public class AvailabilityService {
     public void deleteRule(UUID ownerId, UUID ruleId) {
         requireProfile(ownerId);
         rules.delete(rule(ownerId, ruleId));
+        changed(ownerId);
     }
 
     /** Leaves one date of a rule out (a day off); dates that have started stay as they were. */
@@ -133,6 +140,7 @@ public class AvailabilityService {
         var rule = rule(ownerId, ruleId);
         changeableDate(rule, date);
         rule.skip(date);
+        changed(ownerId);
         return rule;
     }
 
@@ -193,6 +201,7 @@ public class AvailabilityService {
             rules.findById(free.ruleId()).orElseThrow().skip(free.date());
             slots.save(AvailabilitySlot.booked(ownerId, free.startsAt(), free.endsAt(), free.note(), bookingId));
         }
+        changed(ownerId);
     }
 
     /** Gives a booking's time back as free time; unknown bookings change nothing. */
@@ -202,6 +211,11 @@ public class AvailabilityService {
     }
 
     // ---- internals
+
+    /** Tells other modules (listings) that some free time of the artist may be gone. */
+    private void changed(UUID ownerId) {
+        events.publishEvent(new AvailabilityChanged(ownerId));
+    }
 
     /** Slots and rule dates overlapping {@code [from, to)}, in order; rules stop at the horizon. */
     private List<Occurrence> occurrences(UUID ownerId, Instant from, Instant to) {
