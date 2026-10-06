@@ -1,6 +1,6 @@
 # W4: profil lokalu w aplikacji
 
-Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: W4 (`apps/web`), na backendzie B5 (bez zmian w API).
+Status: zaakceptowany przez Fabiana 2026-10-06. Etap według `architektura/segmenty-mvp.md`: W4 (`apps/web`), na backendzie B5 (bez zmian w API).
 
 ## 1. Co użytkownik dostaje
 
