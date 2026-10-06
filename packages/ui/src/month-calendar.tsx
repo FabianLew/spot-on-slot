@@ -15,6 +15,8 @@ export interface MonthCalendarLabels {
   available: string;
   selected: string;
   unavailable: string;
+  /** Status of a day holding a booking (with {@code isBooked}); also shown in the legend. */
+  booked?: string;
   /** Accessible name of a day button, e.g. "18 października 2026". */
   dayLabel: (date: Date) => string;
 }
@@ -36,6 +38,8 @@ export function monthGrid(month: Date): (Date | null)[] {
 /**
  * Month grid from the "Book DJ" mockup: available days are yellow and selectable, the selected
  * day is red, other days are inert. State is shown by colour, an inner frame and the accessible name.
+ * With {@code selectAny} (an artist's own calendar) every day can be picked: the selected day keeps its
+ * colour and gets a red frame, and {@code isBooked} days carry a red marker.
  */
 export function MonthCalendar({
   month,
@@ -44,6 +48,8 @@ export function MonthCalendar({
   selected,
   onSelect,
   onMonthChange,
+  selectAny = false,
+  isBooked,
   className,
 }: {
   month: Date;
@@ -52,11 +58,14 @@ export function MonthCalendar({
   selected?: Date;
   onSelect: (date: Date) => void;
   onMonthChange: (month: Date) => void;
+  selectAny?: boolean;
+  isBooked?: (date: Date) => boolean;
   className?: string;
 }) {
   const cells = monthGrid(month);
   const days = cells.filter((d): d is Date => d !== null);
-  const selectable = days.filter((d) => dayState(d) === "available");
+  const canPick = (d: Date) => selectAny || dayState(d) === "available";
+  const selectable = days.filter(canPick);
   const initial = selected && days.some((d) => sameDay(d, selected)) ? selected : selectable[0];
   const [focusDay, setFocusDay] = useState<number | undefined>(initial?.getDate());
   const refs = useRef(new Map<number, HTMLButtonElement>());
@@ -70,7 +79,7 @@ export function MonthCalendar({
     event.preventDefault();
     for (let day = from + step; day >= 1 && day <= days.length; day += step) {
       const date = days[day - 1]!;
-      if (dayState(date) === "available") {
+      if (canPick(date)) {
         setFocusDay(day);
         refs.current.get(day)?.focus();
         return;
@@ -105,7 +114,11 @@ export function MonthCalendar({
       </div>
       <div role="group" aria-label={labels.title} className="grid grid-cols-7">
         {labels.weekdays.map((name) => (
-          <span key={name} aria-hidden="true" className="pb-2 text-center text-[0.625rem] uppercase text-muted-foreground">
+          <span
+            key={name}
+            aria-hidden="true"
+            className="pb-2 text-center text-[0.625rem] uppercase text-muted-foreground"
+          >
             {name}
           </span>
         ))}
@@ -114,7 +127,23 @@ export function MonthCalendar({
           const day = date.getDate();
           const isSelected = selected !== undefined && sameDay(date, selected);
           const available = dayState(date) === "available";
-          const status = isSelected ? labels.selected : available ? labels.available : labels.unavailable;
+          const pickable = canPick(date);
+          const booked = isBooked?.(date) ?? false;
+          const status = selectAny
+            ? [
+                available ? labels.available : labels.unavailable,
+                booked && labels.booked,
+                isSelected && labels.selected,
+              ]
+                .filter(Boolean)
+                .join(", ")
+            : isSelected
+              ? labels.selected
+              : available
+                ? labels.available
+                : labels.unavailable;
+          const frame = isSelected && selectAny;
+          const filled = isSelected && !selectAny;
           return (
             <button
               key={day}
@@ -123,24 +152,31 @@ export function MonthCalendar({
                 else refs.current.delete(day);
               }}
               type="button"
-              disabled={!available}
-              aria-pressed={available ? isSelected : undefined}
+              disabled={!pickable}
+              aria-pressed={pickable ? isSelected : undefined}
               aria-label={`${labels.dayLabel(date)}, ${status}`}
-              tabIndex={available && day === tabStop ? 0 : -1}
+              tabIndex={pickable && day === tabStop ? 0 : -1}
               onClick={() => {
                 setFocusDay(day);
                 onSelect(date);
               }}
               onKeyDown={(event) => move(event, day)}
               data-state={isSelected ? "selected" : available ? "available" : "unavailable"}
+              data-booked={booked || undefined}
               className={cn(
-                "-mr-0.5 -mb-0.5 flex aspect-square items-center justify-center border-2 border-border text-xs font-bold tabular-nums focus-visible:relative focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:aspect-[5/4]",
-                isSelected && "bg-primary text-primary-foreground shadow-[inset_0_0_0_2px_var(--card)]",
-                !isSelected && available && "bg-highlight text-highlight-foreground hover:opacity-90",
-                !available && "cursor-default bg-field text-muted-foreground",
+                "relative -mr-0.5 -mb-0.5 flex aspect-square items-center justify-center border-2 border-border text-xs font-bold tabular-nums focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:aspect-[5/4]",
+                filled && "bg-primary text-primary-foreground shadow-[inset_0_0_0_2px_var(--card)]",
+                !filled && available && "bg-highlight text-highlight-foreground hover:opacity-90",
+                !filled && !available && "bg-field text-muted-foreground",
+                !pickable && "cursor-default",
+                pickable && !available && "hover:bg-muted",
+                frame && "z-[5] shadow-[inset_0_0_0_3px_var(--primary)]",
               )}
             >
               {day}
+              {booked && (
+                <span aria-hidden="true" className="absolute right-1 top-1 size-2 border border-card bg-primary" />
+              )}
             </button>
           );
         })}
@@ -151,9 +187,21 @@ export function MonthCalendar({
           {labels.available}
         </li>
         <li className="flex items-center gap-1.5">
-          <span aria-hidden="true" className="size-2.5 border border-border bg-primary" />
+          <span
+            aria-hidden="true"
+            className={cn(
+              "size-2.5 border border-border",
+              selectAny ? "bg-card shadow-[inset_0_0_0_2px_var(--primary)]" : "bg-primary",
+            )}
+          />
           {labels.selected}
         </li>
+        {isBooked && labels.booked && (
+          <li className="flex items-center gap-1.5">
+            <span aria-hidden="true" className="size-2 border border-border bg-primary" />
+            {labels.booked}
+          </li>
+        )}
         <li className="flex items-center gap-1.5">
           <span aria-hidden="true" className="size-2.5 border border-border bg-field" />
           {labels.unavailable}

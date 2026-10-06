@@ -36,3 +36,17 @@ export const findPublicVenue = cache(async (slug: string): Promise<PublicVenue |
   if (result.response.status === 404) return null;
   return unwrap(result);
 });
+
+export type PublicFreeTime = ApiSchemas["PublicOccurrenceResponse"];
+
+/** A published artist's free and booked time for the next `days` days; empty when it cannot be read. */
+export async function findPublicAvailability(slug: string, days: number, now = new Date()): Promise<PublicFreeTime[]> {
+  const result = await publicApi.GET("/api/v1/public/artists/{slug}/availability", {
+    params: {
+      path: { slug },
+      query: { from: now.toISOString(), to: new Date(now.getTime() + days * 86_400_000).toISOString() },
+    },
+    cache: "no-store",
+  });
+  return result.response.ok && result.data ? result.data : [];
+}

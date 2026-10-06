@@ -67,7 +67,10 @@
     "rateOrder": "Stawka „od” nie może być wyższa niż „do”.",
     "rateMax": "Najwyżej 100 000 zł.",
     "travelRange": "Od 0 do 500 km.",
-    "capacity": "Od 1 do 100 000 osób."
+    "capacity": "Od 1 do 100 000 osób.",
+    "time": "Podaj godzinę, np. 21:00.",
+    "daysRequired": "Wybierz co najmniej jeden dzień.",
+    "untilOrder": "Data końca nie może być wcześniejsza niż początek."
   },
   "design": {
     "title": "Podgląd designu",
@@ -433,7 +436,9 @@
         "spotify": "Spotify",
         "instagram": "Instagram",
         "youtube": "YouTube"
-      }
+      },
+      "nextSlots": "Najbliższe wolne terminy",
+      "noSlots": "Brak wolnych terminów w najbliższym czasie."
     },
     "skill": {
       "tempo": "Tempo (BPM)",
@@ -635,6 +640,102 @@
       "notFoundTitle": "Nie ma takiego lokalu",
       "notFoundText": "Lokal mógł zostać wycofany albo adres jest błędny.",
       "description": "{name} ({type}, {city}) na Spot On Slot."
+    }
+  },
+  "calendar": {
+    "title": "Kalendarz",
+    "otherRole": "Kalendarz lokalu pojawi się razem z rezerwacjami. Na razie kalendarz mają artyści.",
+    "noProfile": "Kalendarz należy do profilu artysty. Najpierw utwórz profil.",
+    "createProfile": "Utwórz profil",
+    "view": "Widok",
+    "views": {
+      "month": "Miesiąc",
+      "week": "Tydzień"
+    },
+    "today": "Dziś",
+    "add": "Dodaj wolny termin",
+    "addHere": "Dodaj wolny termin",
+    "addOn": "Dodaj wolny termin {day}",
+    "previousMonth": "Poprzedni miesiąc",
+    "nextMonth": "Następny miesiąc",
+    "previousWeek": "Poprzedni tydzień",
+    "nextWeek": "Następny tydzień",
+    "states": {
+      "free": "wolny termin",
+      "selected": "wybrany",
+      "empty": "niedostępny",
+      "booked": "zarezerwowany"
+    },
+    "weekdays": {
+      "MONDAY": "Poniedziałek",
+      "TUESDAY": "Wtorek",
+      "WEDNESDAY": "Środa",
+      "THURSDAY": "Czwartek",
+      "FRIDAY": "Piątek",
+      "SATURDAY": "Sobota",
+      "SUNDAY": "Niedziela"
+    },
+    "weekdaysShort": {
+      "MONDAY": "Pn",
+      "TUESDAY": "Wt",
+      "WEDNESDAY": "Śr",
+      "THURSDAY": "Cz",
+      "FRIDAY": "Pt",
+      "SATURDAY": "So",
+      "SUNDAY": "Nd"
+    },
+    "loading": "Wczytuję…",
+    "emptyDay": "Brak wolnych terminów. Ten dzień jest niedostępny.",
+    "emptyShort": "Niedostępny",
+    "nextDayShort": "+1 dzień",
+    "weekly": "Co tydzień",
+    "skippedTag": "Pominięty",
+    "bookedHint": "Zarezerwowany termin zmienisz przez rezerwację.",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "skip": "Pomiń ten dzień",
+    "restore": "Przywróć",
+    "editRule": "Edytuj regułę",
+    "editAt": "Edytuj termin {time}",
+    "deleteAt": "Usuń termin {time}",
+    "skipAt": "Pomiń termin {time} w tym dniu",
+    "restoreAt": "Przywróć termin {time} w tym dniu",
+    "editRuleAt": "Edytuj regułę terminu {time}",
+    "deleteConfirm": "Usunąć wolny termin {time}?",
+    "deleted": "Termin usunięty.",
+    "skipped": "Dzień pominięty.",
+    "restored": "Dzień przywrócony.",
+    "rules": {
+      "title": "Stałe terminy",
+      "none": "Nie masz stałych terminów. Zaznacz „Powtarzaj co tydzień”, dodając termin.",
+      "since": "od {from}",
+      "between": "od {from} do {until}",
+      "editLabel": "Edytuj stały termin {rule}",
+      "deleteLabel": "Usuń stały termin {rule}",
+      "deleteConfirm": "Usunąć stały termin {rule}? Znikną wszystkie jego przyszłe dni.",
+      "deleted": "Stały termin usunięty."
+    },
+    "dialog": {
+      "add": "Nowy wolny termin",
+      "editSlot": "Edycja terminu",
+      "editRule": "Edycja stałego terminu",
+      "hint": "Godziny w czasie polskim. Termin może trwać od 30 minut do 24 godzin.",
+      "ruleHint": "Zmiana dotyczy wszystkich przyszłych dni tej reguły.",
+      "date": "Dzień",
+      "validFrom": "Od dnia",
+      "from": "Od",
+      "to": "Do",
+      "length": "Długość: {hours} h{minutes, plural, =0 {} other { # min}}",
+      "nextDay": "kończy się następnego dnia",
+      "repeat": "Powtarzaj co tydzień",
+      "days": "W dni",
+      "until": "Do dnia (opcjonalnie)",
+      "note": "Notatka (tylko dla Ciebie)",
+      "notePlaceholder": "np. tylko Kraków",
+      "save": "Zapisz",
+      "saving": "Zapisuję…",
+      "saved": "Termin zapisany.",
+      "savedRule": "Stały termin zapisany."
     }
   }
 }

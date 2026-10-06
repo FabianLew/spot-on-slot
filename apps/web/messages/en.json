@@ -67,7 +67,10 @@
     "rateOrder": "The “from” fee cannot be higher than “up to”.",
     "rateMax": "At most PLN 100,000.",
     "travelRange": "From 0 to 500 km.",
-    "capacity": "From 1 to 100,000 people."
+    "capacity": "From 1 to 100,000 people.",
+    "time": "Enter a time, e.g. 21:00.",
+    "daysRequired": "Pick at least one day.",
+    "untilOrder": "The end date cannot be before the start."
   },
   "design": {
     "title": "Design preview",
@@ -433,7 +436,9 @@
         "spotify": "Spotify",
         "instagram": "Instagram",
         "youtube": "YouTube"
-      }
+      },
+      "nextSlots": "Next free dates",
+      "noSlots": "No free dates coming up."
     },
     "skill": {
       "tempo": "Tempo (BPM)",
@@ -635,6 +640,102 @@
       "notFoundTitle": "No such venue",
       "notFoundText": "The venue may have been unpublished, or the address is wrong.",
       "description": "{name} ({type}, {city}) on Spot On Slot."
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "otherRole": "The venue calendar comes with bookings. For now only artists have a calendar.",
+    "noProfile": "The calendar belongs to an artist profile. Create your profile first.",
+    "createProfile": "Create profile",
+    "view": "View",
+    "views": {
+      "month": "Month",
+      "week": "Week"
+    },
+    "today": "Today",
+    "add": "Add free time",
+    "addHere": "Add free time",
+    "addOn": "Add free time on {day}",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "states": {
+      "free": "free time",
+      "selected": "selected",
+      "empty": "unavailable",
+      "booked": "booked"
+    },
+    "weekdays": {
+      "MONDAY": "Monday",
+      "TUESDAY": "Tuesday",
+      "WEDNESDAY": "Wednesday",
+      "THURSDAY": "Thursday",
+      "FRIDAY": "Friday",
+      "SATURDAY": "Saturday",
+      "SUNDAY": "Sunday"
+    },
+    "weekdaysShort": {
+      "MONDAY": "Mon",
+      "TUESDAY": "Tue",
+      "WEDNESDAY": "Wed",
+      "THURSDAY": "Thu",
+      "FRIDAY": "Fri",
+      "SATURDAY": "Sat",
+      "SUNDAY": "Sun"
+    },
+    "loading": "Loading…",
+    "emptyDay": "No free time. This day is unavailable.",
+    "emptyShort": "Unavailable",
+    "nextDayShort": "+1 day",
+    "weekly": "Weekly",
+    "skippedTag": "Skipped",
+    "bookedHint": "Booked time changes through its booking.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "skip": "Skip this day",
+    "restore": "Restore",
+    "editRule": "Edit rule",
+    "editAt": "Edit time {time}",
+    "deleteAt": "Delete time {time}",
+    "skipAt": "Skip time {time} on this day",
+    "restoreAt": "Restore time {time} on this day",
+    "editRuleAt": "Edit the rule of time {time}",
+    "deleteConfirm": "Delete free time {time}?",
+    "deleted": "Time deleted.",
+    "skipped": "Day skipped.",
+    "restored": "Day restored.",
+    "rules": {
+      "title": "Regular times",
+      "none": "You have no regular times. Tick “Repeat every week” when adding time.",
+      "since": "from {from}",
+      "between": "from {from} to {until}",
+      "editLabel": "Edit regular time {rule}",
+      "deleteLabel": "Delete regular time {rule}",
+      "deleteConfirm": "Delete regular time {rule}? All its upcoming days disappear.",
+      "deleted": "Regular time deleted."
+    },
+    "dialog": {
+      "add": "New free time",
+      "editSlot": "Edit time",
+      "editRule": "Edit regular time",
+      "hint": "Times are in Polish time. Free time lasts from 30 minutes to 24 hours.",
+      "ruleHint": "The change applies to all upcoming days of this rule.",
+      "date": "Day",
+      "validFrom": "From day",
+      "from": "From",
+      "to": "To",
+      "length": "Length: {hours} h{minutes, plural, =0 {} other { # min}}",
+      "nextDay": "ends the next day",
+      "repeat": "Repeat every week",
+      "days": "On",
+      "until": "Until day (optional)",
+      "note": "Note (only for you)",
+      "notePlaceholder": "e.g. Kraków only",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Time saved.",
+      "savedRule": "Regular time saved."
     }
   }
 }
