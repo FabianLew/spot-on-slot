@@ -58,7 +58,9 @@
     "passwordTooLong": "Hasło może mieć najwyżej 128 znaków.",
     "passwordMismatch": "Hasła się różnią.",
     "passwordEqualsEmail": "Hasło nie może być takie samo jak e-mail.",
-    "privacyRequired": "Zaznacz, że znasz informację o przetwarzaniu danych."
+    "privacyRequired": "Zaznacz, że znasz informację o przetwarzaniu danych.",
+    "genresRequired": "Wybierz co najmniej jeden gatunek.",
+    "tooLong": "Ten tekst jest za długi."
   },
   "design": {
     "title": "Podgląd designu",
@@ -245,5 +247,160 @@
       "missingToken": "Ten link jest niepełny. Poproś o nowy.",
       "requestNew": "Poproś o nowy link"
     }
+  },
+  "onboarding": {
+    "title": "Twój profil",
+    "progress": "Krok {current} z {total}",
+    "next": "Dalej",
+    "back": "Wstecz",
+    "saving": "Zapisuję…",
+    "skip": "Uzupełnię później",
+    "signOut": "Wyloguj się",
+    "loading": "Wczytuję profil…",
+    "otherRole": {
+      "title": "Tu nie ma nic do uzupełnienia",
+      "body": "Kreator profilu jest dla artystów i lokali.",
+      "toDashboard": "Przejdź do pulpitu"
+    },
+    "artist": {
+      "intro": "Kilka kroków i Twój profil będzie gotowy do publikacji. Resztę (opis, linki, stawki) dodasz później.",
+      "steps": {
+        "basics": "Pseudonim",
+        "photo": "Zdjęcie",
+        "location": "Lokalizacja",
+        "summary": "Gotowe"
+      },
+      "basics": {
+        "title": "Jak Cię nazywać?",
+        "stageName": "Pseudonim",
+        "stageNamePlaceholder": "np. DJ Weronika",
+        "genres": "Gatunki",
+        "genresHint": "Wybierz od 1 do 5."
+      },
+      "photo": {
+        "title": "Zdjęcie główne",
+        "intro": "To zdjęcie zobaczą kluby przy Twoim profilu i w wynikach wyszukiwania."
+      },
+      "location": {
+        "title": "Skąd grasz?",
+        "intro": "Kluby szukają artystów w okolicy. Zapisujemy tylko miejscowość z dokładnością do około 1 km.",
+        "current": "Twoja lokalizacja: {label}"
+      }
+    },
+    "venue": {
+      "intro": "Kilka kroków i Twój lokal będzie gotowy do publikacji. Zespół, opis i galerię dodasz później.",
+      "steps": {
+        "basics": "Lokal",
+        "address": "Adres",
+        "music": "Muzyka i zdjęcie",
+        "summary": "Gotowe"
+      },
+      "basics": {
+        "title": "Jaki to lokal?",
+        "name": "Nazwa lokalu",
+        "namePlaceholder": "np. Klub Pod Ziemią",
+        "type": "Typ lokalu",
+        "typePlaceholder": "Wybierz typ"
+      },
+      "address": {
+        "title": "Gdzie jest lokal?",
+        "intro": "Adres lokalu jest publiczny, żeby artyści i goście trafili na miejsce. Wpisz go i wybierz podpowiedź albo uzupełnij pola ręcznie.",
+        "search": "Szukaj adresu",
+        "placeholder": "np. Szewska 5, Kraków",
+        "street": "Ulica i numer",
+        "postalCode": "Kod pocztowy",
+        "city": "Miasto",
+        "located": "Adres jest na mapie.",
+        "notLocated": "Nie znaleźliśmy tego adresu na mapie. Sprawdź go albo wybierz podpowiedź; bez tego lokalu nie da się opublikować.",
+        "confirm": "Jeśli adres jest dobry, kliknij „Dalej” jeszcze raz."
+      },
+      "music": {
+        "title": "Muzyka i zdjęcie",
+        "genres": "Gatunki grane w lokalu",
+        "genresHint": "Wybierz od 1 do 5.",
+        "photo": "Zdjęcie główne"
+      }
+    },
+    "photo": {
+      "choose": "Wybierz zdjęcie",
+      "drop": "albo przeciągnij je tutaj",
+      "hint": "JPEG, PNG lub WebP, do 10 MB",
+      "uploading": "Wysyłanie…",
+      "previewAlt": "Podgląd zdjęcia głównego",
+      "tooLarge": "Zdjęcie może mieć najwyżej 10 MB.",
+      "unsupported": "Wybierz plik JPEG, PNG albo WebP.",
+      "required": "Dodaj zdjęcie, żeby przejść dalej."
+    },
+    "location": {
+      "search": "Miasto",
+      "placeholder": "np. Kraków",
+      "useDevice": "Użyj mojej lokalizacji",
+      "locating": "Ustalam lokalizację…",
+      "searching": "Szukam…",
+      "noResults": "Nic nie znaleziono. Spróbuj wpisać samo miasto.",
+      "denied": "Nie masz zgody na lokalizację w przeglądarce. Wpisz miasto powyżej.",
+      "unavailable": "Nie udało się ustalić lokalizacji. Wpisz miasto powyżej.",
+      "unsupported": "Ta przeglądarka nie udostępnia lokalizacji. Wpisz miasto powyżej.",
+      "required": "Ustaw lokalizację, żeby przejść dalej."
+    },
+    "summary": {
+      "title": "Wszystko gotowe?",
+      "ready": "Profil ma wszystko, czego potrzeba do publikacji. Po publikacji zobaczy go każdy, kto ma link.",
+      "missingTitle": "Do publikacji brakuje jeszcze:",
+      "publish": "Opublikuj profil",
+      "draft": "Zostaw szkic",
+      "published": "Profil opublikowany.",
+      "later": "Opis, linki i resztę szczegółów uzupełnisz w edycji profilu."
+    },
+    "missing": {
+      "STAGE_NAME": "pseudonimu",
+      "GENRE": "gatunku",
+      "AVATAR": "zdjęcia głównego",
+      "LOCATION": "lokalizacji",
+      "NAME": "nazwy",
+      "TYPE": "typu lokalu",
+      "ADDRESS": "adresu na mapie"
+    },
+    "reminder": {
+      "title": "Dokończ profil",
+      "body": "{count, plural, one {Do publikacji brakuje jeszcze jednej rzeczy.} few {Do publikacji brakują jeszcze # rzeczy.} other {Do publikacji brakuje jeszcze # rzeczy.}}",
+      "draft": "Profil jest gotowy, ale nie jest jeszcze opublikowany.",
+      "action": "Uzupełnij profil",
+      "empty": "Uzupełnij profil, żeby inni mogli Cię znaleźć."
+    }
+  },
+  "genres": {
+    "TECHNO": "Techno",
+    "MELODIC_TECHNO": "Melodic techno",
+    "HOUSE": "House",
+    "TECH_HOUSE": "Tech house",
+    "DEEP_HOUSE": "Deep house",
+    "AFRO_HOUSE": "Afro house",
+    "MINIMAL": "Minimal",
+    "TRANCE": "Trance",
+    "PSYTRANCE": "Psytrance",
+    "DRUM_AND_BASS": "Drum and bass",
+    "DUBSTEP": "Dubstep",
+    "BREAKBEAT": "Breakbeat",
+    "ELECTRO": "Electro",
+    "DISCO": "Disco",
+    "FUNK": "Funk",
+    "HIP_HOP": "Hip-hop",
+    "RNB": "R&B",
+    "POP": "Pop",
+    "LATIN": "Latino",
+    "ROCK": "Rock",
+    "JAZZ": "Jazz",
+    "AMBIENT": "Ambient",
+    "OPEN_FORMAT": "Open format"
+  },
+  "venueTypes": {
+    "CLUB": "Klub",
+    "BAR": "Bar",
+    "PUB": "Pub",
+    "CONCERT_HALL": "Sala koncertowa",
+    "EVENT_HALL": "Sala eventowa",
+    "RESTAURANT": "Restauracja",
+    "OTHER": "Inny"
   }
 }

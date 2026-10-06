@@ -60,3 +60,5 @@ export { MonthCalendar, monthGrid, type DayState, type MonthCalendarLabels } fro
 export { PixelBlob, PixelHeadphones, PixelNote, PixelPin, PixelSquare } from "./pixel-art";
 export { ImagePicker, type ImagePickerLabels } from "./image-picker";
 export { LocationPicker, type LocationPickerLabels } from "./location-picker";
+export { Stepper } from "./stepper";
+export { ChoiceChips } from "./choice-chips";

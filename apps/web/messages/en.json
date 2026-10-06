@@ -58,7 +58,9 @@
     "passwordTooLong": "The password can be at most 128 characters long.",
     "passwordMismatch": "The passwords don't match.",
     "passwordEqualsEmail": "The password can't be the same as the email.",
-    "privacyRequired": "Confirm that you have read how your data is processed."
+    "privacyRequired": "Confirm that you have read how your data is processed.",
+    "genresRequired": "Pick at least one genre.",
+    "tooLong": "This text is too long."
   },
   "design": {
     "title": "Design preview",
@@ -245,5 +247,160 @@
       "missingToken": "This link is incomplete. Request a new one.",
       "requestNew": "Request a new link"
     }
+  },
+  "onboarding": {
+    "title": "Your profile",
+    "progress": "Step {current} of {total}",
+    "next": "Next",
+    "back": "Back",
+    "saving": "Saving…",
+    "skip": "I'll finish later",
+    "signOut": "Sign out",
+    "loading": "Loading your profile…",
+    "otherRole": {
+      "title": "Nothing to fill in here",
+      "body": "The profile wizard is for artists and venues.",
+      "toDashboard": "Go to the dashboard"
+    },
+    "artist": {
+      "intro": "A few steps and your profile is ready to publish. The rest (bio, links, rates) can come later.",
+      "steps": {
+        "basics": "Stage name",
+        "photo": "Photo",
+        "location": "Location",
+        "summary": "Done"
+      },
+      "basics": {
+        "title": "What should we call you?",
+        "stageName": "Stage name",
+        "stageNamePlaceholder": "e.g. DJ Weronika",
+        "genres": "Genres",
+        "genresHint": "Pick 1 to 5."
+      },
+      "photo": {
+        "title": "Main photo",
+        "intro": "Venues see this photo on your profile and in search results."
+      },
+      "location": {
+        "title": "Where do you play from?",
+        "intro": "Venues look for artists nearby. We only keep your town, accurate to about 1 km.",
+        "current": "Your location: {label}"
+      }
+    },
+    "venue": {
+      "intro": "A few steps and your venue is ready to publish. The team, description and gallery can come later.",
+      "steps": {
+        "basics": "Venue",
+        "address": "Address",
+        "music": "Music and photo",
+        "summary": "Done"
+      },
+      "basics": {
+        "title": "What kind of venue is it?",
+        "name": "Venue name",
+        "namePlaceholder": "e.g. Basement Club",
+        "type": "Venue type",
+        "typePlaceholder": "Pick a type"
+      },
+      "address": {
+        "title": "Where is the venue?",
+        "intro": "A venue's address is public so artists and guests can find it. Type it and pick a suggestion, or fill in the fields yourself.",
+        "search": "Search for the address",
+        "placeholder": "e.g. Szewska 5, Kraków",
+        "street": "Street and number",
+        "postalCode": "Postal code",
+        "city": "City",
+        "located": "The address is on the map.",
+        "notLocated": "We could not find this address on the map. Check it or pick a suggestion; without it the venue cannot be published.",
+        "confirm": "If the address is right, click “Next” again."
+      },
+      "music": {
+        "title": "Music and photo",
+        "genres": "Genres played at the venue",
+        "genresHint": "Pick 1 to 5.",
+        "photo": "Main photo"
+      }
+    },
+    "photo": {
+      "choose": "Choose a photo",
+      "drop": "or drag it here",
+      "hint": "JPEG, PNG or WebP, up to 10 MB",
+      "uploading": "Uploading…",
+      "previewAlt": "Main photo preview",
+      "tooLarge": "The photo can be at most 10 MB.",
+      "unsupported": "Choose a JPEG, PNG or WebP file.",
+      "required": "Add a photo to continue."
+    },
+    "location": {
+      "search": "Town",
+      "placeholder": "e.g. Kraków",
+      "useDevice": "Use my location",
+      "locating": "Finding your location…",
+      "searching": "Searching…",
+      "noResults": "Nothing found. Try just the town.",
+      "denied": "Location access is blocked in your browser. Type your town above.",
+      "unavailable": "Could not find your location. Type your town above.",
+      "unsupported": "This browser does not share locations. Type your town above.",
+      "required": "Set your location to continue."
+    },
+    "summary": {
+      "title": "All set?",
+      "ready": "Your profile has everything it needs to be published. Once published, anyone with the link can see it.",
+      "missingTitle": "Still missing before publishing:",
+      "publish": "Publish profile",
+      "draft": "Keep as draft",
+      "published": "Profile published.",
+      "later": "You can add a bio, links and other details when editing your profile."
+    },
+    "missing": {
+      "STAGE_NAME": "a stage name",
+      "GENRE": "a genre",
+      "AVATAR": "a main photo",
+      "LOCATION": "a location",
+      "NAME": "a name",
+      "TYPE": "a venue type",
+      "ADDRESS": "an address on the map"
+    },
+    "reminder": {
+      "title": "Finish your profile",
+      "body": "{count, plural, one {One more thing is missing before you can publish.} other {# more things are missing before you can publish.}}",
+      "draft": "Your profile is ready but not published yet.",
+      "action": "Finish profile",
+      "empty": "Fill in your profile so others can find you."
+    }
+  },
+  "genres": {
+    "TECHNO": "Techno",
+    "MELODIC_TECHNO": "Melodic techno",
+    "HOUSE": "House",
+    "TECH_HOUSE": "Tech house",
+    "DEEP_HOUSE": "Deep house",
+    "AFRO_HOUSE": "Afro house",
+    "MINIMAL": "Minimal",
+    "TRANCE": "Trance",
+    "PSYTRANCE": "Psytrance",
+    "DRUM_AND_BASS": "Drum and bass",
+    "DUBSTEP": "Dubstep",
+    "BREAKBEAT": "Breakbeat",
+    "ELECTRO": "Electro",
+    "DISCO": "Disco",
+    "FUNK": "Funk",
+    "HIP_HOP": "Hip-hop",
+    "RNB": "R&B",
+    "POP": "Pop",
+    "LATIN": "Latin",
+    "ROCK": "Rock",
+    "JAZZ": "Jazz",
+    "AMBIENT": "Ambient",
+    "OPEN_FORMAT": "Open format"
+  },
+  "venueTypes": {
+    "CLUB": "Club",
+    "BAR": "Bar",
+    "PUB": "Pub",
+    "CONCERT_HALL": "Concert hall",
+    "EVENT_HALL": "Event hall",
+    "RESTAURANT": "Restaurant",
+    "OTHER": "Other"
   }
 }

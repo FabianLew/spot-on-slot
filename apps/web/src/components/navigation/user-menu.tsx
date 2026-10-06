@@ -18,7 +18,8 @@ import { LanguageMenu } from "@/components/preferences/language-menu";
 import { ThemeMenu } from "@/components/preferences/theme-menu";
 import { useSession } from "@/components/session/session-provider";
 
-export function UserMenu() {
+/** Account, language, theme and sign-out; opens upwards from the sidebar, downwards from a page header. */
+export function UserMenu({ side = "top" }: { side?: "top" | "bottom" }) {
   const t = useTranslations();
   const { session, signOut } = useSession();
   return (
@@ -33,7 +34,7 @@ export function UserMenu() {
           {t("nav.menu")}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="top" align="start">
+      <DropdownMenuContent side={side} align={side === "top" ? "start" : "end"}>
         {session.status === "authenticated" && (
           <>
             <DropdownMenuLabel className="truncate font-sans font-normal">{session.user.email}</DropdownMenuLabel>

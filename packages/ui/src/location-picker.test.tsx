@@ -120,4 +120,9 @@ describe("LocationPicker", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Brak zgody na lokalizację");
     expect(container.querySelector("[role=alert] svg")).not.toBeNull();
   });
+
+  it("hides the location button when there is no device handler", () => {
+    render(<LocationPicker labels={labels} query="" onQueryChange={vi.fn()} suggestions={[]} onSelect={vi.fn()} />);
+    expect(screen.queryByRole("button", { name: labels.useDevice })).toBeNull();
+  });
 });
