@@ -5,9 +5,11 @@ import java.time.Instant;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+import pl.spotonslot.media.MediaDeleted;
 import pl.spotonslot.media.MediaProperties;
 import pl.spotonslot.media.domain.ImageType;
 import pl.spotonslot.media.domain.Media;
@@ -36,6 +38,7 @@ public class MediaService {
     private final MediaProperties properties;
     private final TransactionTemplate transaction;
     private final Clock clock;
+    private final ApplicationEventPublisher events;
 
     public record StartedUpload(UUID uploadId, ObjectStorage.PresignedPut put, Instant expiresAt) {
     }
@@ -98,7 +101,10 @@ public class MediaService {
         var image = media.findById(id)
                 .filter(candidate -> candidate.isOwnedBy(ownerId))
                 .orElseThrow(MediaErrors.NotFound::new);
-        media.delete(image);
+        transaction.executeWithoutResult(status -> {
+            media.delete(image);
+            events.publishEvent(new MediaDeleted(image.getId(), ownerId));
+        });
         image.keys().forEach(storage::deleteQuietly);
     }
 

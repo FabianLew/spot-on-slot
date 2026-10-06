@@ -20,6 +20,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/artists/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMine_1"];
+        put: operations["saveMine"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/waitlist/signups": {
         parameters: {
             query?: never;
@@ -212,6 +228,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/artists/me/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["unpublish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/artists/me/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/system/info": {
         parameters: {
             query?: never;
@@ -228,7 +276,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/media/{id}": {
+    "/api/v1/public/artists/{slug}": {
         parameters: {
             query?: never;
             header?: never;
@@ -236,6 +284,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/media/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_1"];
         put?: never;
         post?: never;
         delete: operations["delete"];
@@ -268,6 +332,38 @@ export interface paths {
             cookie?: never;
         };
         get: operations["search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/artists/slugs/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["checkSlug"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/artists/genres": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["genres"];
         put?: never;
         post?: never;
         delete?: never;
@@ -309,6 +405,113 @@ export interface components {
             longitude: number;
             /** @enum {string} */
             source: "DEVICE" | "MANUAL";
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ArtistLinks: {
+            /** @example https://soundcloud.com/weronika */
+            soundcloud?: string;
+            spotify?: string;
+            instagram?: string;
+            youtube?: string;
+        };
+        ArtistSkills: {
+            /** Format: int32 */
+            tempo?: number;
+            /** Format: int32 */
+            experience?: number;
+            /** Format: int32 */
+            energy?: number;
+            /** Format: int32 */
+            vinyl?: number;
+            /** Format: int32 */
+            cdj?: number;
+            /** Format: int32 */
+            production?: number;
+        };
+        SaveProfileRequest: {
+            /** @example Weronika */
+            stageName: string;
+            firstName?: string;
+            lastName?: string;
+            bio?: string;
+            /** @example weronika */
+            slug?: string;
+            genres?: ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
+            tags?: string[];
+            links?: components["schemas"]["ArtistLinks"];
+            /**
+             * Format: int64
+             * @description Grosze
+             */
+            rateFrom?: number;
+            /**
+             * Format: int64
+             * @description Grosze
+             */
+            rateTo?: number;
+            /**
+             * Format: int32
+             * @description Defaults to 50 km
+             */
+            travelRadiusKm?: number;
+            skills?: components["schemas"]["ArtistSkills"];
+            /** Format: uuid */
+            avatarMediaId?: string;
+            photoMediaIds?: string[];
+        };
+        /** @description Indicative fee per performance, in grosze */
+        ArtistRate: {
+            /** Format: int64 */
+            from?: number;
+            /** Format: int64 */
+            to?: number;
+            /** @example PLN */
+            currency: string;
+        };
+        ProfileImage: {
+            /** Format: uuid */
+            id: string;
+            /** Format: int32 */
+            width: number;
+            /** Format: int32 */
+            height: number;
+            /** @description 320 px WebP */
+            small: string;
+            /** @description 800 px WebP */
+            medium: string;
+            /** @description 1600 px WebP */
+            large: string;
+        };
+        ProfileLocation: {
+            /** @example Kraków, małopolskie */
+            label: string;
+            city: string;
+            region?: string;
+            countryCode?: string;
+        };
+        ProfileResponse: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            stageName: string;
+            firstName?: string;
+            lastName?: string;
+            bio?: string;
+            genres: ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
+            tags: string[];
+            links: components["schemas"]["ArtistLinks"];
+            rate?: components["schemas"]["ArtistRate"];
+            /** Format: int32 */
+            travelRadiusKm: number;
+            skills: components["schemas"]["ArtistSkills"];
+            avatar?: components["schemas"]["ProfileImage"];
+            photos: components["schemas"]["ProfileImage"][];
+            location?: components["schemas"]["ProfileLocation"];
+            published: boolean;
+            /** Format: date-time */
+            publishedAt?: string;
+            missingForPublication: ("STAGE_NAME" | "GENRE" | "AVATAR" | "LOCATION")[];
             /** Format: date-time */
             updatedAt: string;
         };
@@ -408,6 +611,23 @@ export interface components {
         SystemInfo: {
             name?: string;
             version?: string;
+        };
+        PublicProfileResponse: {
+            slug: string;
+            stageName: string;
+            bio?: string;
+            genres: ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
+            tags: string[];
+            links: components["schemas"]["ArtistLinks"];
+            rate?: components["schemas"]["ArtistRate"];
+            /** Format: int32 */
+            travelRadiusKm: number;
+            skills: components["schemas"]["ArtistSkills"];
+            avatar?: components["schemas"]["ProfileImage"];
+            photos: components["schemas"]["ProfileImage"][];
+            location?: components["schemas"]["ProfileLocation"];
+            /** Format: date-time */
+            publishedAt: string;
         };
         MeResponse: {
             /** Format: uuid */
@@ -609,6 +829,140 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getMine_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    saveMine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveProfileRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponse"];
+                };
             };
             /** @description Invalid request */
             400: {
@@ -1465,6 +1819,136 @@ export interface operations {
             };
         };
     };
+    unpublish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
     info: {
         parameters: {
             query?: never;
@@ -1531,6 +2015,73 @@ export interface operations {
         };
     };
     get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProfileResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    get_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -1745,6 +2296,136 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PlaceResponse"][];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    checkSlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    genres: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": ("TECHNO" | "MELODIC_TECHNO" | "HOUSE" | "TECH_HOUSE" | "DEEP_HOUSE" | "AFRO_HOUSE" | "MINIMAL" | "TRANCE" | "PSYTRANCE" | "DRUM_AND_BASS" | "DUBSTEP" | "BREAKBEAT" | "ELECTRO" | "DISCO" | "FUNK" | "HIP_HOP" | "RNB" | "POP" | "LATIN" | "ROCK" | "JAZZ" | "AMBIENT" | "OPEN_FORMAT")[];
                 };
             };
             /** @description Invalid request */

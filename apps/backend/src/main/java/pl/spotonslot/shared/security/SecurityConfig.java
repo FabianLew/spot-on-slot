@@ -21,7 +21,9 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/api/v1/system/**",
             "/api/v1/waitlist/**",
-            "/api/v1/auth/**"
+            "/api/v1/auth/**",
+            // Read-only public views (published artist profiles).
+            "/api/v1/public/**"
     };
 
     @Bean
