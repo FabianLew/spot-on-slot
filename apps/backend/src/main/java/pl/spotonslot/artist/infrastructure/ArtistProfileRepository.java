@@ -16,6 +16,8 @@ public interface ArtistProfileRepository extends JpaRepository<ArtistProfile, UU
 
     boolean existsBySlug(String slug);
 
+    boolean existsByOwnerId(UUID ownerId);
+
     @Query("SELECT DISTINCT p FROM ArtistProfile p LEFT JOIN p.photoMediaIds photo"
             + " WHERE p.avatarMediaId = :mediaId OR photo = :mediaId")
     List<ArtistProfile> findUsingMedia(@Param("mediaId") UUID mediaId);

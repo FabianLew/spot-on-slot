@@ -138,6 +138,16 @@ public class ArtistProfileService {
         return profiles.findByOwnerId(ownerId).filter(ArtistProfile::isPublished);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<ArtistProfile> findPublishedBySlug(String slug) {
+        return profiles.findBySlug(slug).filter(ArtistProfile::isPublished);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean hasProfile(UUID ownerId) {
+        return profiles.existsByOwnerId(ownerId);
+    }
+
     /** Called when an image is deleted in the media module. */
     @Transactional
     public void forgetMedia(UUID mediaId) {
