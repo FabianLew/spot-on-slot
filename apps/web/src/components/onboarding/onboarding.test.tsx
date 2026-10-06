@@ -288,7 +288,8 @@ describe("ArtistWizard", () => {
     expect(screen.getByText(pl.validation.genresRequired)).toBeInTheDocument();
     expect(saves("/api/v1/artists/me")).toEqual([]);
 
-    await userEvent.type(screen.getByLabelText(pl.onboarding.artist.basics.stageName), "DJ Weronika");
+    await userEvent.click(screen.getByLabelText(pl.onboarding.artist.basics.stageName));
+    await userEvent.paste("DJ Weronika");
     await userEvent.click(screen.getByRole("button", { name: pl.genres.TECHNO }));
     await userEvent.click(screen.getByRole("button", { name: pl.genres.HOUSE }));
     await userEvent.click(screen.getByRole("button", { name: pl.onboarding.next }));
@@ -302,7 +303,8 @@ describe("ArtistWizard", () => {
       stageName: "DJ Weronika",
       genres: ["TECHNO", "HOUSE"],
     });
-  });
+    // The file's first test pays for the cold render; busy CI runners took over the default 5 s.
+  }, 15_000);
 
   it("needs a photo and keeps the rest of the profile when saving it", async () => {
     artistProfile = artist({ bio: "Techno z Krakowa", tags: ["vinyl"] });
