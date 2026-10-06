@@ -1,6 +1,6 @@
 # B7: dostępność artysty (moduł `availability`)
 
-Status: szkic do akceptacji Fabiana. Etap według `architektura/segmenty-mvp.md`: B7 (backend), ekrany przyjdą w W6.
+Status: zaakceptowany przez Fabiana 2026-10-06 (wolne sloty). Etap według `architektura/segmenty-mvp.md`: B7 (backend), ekrany przyjdą w W6.
 
 ## 1. Co dostaje artysta (i inni)
 
