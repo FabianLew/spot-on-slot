@@ -16,7 +16,10 @@ export function PhotoField({
   previewUrl,
   onUploaded,
   error,
+  chooseLabel,
 }: {
+  /** Overrides "Choose a photo", e.g. when a page has more than one picker. */
+  chooseLabel?: string;
   previewUrl?: string;
   onUploaded: (image: MediaImage) => void;
   error?: string;
@@ -44,7 +47,7 @@ export function PhotoField({
   return (
     <ImagePicker
       labels={{
-        choose: t("onboarding.photo.choose"),
+        choose: chooseLabel ?? t("onboarding.photo.choose"),
         drop: t("onboarding.photo.drop"),
         hint: t("onboarding.photo.hint"),
         uploading: t("onboarding.photo.uploading"),

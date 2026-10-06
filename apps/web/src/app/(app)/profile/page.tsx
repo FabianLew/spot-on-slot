@@ -1,8 +1,8 @@
 import { navMetadata } from "@/lib/nav-metadata";
-import { PlaceholderPage } from "@/components/page/placeholder-page";
+import { MyProfile } from "@/components/artist/my-profile";
 
 export default function Page() {
-  return <PlaceholderPage titleKey="profile" />;
+  return <MyProfile />;
 }
 
 export const generateMetadata = () => navMetadata("profile");
