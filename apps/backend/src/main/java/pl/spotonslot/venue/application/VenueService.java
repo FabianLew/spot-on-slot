@@ -198,6 +198,10 @@ public class VenueService {
         return members.findByUserIdOrderByCreatedAtAsc(userId);
     }
 
+    public List<VenueMember> membersOf(Collection<UUID> venueIds) {
+        return members.findByVenueIdIn(venueIds);
+    }
+
     /** Called when an image is deleted in the media module. */
     @Transactional
     public void forgetMedia(UUID mediaId) {

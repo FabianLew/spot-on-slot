@@ -4,11 +4,13 @@ import jakarta.persistence.criteria.Predicate;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -169,7 +171,18 @@ public class ListingService {
                 .map(listing -> new ActiveListing(listing.getId(), listing.getKind(), listing.getArtistId(),
                         listing.getVenueId(), listing.getStartsAt(), listing.getEndsAt(),
                         Set.copyOf(listing.getGenres()), listing.getPriceFrom(), listing.getPriceTo(),
-                        listing.point()));
+                        listing.getTravelRadiusKm(), listing.getCity(), listing.point()));
+    }
+
+    /** Those of the listings that are active now. */
+    @Transactional(readOnly = true)
+    public Set<UUID> activeAmong(Collection<UUID> listingIds) {
+        if (listingIds.isEmpty()) {
+            return Set.of();
+        }
+        var now = now();
+        return listings.findAllById(listingIds).stream().filter(listing -> listing.isActiveAt(now))
+                .map(Listing::getId).collect(Collectors.toSet());
     }
 
     /** Active listings near a point, nearest first, at most {@code search.limit()}. */
