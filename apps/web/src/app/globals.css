@@ -9,3 +9,30 @@
   --font-silkscreen: "Silkscreen";
   --font-space-mono: "Space Mono";
 }
+
+/* MapLibre popups and controls (search map) in the app's colours, light and dark. */
+.maplibregl-map .maplibregl-popup-content {
+  background: var(--color-card);
+  color: var(--color-card-foreground);
+  border: 2px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 0 var(--color-foreground);
+}
+.maplibregl-map .maplibregl-popup-content a {
+  color: var(--color-card-foreground);
+}
+.maplibregl-map .maplibregl-popup[class*="anchor-bottom"] .maplibregl-popup-tip {
+  border-top-color: var(--color-border);
+}
+.maplibregl-map .maplibregl-popup[class*="anchor-top"] .maplibregl-popup-tip {
+  border-bottom-color: var(--color-border);
+}
+.maplibregl-map .maplibregl-popup[class*="anchor-left"] .maplibregl-popup-tip {
+  border-right-color: var(--color-border);
+}
+.maplibregl-map .maplibregl-popup[class*="anchor-right"] .maplibregl-popup-tip {
+  border-left-color: var(--color-border);
+}
+.maplibregl-map .maplibregl-ctrl-group {
+  border-radius: 0;
+}

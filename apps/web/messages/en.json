@@ -835,5 +835,65 @@
       "notFoundText": "The listing was closed, has expired, or the link is wrong.",
       "home": "Home page"
     }
+  },
+  "search": {
+    "title": "Search",
+    "tabsLabel": "What are you looking for",
+    "tabs": {
+      "artists": "Artists",
+      "venues": "Venues",
+      "listings": "Listings"
+    },
+    "place": {
+      "label": "Place",
+      "area": "Map area",
+      "picked": "Chosen place",
+      "none": "Not chosen",
+      "change": "Change",
+      "cancel": "Cancel",
+      "search": "Search place",
+      "placeholder": "e.g. Kraków or an address",
+      "useDevice": "My location",
+      "device": "My location"
+    },
+    "radius": "Radius",
+    "radiusKm": "{km} km",
+    "needPlace": "Choose a place or set your location in your profile.",
+    "filters": {
+      "open": "Filters",
+      "genres": "Genres",
+      "types": "Venue type",
+      "kind": "Kind",
+      "anyKind": "All",
+      "when": "Time",
+      "date": "Date",
+      "from": "From",
+      "to": "To",
+      "artistTime": "Shows artists free for that whole time. An end before the start means the next day.",
+      "listingTime": "Listings overlapping that time; a date alone means the whole day.",
+      "budget": "Budget (PLN)",
+      "budgetHint": "Offers without an amount are shown too.",
+      "willTravel": "Only those who will travel here"
+    },
+    "count": "{count, plural, one {# result} other {# results}}",
+    "results": "Results",
+    "more": "Show more",
+    "empty": "Nothing here. Try a bigger radius or fewer filters.",
+    "view": {
+      "label": "View",
+      "list": "List",
+      "map": "Map"
+    },
+    "autoArea": "Search as I move the map",
+    "searchArea": "Search this area",
+    "map": {
+      "label": "Results map",
+      "approximate": "approximate location (~1 km)",
+      "group": "{count, plural, one {# result} other {# results}} here"
+    },
+    "distance": "{km} km away",
+    "approximate": "{city} area",
+    "travel": "Travels up to {km} km",
+    "capacity": "Up to {count} people"
   }
 }
