@@ -7,13 +7,12 @@ import { CircleAlert } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import {
   Button,
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -228,6 +227,8 @@ function InviteForm({ venueId, onInvited }: { venueId: string; onInvited: () => 
     defaultValues: { email: "", role: "MANAGER" },
   });
 
+  const role = useWatch({ control: form.control, name: "role" });
+
   async function onSubmit(values: InviteValues) {
     try {
       const sent = unwrap(
@@ -249,7 +250,7 @@ function InviteForm({ venueId, onInvited }: { venueId: string; onInvited: () => 
       <Form {...form} translateError={translateFormError(t as Parameters<typeof translateFormError>[0])}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
           <p className="text-xs text-muted-foreground">{t("venueProfile.team.inviteHint")}</p>
-          <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
+          <div className="grid gap-4 sm:grid-cols-[2fr_1fr] sm:items-end">
             <AuthField
               control={form.control}
               name="email"
@@ -277,12 +278,12 @@ function InviteForm({ venueId, onInvited }: { venueId: string; onInvited: () => 
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>{t(`venueProfile.team.roleHint.${field.value}`)}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+          <p className="-mt-2 text-xs text-muted-foreground">{t(`venueProfile.team.roleHint.${role}`)}</p>
           <FormRootError />
           <Button type="submit" className="self-start" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? t("venueProfile.team.sending") : t("venueProfile.team.send")}
