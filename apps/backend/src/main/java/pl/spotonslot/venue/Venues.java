@@ -58,6 +58,11 @@ public class Venues {
                         point))));
     }
 
+    /** A published venue by its public address. */
+    public Optional<VenueSummary> findPublishedBySlug(String slug) {
+        return venues.findPublishedBySlug(slug).flatMap(venue -> findPublished(venue.getId()));
+    }
+
     /** Cards of those of the venues that are published, in no particular order. */
     public List<VenueCard> findPublishedCards(Collection<UUID> venueIds) {
         return venues.findPublished(venueIds).stream().flatMap(venue -> card(venue).stream()).toList();

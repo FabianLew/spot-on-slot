@@ -183,6 +183,11 @@ public class VenueService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<Venue> findPublishedBySlug(String slug) {
+        return venues.findBySlug(slug).filter(Venue::isPublished);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<Venue> findPublished(UUID venueId) {
         return venues.findById(venueId).filter(Venue::isPublished);
     }

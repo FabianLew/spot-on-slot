@@ -114,6 +114,8 @@ final class BookingDtos {
             String message,
             @Schema(requiredMode = REQUIRED) ArtistRef artist,
             @Schema(requiredMode = REQUIRED) VenueRef venue,
+            @Schema(description = "The booking's conversation thread, opened right after the request")
+            UUID conversationId,
             @Schema(requiredMode = REQUIRED) List<StepResponse> steps,
             @Schema(requiredMode = REQUIRED) Instant createdAt) {
 
@@ -126,7 +128,7 @@ final class BookingDtos {
                     booking.getAmount(), booking.getRevision(), pending ? booking.timedOutAt() : null,
                     view.message(), new ArtistRef(view.artistSlug(), booking.getArtistStageName()),
                     new VenueRef(booking.getVenueId(), view.venueSlug(), booking.getVenueName()),
-                    view.steps().stream().map(step -> new StepResponse(step.type(), step.party(), step.mine(),
+                    view.conversationId(), view.steps().stream().map(step -> new StepResponse(step.type(), step.party(), step.mine(),
                             step.at(), step.startsAt(), step.endsAt(), step.amount(), step.message())).toList(),
                     booking.getCreatedAt());
         }

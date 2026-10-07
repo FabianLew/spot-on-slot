@@ -84,6 +84,7 @@ const fetchMock = vi.fn(async (request: Request) => {
       body as { nearbyListings: NotificationPreferences["nearbyListings"] }
     ).nearbyListings;
     preferences = {
+      ...preferences,
       nearbyListings: { ...preferences.nearbyListings, ...saved },
     };
     return Response.json(preferences);
@@ -116,6 +117,7 @@ beforeEach(() => {
       defaultRadiusKm: 80,
       defaultGenres: ["TECHNO", "HOUSE"],
     },
+    messages: { email: true },
   };
   unsubscribeStatus = 204;
   requests.length = 0;

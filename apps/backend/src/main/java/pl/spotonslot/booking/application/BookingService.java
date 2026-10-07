@@ -7,11 +7,13 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ import pl.spotonslot.artist.ArtistSummary;
 import pl.spotonslot.availability.Availability;
 import pl.spotonslot.booking.BookingAccepted;
 import pl.spotonslot.booking.BookingCancelled;
+import pl.spotonslot.booking.BookingConversations;
 import pl.spotonslot.booking.BookingCountered;
 import pl.spotonslot.booking.BookingDeclined;
 import pl.spotonslot.booking.BookingExpired;
@@ -65,6 +68,7 @@ public class BookingService {
     private final Listings listings;
     private final Availability availability;
     private final ApplicationEventPublisher events;
+    private final ObjectProvider<BookingConversations> conversations;
     private final JdbcTemplate jdbc;
     private final Clock clock;
 
@@ -281,10 +285,11 @@ public class BookingService {
             }
             return cb.and(predicates.toArray(Predicate[]::new));
         };
+        var page = bookings.findAll(spec, pageable);
         var lookups = new Lookups();
-        return bookings.findAll(spec, pageable)
-                .map(booking -> view(booking,
-                        userId.equals(booking.getArtistId()) ? BookingParty.ARTIST : BookingParty.VENUE, lookups));
+        lookups.prefetchConversations(page.getContent().stream().map(Booking::getId).toList());
+        return page.map(booking -> view(booking,
+                userId.equals(booking.getArtistId()) ? BookingParty.ARTIST : BookingParty.VENUE, lookups));
     }
 
     // ---- for other modules and jobs
@@ -437,7 +442,7 @@ public class BookingService {
         var venue = lookups.venue(booking.getVenueId());
         return new BookingView(booking, status, booking.awaitingAt(now), viewer, booking.proposer(),
                 artist == null ? null : artist.slug(), venue == null ? null : venue.slug(),
-                booking.terms().message(), List.copyOf(steps));
+                booking.terms().message(), lookups.conversation(booking.getId()), List.copyOf(steps));
     }
 
     /** One writer per artist at a time. */
@@ -455,6 +460,7 @@ public class BookingService {
 
         private final HashMap<UUID, Optional<ArtistSummary>> artists = new HashMap<>();
         private final HashMap<UUID, Optional<VenueSummary>> venuesById = new HashMap<>();
+        private final HashMap<UUID, Optional<UUID>> threads = new HashMap<>();
 
         ArtistSummary artist(UUID id) {
             return artists.computeIfAbsent(id, artistProfiles::findPublishedByOwner).orElse(null);
@@ -462,6 +468,21 @@ public class BookingService {
 
         VenueSummary venue(UUID id) {
             return venuesById.computeIfAbsent(id, venues::findPublished).orElse(null);
+        }
+
+        /** The booking's conversation thread; null until messaging opened it (or without the messaging module). */
+        UUID conversation(UUID bookingId) {
+            if (!threads.containsKey(bookingId)) {
+                prefetchConversations(List.of(bookingId));
+            }
+            return threads.get(bookingId).orElse(null);
+        }
+
+        void prefetchConversations(List<UUID> bookingIds) {
+            var provider = conversations.getIfAvailable();
+            var found = provider == null || bookingIds.isEmpty() ? Map.<UUID, UUID>of()
+                    : provider.conversationsOf(bookingIds);
+            bookingIds.forEach(id -> threads.put(id, Optional.ofNullable(found.get(id))));
         }
     }
 }

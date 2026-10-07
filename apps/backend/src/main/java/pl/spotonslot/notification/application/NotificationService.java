@@ -80,12 +80,22 @@ public class NotificationService {
         return settings(userId, preferences.findByUserId(userId).orElse(null));
     }
 
+    /** {@code messageEmail} null leaves that setting as it is. */
     @Transactional
-    public NotificationSettings updateNearby(UUID userId, boolean enabled, boolean email, Integer radiusKm,
-            Collection<Genre> genres) {
+    public NotificationSettings update(UUID userId, boolean enabled, boolean email, Integer radiusKm,
+            Collection<Genre> genres, Boolean messageEmail) {
         var preference = stored(userId);
         preference.updateNearby(enabled, email, radiusKm, genres);
+        if (messageEmail != null) {
+            preference.updateMessages(messageEmail);
+        }
         return settings(userId, preference);
+    }
+
+    /** Whether the user wants e-mails about unread messages (yes without settings). */
+    @Transactional(readOnly = true)
+    public boolean wantsMessageEmails(UUID userId) {
+        return preferences.findByUserId(userId).map(NotificationPreference::isMessageEmail).orElse(true);
     }
 
     /** Switches e-mails about listings nearby off from the link in an e-mail; alerts in the app stay. */
@@ -126,10 +136,11 @@ public class NotificationService {
             venues.findPublishedCards(venueIds).forEach(venue -> defaultGenres.addAll(venue.genres()));
         }
         if (preference == null) {
-            return new NotificationSettings(true, true, null, List.of(), defaultRadius, List.copyOf(defaultGenres));
+            return new NotificationSettings(true, true, null, List.of(), defaultRadius, List.copyOf(defaultGenres),
+                    true);
         }
         return new NotificationSettings(preference.isNearbyEnabled(), preference.isNearbyEmail(),
                 preference.getNearbyRadiusKm(), preference.getNearbyGenres().stream().sorted().toList(),
-                defaultRadius, List.copyOf(defaultGenres));
+                defaultRadius, List.copyOf(defaultGenres), preference.isMessageEmail());
     }
 }
