@@ -109,7 +109,7 @@ public class AvailabilityRule extends BaseEntity {
     public Occurrence occurrenceOn(LocalDate date) {
         var start = date.atTime(startTime).atZone(zone()).toInstant();
         return new Occurrence(start, start.plus(Duration.ofMinutes(durationMinutes)), SlotStatus.FREE, note,
-                Occurrence.Source.RULE, null, getId(), date);
+                Occurrence.Source.RULE, null, getId(), date, null);
     }
 
     /** The rule's dates overlapping {@code [from, to)}, skipped ones left out, in order. */

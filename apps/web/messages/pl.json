@@ -71,7 +71,9 @@
     "capacity": "Od 1 do 100 000 osób.",
     "time": "Podaj godzinę, np. 21:00.",
     "daysRequired": "Wybierz co najmniej jeden dzień.",
-    "untilOrder": "Data końca nie może być wcześniejsza niż początek."
+    "untilOrder": "Data końca nie może być wcześniejsza niż początek.",
+    "outsideFree": "Godziny muszą mieścić się w wybranym wolnym terminie.",
+    "duration": "Termin musi trwać od 30 minut do 24 godzin."
   },
   "design": {
     "title": "Podgląd designu",
@@ -738,7 +740,8 @@
       "saving": "Zapisuję…",
       "saved": "Termin zapisany.",
       "savedRule": "Stały termin zapisany."
-    }
+    },
+    "seeBooking": "Zobacz booking"
   },
   "listings": {
     "title": "Ogłoszenia",
@@ -832,11 +835,11 @@
       "artist": "Artysta",
       "venue": "Lokal",
       "seeProfile": "Zobacz profil",
-      "bookingSoon": "Odpowiadanie na ogłoszenia pojawi się wkrótce.",
       "notFoundTitle": "Nie ma takiego ogłoszenia",
       "notFoundText": "Ogłoszenie zostało zamknięte, wygasło albo link jest błędny.",
       "home": "Strona główna"
-    }
+    },
+    "seeBooking": "Zobacz booking"
   },
   "search": {
     "title": "Szukaj",
@@ -898,11 +901,154 @@
     "travel": "Dojazd do {km} km",
     "capacity": "Do {count} osób"
   },
+  "bookings": {
+    "title": "Bookingi",
+    "otherRole": "Bookingi są dla artystów i lokali.",
+    "filter": "Pokaż bookingi",
+    "scopes": {
+      "awaiting": "Czeka na mnie",
+      "pending": "Oczekujące",
+      "upcoming": "Nadchodzące",
+      "history": "Historia"
+    },
+    "venueSwitch": "Lokal",
+    "allVenues": "Wszystkie lokale",
+    "empty": {
+      "awaiting": "Nic nie czeka na Twoją odpowiedź.",
+      "pending": "Nie masz bookingów w negocjacji.",
+      "upcoming": "Nie masz nadchodzących występów.",
+      "history": "Historia jest pusta."
+    },
+    "startVenue": "Znajdź artystę w wyszukiwarce i zapytaj o termin.",
+    "startArtist": "Zgłoś się na ogłoszenie „Szukam artysty” z wyszukiwarki.",
+    "goSearch": "Otwórz wyszukiwarkę",
+    "more": "Pokaż więcej",
+    "status": {
+      "PENDING": "Oczekuje",
+      "ACCEPTED": "Zaakceptowany",
+      "DECLINED": "Odrzucony",
+      "WITHDRAWN": "Wycofany",
+      "CANCELLED": "Anulowany",
+      "EXPIRED": "Wygasł",
+      "COMPLETED": "Zakończony"
+    },
+    "yourTurn": "Czeka na Ciebie",
+    "theirTurn": "Czeka na odpowiedź",
+    "expires": "Wygasa {when}",
+    "amount": "{amount} zł",
+    "unpaid": "Bez honorarium",
+    "details": "Szczegóły",
+    "detailsOf": "Szczegóły bookingu: {name}, {when}",
+    "badge": "{count, plural, one {# booking czeka} few {# bookingi czekają} many {# bookingów czeka} other {# bookingu czeka}} na Ciebie",
+    "cta": {
+      "ask": "Zapytaj o termin",
+      "askListing": "Zapytaj o booking",
+      "apply": "Zgłoś się"
+    },
+    "new": {
+      "venueTitle": "Zapytanie o termin",
+      "artistTitle": "Zgłoszenie na ogłoszenie",
+      "to": "Do: {name}",
+      "venue": "Twój lokal",
+      "pickTitle": "Wolne terminy artysty",
+      "pickHint": "Wybierz wolny termin artysty (najbliższe 90 dni). Godziny możesz potem zawęzić.",
+      "noFree": "Artysta nie ma teraz wolnych terminów.",
+      "loading": "Wczytuję…",
+      "term": "Termin",
+      "listingTerm": "Termin z ogłoszenia",
+      "changeTerm": "Zmień termin",
+      "within": "Wolny termin artysty: {term}",
+      "listingWithin": "Termin z ogłoszenia: {term}",
+      "date": "Data",
+      "from": "Od",
+      "to2": "Do",
+      "nextDay": "Kończy się następnego dnia.",
+      "amount": "Honorarium (zł)",
+      "amountHint": "0 zł oznacza występ bez honorarium.",
+      "message": "Wiadomość",
+      "venuePlaceholder": "Np. sobota w sali głównej, set 3 godziny, nagłośnienie na miejscu.",
+      "artistPlaceholder": "Np. gram techno od 10 lat, mam własny sprzęt.",
+      "count": "{count}/{max} znaków",
+      "send": "Wyślij zapytanie",
+      "sendApplication": "Wyślij zgłoszenie",
+      "sending": "Wysyłam…",
+      "sent": "Zapytanie wysłane.",
+      "applied": "Zgłoszenie wysłane.",
+      "notFound": "Nie ma takiego artysty albo ogłoszenie nie jest już aktywne.",
+      "venuesOnly": "Zapytania do artystów wysyłają lokale.",
+      "artistsOnly": "Na ogłoszenia „Szukam artysty” zgłaszają się artyści.",
+      "artistNotPublished": "Zgłoszenie wymaga opublikowanego profilu artysty.",
+      "venueNotPublished": "Zapytanie wysyła opublikowany lokal. Opublikuj swój lokal.",
+      "noVenue": "Najpierw dodaj lokal.",
+      "goProfile": "Przejdź do profilu"
+    },
+    "detail": {
+      "back": "Wszystkie bookingi",
+      "title": "Booking",
+      "artist": "Artysta",
+      "venue": "Lokal",
+      "seeProfile": "Zobacz profil",
+      "terms": "Aktualne warunki",
+      "term": "Termin",
+      "amount": "Honorarium",
+      "message": "Wiadomość",
+      "waiting": "Czekasz na odpowiedź drugiej strony. Bez odpowiedzi booking wygaśnie {when}.",
+      "decide": "Twoja kolej. Bez odpowiedzi booking wygaśnie {when}.",
+      "accept": "Akceptuj",
+      "counter": "Kontroferta",
+      "decline": "Odrzuć",
+      "withdraw": "Wycofaj propozycję",
+      "withdrawConfirm": "Wycofać propozycję? Booking zostanie zamknięty.",
+      "cancel": "Anuluj booking",
+      "accepted": "Booking zaakceptowany. Termin jest w kalendarzu artysty jako „Zarezerwowany”.",
+      "declined": "Booking odrzucony.",
+      "withdrawn": "Propozycja wycofana.",
+      "cancelled": "Booking anulowany.",
+      "countered": "Kontroferta wysłana.",
+      "stale": "Pojawiła się nowa propozycja. Sprawdź warunki i zdecyduj jeszcze raz.",
+      "conflict": "Ten czas koliduje z Twoim kalendarzem. Popraw kalendarz na ten dzień i spróbuj ponownie.",
+      "goCalendar": "Otwórz kalendarz",
+      "history": "Historia",
+      "you": "Ty",
+      "notFoundTitle": "Nie ma takiego bookingu",
+      "notFoundText": "Booking nie istnieje albo nie jesteś jego stroną."
+    },
+    "steps": {
+      "REQUESTED": "Zapytanie",
+      "COUNTERED": "Kontroferta",
+      "ACCEPTED": "Akceptacja",
+      "DECLINED": "Odrzucenie",
+      "WITHDRAWN": "Wycofanie",
+      "CANCELLED": "Anulowanie",
+      "EXPIRED": "Wygasł bez odpowiedzi",
+      "COMPLETED": "Występ się odbył"
+    },
+    "party": {
+      "ARTIST": "Artysta",
+      "VENUE": "Lokal",
+      "SYSTEM": "System"
+    },
+    "counterDialog": {
+      "title": "Kontroferta",
+      "hint": "Druga strona zobaczy nowe warunki i ruch przejdzie na nią.",
+      "send": "Wyślij kontrofertę"
+    },
+    "reason": {
+      "declineTitle": "Odrzuć booking",
+      "declineHint": "Powód jest opcjonalny. Druga strona go zobaczy.",
+      "cancelTitle": "Anuluj booking",
+      "cancelHint": "Druga strona zobaczy powód, a termin wróci do kalendarza jako wolny.",
+      "label": "Powód",
+      "confirmDecline": "Odrzuć",
+      "confirmCancel": "Anuluj booking",
+      "keep": "Wróć"
+    }
+  },
   "notifications": {
     "title": "Powiadomienia",
-    "description": "Nowe ogłoszenia w Twojej okolicy, które pasują do Twoich gatunków.",
+    "description": "Zmiany w Twoich bookingach i nowe ogłoszenia w okolicy, które pasują do Twoich gatunków.",
     "bellUnread": "Powiadomienia: {count} nieprzeczytane",
-    "empty": "Nic nowego. Damy znać, gdy w okolicy pojawi się ogłoszenie dla Ciebie.",
+    "empty": "Nic nowego. Damy znać, gdy ktoś odpowie na booking albo w okolicy pojawi się ogłoszenie dla Ciebie.",
     "markAll": "Oznacz wszystkie jako przeczytane",
     "more": "Pokaż starsze",
     "settingsLink": "Ustawienia powiadomień",
@@ -940,6 +1086,18 @@
       "invalid": "Ten link jest nieprawidłowy. Otwórz go jeszcze raz z e-maila albo zmień ustawienia w aplikacji.",
       "missing": "W linku brakuje kodu. Otwórz go jeszcze raz z e-maila.",
       "settings": "Przejdź do ustawień powiadomień"
+    },
+    "bookingTag": "Booking",
+    "booking": {
+      "REQUESTED_VENUE": "{name} pyta o termin",
+      "REQUESTED_ARTIST": "{name} zgłasza się do Twojego ogłoszenia",
+      "COUNTERED": "{name} proponuje nowe warunki",
+      "ACCEPTED": "{name} przyjmuje booking",
+      "DECLINED": "{name} odrzuca booking",
+      "DECLINED_SYSTEM": "{name} ma już booking w tym terminie",
+      "WITHDRAWN": "{name} wycofuje propozycję",
+      "CANCELLED": "{name} odwołuje booking",
+      "EXPIRED": "Booking z {name} wygasł"
     }
   }
 }

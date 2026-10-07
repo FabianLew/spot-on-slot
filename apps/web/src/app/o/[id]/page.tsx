@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { BookingCta } from "@/components/bookings/booking-cta";
 import { ListingView } from "@/components/listings/listing-view";
 import { findPublicListing } from "@/lib/public-profiles";
 
@@ -21,5 +22,10 @@ export async function generateMetadata({ params }: PageProps<"/o/[id]">): Promis
 export default async function Page({ params }: PageProps<"/o/[id]">) {
   const listing = await findPublicListing((await params).id);
   if (!listing) notFound();
-  return <ListingView listing={listing} />;
+  return (
+    <ListingView
+      listing={listing}
+      action={<BookingCta target={{ kind: "listing", id: listing.id, listingKind: listing.kind }} className="self-start" />}
+    />
+  );
 }

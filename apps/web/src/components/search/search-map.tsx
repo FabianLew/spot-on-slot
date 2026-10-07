@@ -1,7 +1,7 @@
 "use client";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { LngLatBounds, Map as MapLibreMap, Marker, NavigationControl, Popup } from "maplibre-gl";
+import { LngLatBounds, Map as MapLibreMap, Marker, NavigationControl, Popup, setWorkerUrl } from "maplibre-gl";
 import { useTheme } from "next-themes";
 import { useEffect, useRef } from "react";
 import { createIdleTrigger, groupPins, type MapView } from "./map-move";
@@ -36,6 +36,9 @@ export type SearchMapProps = {
   onSettle: (view: MapView, byUser: boolean) => void;
   labels: SearchMapLabels;
 };
+
+/** Copied there by scripts/copy-maplibre-worker.mjs on dev and build. */
+const WORKER_PATH = "/maplibre/maplibre-gl-worker.mjs";
 
 /** OpenStreetMap vector tiles from OpenFreeMap (free, no key); `NEXT_PUBLIC_MAP_STYLE_URL` replaces both styles. */
 const STYLES = {
@@ -114,6 +117,8 @@ export function SearchMap({ pins, focus, selectedId, onSelect, onSettle, labels 
 
   useEffect(() => {
     if (!container.current) return;
+    // The bundle loses MapLibre's own worker path; without a worker only the pins show, no map.
+    setWorkerUrl(new URL(WORKER_PATH, window.location.origin).href);
     const map = new MapLibreMap({
       container: container.current,
       style: initial.current.style,

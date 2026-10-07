@@ -156,6 +156,17 @@ describe("ListingsScreen, artist", () => {
     const ended = await screen.findByRole("list", { name: "Zakończone" });
     expect(within(ended).getByText("Wygasłe")).toBeInTheDocument();
     expect(within(ended).getByRole("button", { name: /Dodaj ogłoszenie podobne/ })).toBeInTheDocument();
+    expect(within(ended).queryByRole("link", { name: "Zobacz booking" })).not.toBeInTheDocument();
+  });
+
+  it("links a filled listing to the booking that filled it", async () => {
+    listings = [listing({ id: "full", status: "FILLED", bookingId: "b1" })];
+    const user = userEvent.setup();
+    renderUi(<ListingsScreen />);
+    await user.click(await screen.findByRole("button", { name: "Zakończone" }));
+    const ended = await screen.findByRole("list", { name: "Zakończone" });
+    expect(within(ended).getByText("Obsadzone")).toBeInTheDocument();
+    expect(within(ended).getByRole("link", { name: "Zobacz booking" })).toHaveAttribute("href", "/bookings/b1");
   });
 
   it("announces free time picked from the calendar, with defaults from the profile", async () => {

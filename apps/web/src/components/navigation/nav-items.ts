@@ -12,6 +12,9 @@ export type NavIconName =
 
 export type NavKey = Exclude<keyof typeof messages.nav, "more" | "primary" | "skipToContent" | "menu">;
 
+/** A counter shown next to the entry, resolved client-side in `nav-badges.ts`. */
+export type NavBadgeName = "bookings";
+
 // Plain serializable data: it crosses the server -> client boundary (icons are resolved in nav-icons.ts).
 // next.config has no typedRoutes, so hrefs are plain strings (no `Route` type available).
 export type NavItem = {
@@ -19,6 +22,7 @@ export type NavItem = {
   labelKey: NavKey;
   icon: NavIconName;
   mobile: "tab" | "more";
+  badge?: NavBadgeName;
 };
 
 export const navItems: readonly NavItem[] = [
@@ -27,7 +31,7 @@ export const navItems: readonly NavItem[] = [
   { href: "/search", labelKey: "search", icon: "search", mobile: "tab" },
   { href: "/messages", labelKey: "messages", icon: "messages", mobile: "tab" },
   { href: "/listings", labelKey: "listings", icon: "listings", mobile: "more" },
-  { href: "/bookings", labelKey: "bookings", icon: "bookings", mobile: "more" },
+  { href: "/bookings", labelKey: "bookings", icon: "bookings", mobile: "more", badge: "bookings" },
   { href: "/profile", labelKey: "profile", icon: "profile", mobile: "more" },
   { href: "/settings", labelKey: "settings", icon: "settings", mobile: "more" },
 ];

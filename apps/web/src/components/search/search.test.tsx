@@ -200,6 +200,10 @@ describe("SearchScreen", () => {
     expect(within(cards[0]!).getByText("1,2 km stąd")).toBeInTheDocument();
     expect(within(cards[0]!).getByText("800–1500 zł")).toBeInTheDocument();
     expect(within(cards[0]!).getByText("Dojazd do 50 km")).toBeInTheDocument();
+    expect(within(cards[0]!).getByRole("link", { name: "Zapytaj o termin" })).toHaveAttribute(
+      "href",
+      "/bookings/new?artist=ola",
+    );
     expect(screen.getByRole("button", { name: "Artyści" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText("Pod Ziemią")).toBeInTheDocument();
 
@@ -219,6 +223,10 @@ describe("SearchScreen", () => {
     const list = await screen.findByRole("list", { name: "Wyniki" });
     expect(within(list).getByRole("link", { name: /Klub/ })).toHaveAttribute("href", `/o/${listingHit.id}`);
     expect(within(list).getByText("do 1200 zł")).toBeInTheDocument();
+    expect(within(list).getByRole("link", { name: "Zgłoś się" })).toHaveAttribute(
+      "href",
+      `/bookings/new?listing=${listingHit.id}`,
+    );
     expect(screen.getByRole("button", { name: "Ogłoszenia" })).toHaveAttribute("aria-pressed", "true");
     expect(lastList("listings").search.get("kind")).toBe("VENUE_SEEKING");
     expect(lastList("listings").search.get("lat")).toBe("50.06");

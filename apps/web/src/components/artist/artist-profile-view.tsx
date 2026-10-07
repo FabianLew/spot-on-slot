@@ -1,5 +1,6 @@
 import type { ApiSchemas } from "@spot-on-slot/api-client";
 import { useFormatter, useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 import { Panel, PixelHeadphones, PixelPin, SkillMeter, Tag } from "@spot-on-slot/ui";
 import { NextFreeSlots, type FreeTime } from "@/components/calendar/next-free-slots";
 import { ExternalLinks, PhotoGalleryView } from "@/components/profile/public-parts";
@@ -27,17 +28,20 @@ export const LINKS = ["soundcloud", "spotify", "instagram", "youtube"] as const;
 
 /**
  * The artist profile in the "DJ profile" mockup layout. It uses no client hooks, so the public page renders it on
- * the server and the artist's own preview in the app. `freeTime` (left out while unknown) feeds the next free dates.
+ * the server and the artist's own preview in the app. `freeTime` (left out while unknown) feeds the next free dates;
+ * `action` (the public page's "Zapytaj o termin") sits under the name.
  */
 export function ArtistProfileView({
   profile,
   headingLevel = 2,
   freeTime,
+  action,
   now = new Date(),
 }: {
   profile: ArtistViewData;
   headingLevel?: 1 | 2;
   freeTime?: FreeTime[];
+  action?: ReactNode;
   now?: Date;
 }) {
   const t = useTranslations();
@@ -102,6 +106,7 @@ export function ArtistProfileView({
                 ))}
               </ul>
             )}
+            {action}
           </div>
         </Panel>
         <div className="flex flex-col gap-4">

@@ -10,7 +10,8 @@ import { LanguageRadioList } from "@/components/preferences/language-menu";
 import { ThemeRadioList } from "@/components/preferences/theme-menu";
 import { useSession } from "@/components/session/session-provider";
 import { isActive } from "./is-active";
-import { NavLink } from "./nav-link";
+import { useNavBadge } from "./nav-badges";
+import { BadgeCount, NavLink } from "./nav-link";
 import { navItems } from "./nav-items";
 
 export function MoreSheet() {
@@ -21,6 +22,8 @@ export function MoreSheet() {
   const moreItems = navItems.filter((item) => item.mobile === "more");
   // The trigger stands in for the sections inside the sheet, so it looks active on any of them.
   const active = moreItems.some((item) => isActive(pathname, item.href));
+  // The sections' counters show on the trigger too, so a waiting booking is seen on phones.
+  const badge = useNavBadge(moreItems.find((item) => item.badge)?.badge);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
@@ -31,6 +34,7 @@ export function MoreSheet() {
       >
         <MoreHorizontal className={cn("size-5", active && "text-primary")} aria-hidden="true" />
         {t("nav.more")}
+        {badge && <BadgeCount badge={badge} className="absolute top-1.5 left-1/2 ml-1" />}
         {active && (
           <span aria-hidden="true" data-active-indicator className="absolute inset-x-3 top-0 h-1 bg-primary" />
         )}

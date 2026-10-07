@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import pl.spotonslot.notification.domain.BookingUpdate;
 import pl.spotonslot.notification.domain.NearbyListingAlert;
 import pl.spotonslot.notification.domain.Notification;
 
@@ -19,6 +20,14 @@ class NotificationPayloads {
             return objectMapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Cannot write a notification payload", e);
+        }
+    }
+
+    BookingUpdate booking(Notification notification) {
+        try {
+            return objectMapper.readValue(notification.getPayload(), BookingUpdate.class);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Cannot read the payload of notification " + notification.getId(), e);
         }
     }
 

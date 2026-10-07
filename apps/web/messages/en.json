@@ -71,7 +71,9 @@
     "capacity": "From 1 to 100,000 people.",
     "time": "Enter a time, e.g. 21:00.",
     "daysRequired": "Pick at least one day.",
-    "untilOrder": "The end date cannot be before the start."
+    "untilOrder": "The end date cannot be before the start.",
+    "outsideFree": "The hours must stay within the chosen free time.",
+    "duration": "The time must last from 30 minutes to 24 hours."
   },
   "design": {
     "title": "Design preview",
@@ -738,7 +740,8 @@
       "saving": "Saving…",
       "saved": "Time saved.",
       "savedRule": "Regular time saved."
-    }
+    },
+    "seeBooking": "See booking"
   },
   "listings": {
     "title": "Listings",
@@ -832,11 +835,11 @@
       "artist": "Artist",
       "venue": "Venue",
       "seeProfile": "View profile",
-      "bookingSoon": "Replying to listings is coming soon.",
       "notFoundTitle": "No such listing",
       "notFoundText": "The listing was closed, has expired, or the link is wrong.",
       "home": "Home page"
-    }
+    },
+    "seeBooking": "See booking"
   },
   "search": {
     "title": "Search",
@@ -898,11 +901,154 @@
     "travel": "Travels up to {km} km",
     "capacity": "Up to {count} people"
   },
+  "bookings": {
+    "title": "Bookings",
+    "otherRole": "Bookings are for artists and venues.",
+    "filter": "Show bookings",
+    "scopes": {
+      "awaiting": "Waiting for me",
+      "pending": "Pending",
+      "upcoming": "Upcoming",
+      "history": "History"
+    },
+    "venueSwitch": "Venue",
+    "allVenues": "All venues",
+    "empty": {
+      "awaiting": "Nothing is waiting for your answer.",
+      "pending": "You have no bookings in negotiation.",
+      "upcoming": "You have no upcoming gigs.",
+      "history": "Your history is empty."
+    },
+    "startVenue": "Find an artist in search and ask about a date.",
+    "startArtist": "Apply to a “Looking for an artist” listing from search.",
+    "goSearch": "Open search",
+    "more": "Show more",
+    "status": {
+      "PENDING": "Pending",
+      "ACCEPTED": "Accepted",
+      "DECLINED": "Declined",
+      "WITHDRAWN": "Withdrawn",
+      "CANCELLED": "Cancelled",
+      "EXPIRED": "Expired",
+      "COMPLETED": "Completed"
+    },
+    "yourTurn": "Waiting for you",
+    "theirTurn": "Waiting for an answer",
+    "expires": "Expires {when}",
+    "amount": "{amount} zł",
+    "unpaid": "Unpaid",
+    "details": "Details",
+    "detailsOf": "Booking details: {name}, {when}",
+    "badge": "{count, plural, one {# booking is} other {# bookings are}} waiting for you",
+    "cta": {
+      "ask": "Ask about a date",
+      "askListing": "Ask for a booking",
+      "apply": "Apply"
+    },
+    "new": {
+      "venueTitle": "Booking request",
+      "artistTitle": "Application to a listing",
+      "to": "To: {name}",
+      "venue": "Your venue",
+      "pickTitle": "Artist's free time",
+      "pickHint": "Pick the artist's free time (next 90 days). You can narrow the hours afterwards.",
+      "noFree": "The artist has no free time right now.",
+      "loading": "Loading…",
+      "term": "Date",
+      "listingTerm": "Date from the listing",
+      "changeTerm": "Change date",
+      "within": "Artist's free time: {term}",
+      "listingWithin": "Listing time: {term}",
+      "date": "Date",
+      "from": "From",
+      "to2": "To",
+      "nextDay": "Ends the next day.",
+      "amount": "Fee (zł)",
+      "amountHint": "0 zł means an unpaid gig.",
+      "message": "Message",
+      "venuePlaceholder": "E.g. Saturday in the main room, 3-hour set, sound system on site.",
+      "artistPlaceholder": "E.g. I have played techno for 10 years and bring my own gear.",
+      "count": "{count}/{max} characters",
+      "send": "Send request",
+      "sendApplication": "Send application",
+      "sending": "Sending…",
+      "sent": "Request sent.",
+      "applied": "Application sent.",
+      "notFound": "There is no such artist, or the listing is no longer active.",
+      "venuesOnly": "Venues send requests to artists.",
+      "artistsOnly": "Artists apply to “Looking for an artist” listings.",
+      "artistNotPublished": "Applying needs a published artist profile.",
+      "venueNotPublished": "Requests come from a published venue. Publish your venue first.",
+      "noVenue": "Add a venue first.",
+      "goProfile": "Go to profile"
+    },
+    "detail": {
+      "back": "All bookings",
+      "title": "Booking",
+      "artist": "Artist",
+      "venue": "Venue",
+      "seeProfile": "See profile",
+      "terms": "Current terms",
+      "term": "Date",
+      "amount": "Fee",
+      "message": "Message",
+      "waiting": "You are waiting for the other side. Without an answer the booking expires {when}.",
+      "decide": "Your turn. Without an answer the booking expires {when}.",
+      "accept": "Accept",
+      "counter": "Counteroffer",
+      "decline": "Decline",
+      "withdraw": "Withdraw offer",
+      "withdrawConfirm": "Withdraw your offer? The booking will be closed.",
+      "cancel": "Cancel booking",
+      "accepted": "Booking accepted. The time shows as “Booked” in the artist's calendar.",
+      "declined": "Booking declined.",
+      "withdrawn": "Offer withdrawn.",
+      "cancelled": "Booking cancelled.",
+      "countered": "Counteroffer sent.",
+      "stale": "There is a new offer. Check the terms and decide again.",
+      "conflict": "This time clashes with your calendar. Fix your calendar for that day and try again.",
+      "goCalendar": "Open calendar",
+      "history": "History",
+      "you": "You",
+      "notFoundTitle": "No such booking",
+      "notFoundText": "The booking does not exist or you are not part of it."
+    },
+    "steps": {
+      "REQUESTED": "Request",
+      "COUNTERED": "Counteroffer",
+      "ACCEPTED": "Accepted",
+      "DECLINED": "Declined",
+      "WITHDRAWN": "Withdrawn",
+      "CANCELLED": "Cancelled",
+      "EXPIRED": "Expired without an answer",
+      "COMPLETED": "Gig played"
+    },
+    "party": {
+      "ARTIST": "Artist",
+      "VENUE": "Venue",
+      "SYSTEM": "System"
+    },
+    "counterDialog": {
+      "title": "Counteroffer",
+      "hint": "The other side will see the new terms and it will be their turn.",
+      "send": "Send counteroffer"
+    },
+    "reason": {
+      "declineTitle": "Decline booking",
+      "declineHint": "The reason is optional. The other side will see it.",
+      "cancelTitle": "Cancel booking",
+      "cancelHint": "The other side will see the reason, and the time goes back to the calendar as free.",
+      "label": "Reason",
+      "confirmDecline": "Decline",
+      "confirmCancel": "Cancel booking",
+      "keep": "Back"
+    }
+  },
   "notifications": {
     "title": "Notifications",
-    "description": "New listings near you that match your genres.",
+    "description": "Changes to your bookings and new listings near you that match your genres.",
     "bellUnread": "Notifications: {count} unread",
-    "empty": "Nothing new. We will let you know when a listing for you shows up nearby.",
+    "empty": "Nothing new. We will let you know when someone answers a booking or a listing for you shows up nearby.",
     "markAll": "Mark all as read",
     "more": "Show older",
     "settingsLink": "Notification settings",
@@ -940,6 +1086,18 @@
       "invalid": "This link is not valid. Open it again from the email or change the settings in the app.",
       "missing": "The link is missing its code. Open it again from the email.",
       "settings": "Go to notification settings"
+    },
+    "bookingTag": "Booking",
+    "booking": {
+      "REQUESTED_VENUE": "{name} asks about a date",
+      "REQUESTED_ARTIST": "{name} applies to your listing",
+      "COUNTERED": "{name} proposes new terms",
+      "ACCEPTED": "{name} accepts the booking",
+      "DECLINED": "{name} declines the booking",
+      "DECLINED_SYSTEM": "{name} is already booked at that time",
+      "WITHDRAWN": "{name} withdraws the proposal",
+      "CANCELLED": "{name} cancels the booking",
+      "EXPIRED": "The booking with {name} expired"
     }
   }
 }

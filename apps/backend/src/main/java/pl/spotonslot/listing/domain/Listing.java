@@ -77,6 +77,10 @@ public class Listing extends BaseEntity {
     @Column(name = "closed_at")
     private Instant closedAt;
 
+    /** The booking that filled the listing. */
+    @Column(name = "booking_id")
+    private UUID bookingId;
+
     @BatchSize(size = 100)
     @ElementCollection
     @CollectionTable(name = "listing_genre", joinColumns = @JoinColumn(name = "listing_id"))
@@ -139,7 +143,8 @@ public class Listing extends BaseEntity {
         end(ListingStatus.EXPIRED, now);
     }
 
-    public void fill(Instant now) {
+    public void fill(UUID bookingId, Instant now) {
+        this.bookingId = bookingId;
         end(ListingStatus.FILLED, now);
     }
 

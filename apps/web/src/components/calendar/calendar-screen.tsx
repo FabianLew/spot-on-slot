@@ -30,7 +30,8 @@ import {
 type View = "month" | "week";
 
 /** The "Kalendarz" tab: an artist's free time by month or week, with the weekly rules underneath. */
-export function CalendarScreen() {
+/** `day` (YYYY-MM-DD, from `?day=`) opens the calendar on that day, e.g. from a booking's calendar conflict. */
+export function CalendarScreen({ day }: { day?: string } = {}) {
   const t = useTranslations("calendar");
   const { session } = useSession();
   const role = session.status === "authenticated" ? session.user.role : "";
@@ -38,7 +39,7 @@ export function CalendarScreen() {
     <section className="flex flex-col gap-4">
       <PageHeader title={t("title")} />
       {role === "ARTIST" ? (
-        <ArtistCalendar />
+        <ArtistCalendar day={day} />
       ) : (
         <Panel>
           <p className="text-sm">{t("otherRole")}</p>
@@ -48,7 +49,7 @@ export function CalendarScreen() {
   );
 }
 
-function ArtistCalendar() {
+function ArtistCalendar({ day }: { day?: string }) {
   const t = useTranslations("calendar");
   const profile = useArtistProfile();
   if (profile.isPending) return <Panel aria-busy="true" className="h-40" />;
@@ -63,16 +64,16 @@ function ArtistCalendar() {
       </Panel>
     );
   }
-  return <CalendarBody />;
+  return <CalendarBody initialDay={day} />;
 }
 
 /** "Ogłoś" on free time, for artists whose profile is published (listings need one). */
 type Announce = { announced: (entry: Entry) => boolean; onAnnounce: (entry: Entry) => void };
 
-function CalendarBody() {
+function CalendarBody({ initialDay }: { initialDay?: string }) {
   const t = useTranslations("calendar");
   const [view, setView] = useState<View>("month");
-  const [day, setDay] = useState(() => today());
+  const [day, setDay] = useState(() => initialDay ?? today());
   const [dialog, setDialog] = useState<SlotDialogTarget | null>(null);
   const [listing, setListing] = useState<ListingDialogTarget | null>(null);
   const profile = useArtistProfile().data;
@@ -428,6 +429,14 @@ function DayEntries({
             </div>
             {entry.note && !compact && <p className="text-xs break-words">{entry.note}</p>}
             {booked && !compact && <p className="text-xs text-muted-foreground">{t("bookedHint")}</p>}
+            {booked && entry.bookingId != null && (
+              <Link
+                href={`/bookings/${entry.bookingId}`}
+                className="self-start text-xs font-bold uppercase underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {t("seeBooking")}
+              </Link>
+            )}
             {!started && !booked && (
               <div className="flex flex-wrap gap-1">
                 {free && announce && !announced && (

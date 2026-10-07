@@ -31,6 +31,10 @@ public class Notification extends BaseEntity {
     @Column(name = "listing_id", updatable = false)
     private UUID listingId;
 
+    /** The booking a BOOKING notification is about; one per step and recipient. */
+    @Column(name = "booking_id", updatable = false)
+    private UUID bookingId;
+
     /** JSON; plain text in Java, so each type's record is read and written by the application. */
     @ColumnTransformer(write = "?::jsonb")
     @Column(name = "payload", nullable = false, updatable = false, columnDefinition = "jsonb")
@@ -47,6 +51,15 @@ public class Notification extends BaseEntity {
         notification.recipientId = recipientId;
         notification.type = NotificationType.NEARBY_LISTING;
         notification.listingId = listingId;
+        notification.payload = payload;
+        return notification;
+    }
+
+    public static Notification booking(UUID recipientId, UUID bookingId, String payload) {
+        var notification = new Notification();
+        notification.recipientId = recipientId;
+        notification.type = NotificationType.BOOKING;
+        notification.bookingId = bookingId;
         notification.payload = payload;
         return notification;
     }
