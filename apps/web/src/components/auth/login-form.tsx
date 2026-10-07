@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Form, FormRootError, toast, translateFormError } from "@spot-on-slot/ui";
+import { useDeletionDate } from "@/components/account/deletion-date";
 import { safeNext } from "@/components/session/auth-gate";
 import { useSession } from "@/components/session/session-provider";
 import { api } from "@/lib/api";
@@ -18,8 +19,10 @@ import { loginSchema, type LoginValues } from "./auth-schemas";
 import { resendVerification } from "./check-email";
 import { showServerError } from "./server-error";
 
-export function LoginForm({ next }: { next?: string }) {
+/** `deletedAt`: the account was just scheduled for deletion; signing in before that date offers to restore it. */
+export function LoginForm({ next, deletedAt }: { next?: string; deletedAt?: string }) {
   const t = useTranslations();
+  const deletionDate = useDeletionDate();
   const router = useRouter();
   const { session, signIn } = useSession();
   const [unverified, setUnverified] = useState<"no" | "yes" | "resent">("no");
@@ -69,6 +72,7 @@ export function LoginForm({ next }: { next?: string }) {
         </>
       }
     >
+      {deletedAt && <AuthNotice>{t("account.delete.scheduled", { date: deletionDate(deletedAt) })}</AuthNotice>}
       <Form {...form} translateError={translateFormError(t as Parameters<typeof translateFormError>[0])}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5" noValidate>
           <AuthField control={form.control} name="email" label={t("auth.fields.email")} type="email" autoComplete="email" />

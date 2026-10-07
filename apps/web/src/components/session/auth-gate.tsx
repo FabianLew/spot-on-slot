@@ -14,9 +14,13 @@ export function AuthGate({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (session.status !== "anonymous") return;
+    if (session.redirectTo) {
+      router.replace(session.redirectTo);
+      return;
+    }
     const next = window.location.pathname + window.location.search;
     router.replace(`/login?next=${encodeURIComponent(next)}`);
-  }, [session.status, router]);
+  }, [session, router]);
 
   if (session.status === "authenticated") return children;
   if (session.status === "error") {

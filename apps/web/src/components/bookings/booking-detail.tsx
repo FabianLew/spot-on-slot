@@ -235,6 +235,7 @@ function BookingBody({ booking, refetch }: { booking: Booking; refetch: () => vo
 /** Every step, newest first; proposals show their terms, answers their message. */
 function History({ steps }: { steps: BookingStep[] }) {
   const t = useTranslations("bookings");
+  const tc = useTranslations("common");
   const format = useFormatter();
   const term = useTermText();
   const amount = useAmountText();
@@ -263,7 +264,11 @@ function History({ steps }: { steps: BookingStep[] }) {
                   {term(step.startsAt, step.endsAt)} · {amount(step.amount)}
                 </p>
               )}
-              {step.message && <p className="whitespace-pre-line break-words">{step.message}</p>}
+              {step.messageDeleted ? (
+                <p className="italic text-muted-foreground">{tc("messageDeleted")}</p>
+              ) : (
+                step.message && <p className="whitespace-pre-line break-words">{step.message}</p>
+              )}
             </li>
           );
         })}

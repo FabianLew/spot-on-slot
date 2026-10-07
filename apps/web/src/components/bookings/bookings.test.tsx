@@ -357,6 +357,15 @@ describe("BookingsScreen", () => {
 });
 
 describe("BookingDetail", () => {
+  it("shows a deleted account's step message as deleted", async () => {
+    const [requested, countered] = booking().steps;
+    current = booking({ steps: [requested!, { ...countered!, message: "", messageDeleted: true }] });
+    renderUi(<BookingDetail id={booking().id} />);
+    expect(await screen.findByRole("heading", { name: "DJ Ola", level: 1 })).toBeInTheDocument();
+    const step = document.querySelector('[data-step="COUNTERED"]') as HTMLElement;
+    expect(within(step).getByText("Wiadomość usunięta")).toHaveClass("italic");
+  });
+
   it("shows the terms and the history, newest first, and accepts the current offer", async () => {
     const user = userEvent.setup();
     renderUi(<BookingDetail id={booking().id} />);
