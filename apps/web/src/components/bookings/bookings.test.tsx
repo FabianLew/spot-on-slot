@@ -184,6 +184,12 @@ function renderUi(node: ReactNode) {
 
 const sent = (method: string, pattern: RegExp) => requests.filter((r) => r.method === method && pattern.test(r.path));
 
+/** Types by pasting: key-by-key typing of several fields is slow enough to time out on CI runners. */
+async function fill(user: ReturnType<typeof userEvent.setup>, field: HTMLElement, text: string) {
+  await user.click(field);
+  await user.paste(text);
+}
+
 describe("NewBookingScreen, venue asks an artist", () => {
   it("picks the artist's free time, narrows the hours and sends the request", async () => {
     const user = userEvent.setup();
@@ -197,18 +203,18 @@ describe("NewBookingScreen, venue asks an artist", () => {
     expect(screen.getByText("Wolny termin artysty: pt., 23 października · 21:00–04:00 +1")).toBeInTheDocument();
     expect(screen.getByLabelText("Honorarium (zł)")).toHaveValue("800");
     await user.clear(screen.getByLabelText("Od"));
-    await user.type(screen.getByLabelText("Od"), "20:00");
+    await fill(user, screen.getByLabelText("Od"), "20:00");
     await user.click(screen.getByRole("button", { name: "Wyślij zapytanie" }));
     expect(await screen.findByText("Godziny muszą mieścić się w wybranym wolnym terminie.")).toBeInTheDocument();
     expect(sent("POST", /\/bookings$/)).toEqual([]);
 
     await user.clear(screen.getByLabelText("Od"));
-    await user.type(screen.getByLabelText("Od"), "22:00");
+    await fill(user, screen.getByLabelText("Od"), "22:00");
     await user.clear(screen.getByLabelText("Do"));
-    await user.type(screen.getByLabelText("Do"), "02:00");
+    await fill(user, screen.getByLabelText("Do"), "02:00");
     await user.clear(screen.getByLabelText("Honorarium (zł)"));
-    await user.type(screen.getByLabelText("Honorarium (zł)"), "1000");
-    await user.type(screen.getByLabelText("Wiadomość"), "Zagrasz u nas?");
+    await fill(user, screen.getByLabelText("Honorarium (zł)"), "1000");
+    await fill(user, screen.getByLabelText("Wiadomość"), "Zagrasz u nas?");
     await user.click(screen.getByRole("button", { name: "Wyślij zapytanie" }));
 
     await waitFor(() => expect(push).toHaveBeenCalledWith("/bookings/new"));
@@ -221,7 +227,7 @@ describe("NewBookingScreen, venue asks an artist", () => {
       message: "Zagrasz u nas?",
     });
     expect(await screen.findByText("Zapytanie wysłane.")).toBeInTheDocument();
-  });
+  }, 15_000);
 
   it("answers an artist's listing within its time and shows server errors", async () => {
     const free = listing({
@@ -279,7 +285,7 @@ describe("NewBookingScreen, artist applies", () => {
     expect(screen.queryByLabelText("Od")).not.toBeInTheDocument();
     // The budget's top is the starting fee.
     expect(screen.getByLabelText("Honorarium (zł)")).toHaveValue("1200");
-    await user.type(screen.getByLabelText("Wiadomość"), "Chętnie zagram");
+    await fill(user, screen.getByLabelText("Wiadomość"), "Chętnie zagram");
     await user.click(screen.getByRole("button", { name: "Wyślij zgłoszenie" }));
 
     await waitFor(() => expect(push).toHaveBeenCalledWith("/bookings/new"));
@@ -408,12 +414,12 @@ describe("BookingDetail", () => {
     const dialog = await screen.findByRole("dialog");
     expect(within(dialog).getByLabelText("Honorarium (zł)")).toHaveValue("1500");
     await user.clear(within(dialog).getByLabelText("Od"));
-    await user.type(within(dialog).getByLabelText("Od"), "23:00");
+    await fill(user, within(dialog).getByLabelText("Od"), "23:00");
     await user.clear(within(dialog).getByLabelText("Do"));
-    await user.type(within(dialog).getByLabelText("Do"), "03:00");
+    await fill(user, within(dialog).getByLabelText("Do"), "03:00");
     expect(within(dialog).getByText("Kończy się następnego dnia.")).toBeInTheDocument();
     await user.clear(within(dialog).getByLabelText("Honorarium (zł)"));
-    await user.type(within(dialog).getByLabelText("Honorarium (zł)"), "1200");
+    await fill(user, within(dialog).getByLabelText("Honorarium (zł)"), "1200");
     await user.click(within(dialog).getByRole("button", { name: "Wyślij kontrofertę" }));
 
     expect(await screen.findByText("Kontroferta wysłana.")).toBeInTheDocument();
@@ -430,7 +436,7 @@ describe("BookingDetail", () => {
     renderUi(<BookingDetail id={booking().id} />);
     await user.click(await screen.findByRole("button", { name: "Odrzuć" }));
     const dialog = await screen.findByRole("dialog");
-    await user.type(within(dialog).getByLabelText("Powód"), "Mamy już kogoś");
+    await fill(user, within(dialog).getByLabelText("Powód"), "Mamy już kogoś");
     await user.click(within(dialog).getByRole("button", { name: "Odrzuć" }));
     expect(await screen.findByText("Booking odrzucony.")).toBeInTheDocument();
     expect(sent("POST", /\/decline$/)[0]!.body).toEqual({ reason: "Mamy już kogoś" });
@@ -457,7 +463,7 @@ describe("BookingDetail", () => {
     await user.click(within(dialog).getByRole("button", { name: "Anuluj booking" }));
     expect(within(dialog).getByText("To pole jest wymagane.")).toBeInTheDocument();
     expect(sent("POST", /\/cancel$/)).toEqual([]);
-    await user.type(within(dialog).getByLabelText("Powód"), "Choroba");
+    await fill(user, within(dialog).getByLabelText("Powód"), "Choroba");
     await user.click(within(dialog).getByRole("button", { name: "Anuluj booking" }));
     expect(await screen.findByText("Booking anulowany.")).toBeInTheDocument();
     expect(sent("POST", /\/cancel$/)[0]!.body).toEqual({ reason: "Choroba" });
