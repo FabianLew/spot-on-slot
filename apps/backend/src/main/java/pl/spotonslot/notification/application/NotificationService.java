@@ -115,6 +115,15 @@ public class NotificationService {
         });
     }
 
+    // ---- accounts
+
+    /** Deletes a purged account's notifications and settings. */
+    @Transactional
+    public void deleteOf(UUID userId) {
+        notifications.deleteOfRecipient(userId);
+        preferences.findByUserId(userId).ifPresent(preferences::delete);
+    }
+
     // ---- retention
 
     /** Deletes notifications older than 90 days; returns how many. */

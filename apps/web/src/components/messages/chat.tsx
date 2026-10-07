@@ -273,6 +273,7 @@ function MessageList({
   retry: (item: Pending) => void;
 }) {
   const t = useTranslations("messages");
+  const tCommon = useTranslations("common");
   const format = useFormatter();
   const scroller = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLDivElement>(null);
@@ -372,7 +373,12 @@ function MessageList({
             </p>
             {row.items.map((entry) =>
               entry.kind === "stored" ? (
-                <Bubble key={entry.message.id} mine={entry.message.mine} body={entry.message.body}>
+                <Bubble
+                  key={entry.message.id}
+                  mine={entry.message.mine}
+                  body={entry.message.deleted ? tCommon("messageDeleted") : entry.message.body}
+                  deleted={entry.message.deleted}
+                >
                   <time dateTime={entry.message.createdAt}>{local(entry.message.createdAt).time}</time>
                   {entry.message.id === read && <span className="font-bold"> · {t("read")}</span>}
                 </Bubble>
@@ -407,11 +413,14 @@ function Bubble({
   mine,
   body,
   faded,
+  deleted,
   children,
 }: {
   mine: boolean;
   body: string;
   faded?: boolean;
+  /** The author's account was deleted and the text with it. */
+  deleted?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -421,6 +430,7 @@ function Bubble({
           "whitespace-pre-wrap break-words border-2 px-3 py-2 text-sm",
           mine ? "border-primary bg-primary text-primary-foreground" : "border-border bg-field",
           faded && "opacity-70",
+          deleted && "border-dashed border-border bg-transparent italic text-muted-foreground",
         )}
       >
         {body}

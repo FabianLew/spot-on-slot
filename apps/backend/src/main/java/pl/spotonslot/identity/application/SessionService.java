@@ -50,7 +50,8 @@ public class SessionService {
         switch (account.getStatus()) {
             case PENDING_VERIFICATION -> throw new IdentityErrors.EmailNotVerified();
             case BLOCKED -> throw new IdentityErrors.AccountBlocked();
-            case ACTIVE -> { }
+            // Signing in is how the owner reaches "restore account"; everything else answers 403 until then.
+            case ACTIVE, DELETION_PENDING -> { }
         }
         var now = clock.instant();
         return issue(account, UUID.randomUUID(), now);
@@ -86,7 +87,7 @@ public class SessionService {
             return null;
         }
         var account = accounts.findById(token.getUserId()).orElse(null);
-        if (account == null || account.getStatus() != AccountStatus.ACTIVE) {
+        if (account == null || (account.getStatus() != AccountStatus.ACTIVE && !account.isDeletionPending())) {
             refreshTokens.revokeFamily(token.getFamilyId(), now);
             return null;
         }
@@ -110,11 +111,21 @@ public class SessionService {
         refreshTokens.revokeAllForUser(userId, clock.instant());
     }
 
+    /** Ends every session of the account except {@code keepFamily} (the caller's, null = none is kept). */
+    @Transactional
+    public void revokeOthers(UUID userId, UUID keepFamily) {
+        if (keepFamily == null) {
+            revokeAll(userId);
+        } else {
+            refreshTokens.revokeAllForUserExcept(userId, keepFamily, clock.instant());
+        }
+    }
+
     private SessionTokens issue(UserAccount account, UUID familyId, Instant now) {
         var raw = SecretToken.generate();
         refreshTokens.save(RefreshToken.issue(account.getId(), familyId, SecretToken.hash(raw),
                 now.plus(properties.refreshTokenTtl())));
-        return new SessionTokens(accessTokens.issue(account, now), accessTokens.ttl(), raw,
+        return new SessionTokens(accessTokens.issue(account, familyId, now), accessTokens.ttl(), raw,
                 properties.refreshTokenTtl());
     }
 

@@ -37,6 +37,10 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
             @Param("since") Instant since);
 
     @Modifying
+    @Query("DELETE FROM Notification n WHERE n.recipientId = :recipientId")
+    int deleteOfRecipient(@Param("recipientId") UUID recipientId);
+
+    @Modifying
     @Query("DELETE FROM Notification n WHERE n.createdAt < :before")
     int deleteCreatedBefore(@Param("before") Instant before);
 }

@@ -18,6 +18,7 @@ import pl.spotonslot.booking.BookingParty;
 import pl.spotonslot.booking.BookingRequested;
 import pl.spotonslot.booking.BookingWithdrawn;
 import pl.spotonslot.booking.Bookings;
+import pl.spotonslot.identity.Accounts;
 import pl.spotonslot.notification.NotificationCreated;
 import pl.spotonslot.notification.domain.BookingUpdate;
 import pl.spotonslot.notification.domain.BookingUpdate.Kind;
@@ -38,6 +39,7 @@ class BookingNotifications {
 
     private final Bookings bookings;
     private final Venues venues;
+    private final Accounts accounts;
     private final NotificationRepository notifications;
     private final NotificationPayloads payloads;
     private final ApplicationEventPublisher events;
@@ -102,6 +104,8 @@ class BookingNotifications {
         if (actorId != null) {
             recipients.remove(actorId);
         }
+        // Accounts waiting for deletion hear nothing until restored.
+        recipients.removeAll(accounts.deletionPending(recipients));
         for (var recipient : recipients) {
             var artist = recipient.equals(artistId);
             var update = new BookingUpdate(bookingId, kind, artist ? BookingParty.ARTIST : BookingParty.VENUE, by,

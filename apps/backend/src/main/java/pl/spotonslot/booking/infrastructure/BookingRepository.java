@@ -37,6 +37,17 @@ public interface BookingRepository extends JpaRepository<Booking, UUID>, JpaSpec
     boolean existsAcceptedOfVenueBetween(@Param("venueId") UUID venueId, @Param("from") Instant from,
             @Param("to") Instant to);
 
+    /**
+     * Ids of the bookings of the artist or of the venues that may still be open as of {@code now}: pending ones and
+     * accepted ones that have not started.
+     */
+    @Query("SELECT b.id FROM Booking b WHERE (b.artistId = :userId OR b.venueId IN :venueIds)"
+            + " AND ((b.status = pl.spotonslot.booking.BookingStatus.PENDING AND b.respondBy > :now"
+            + " AND b.startsAt > :now)"
+            + " OR (b.status = pl.spotonslot.booking.BookingStatus.ACCEPTED AND b.startsAt > :now))")
+    List<UUID> findOpenOfArtistOrVenues(@Param("userId") UUID userId,
+            @Param("venueIds") java.util.Collection<UUID> venueIds, @Param("now") Instant now);
+
     /** Pending bookings past their answer window or start, and accepted ones past their end. */
     @Query("SELECT b FROM Booking b WHERE (b.status = pl.spotonslot.booking.BookingStatus.PENDING"
             + " AND (b.respondBy <= :now OR b.startsAt <= :now))"

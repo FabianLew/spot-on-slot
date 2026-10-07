@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -59,6 +61,12 @@ public class BookingService {
     public static final long MAX_DAYS_AHEAD = 365;
     static final Duration MIN_LENGTH = Duration.ofMinutes(30);
     static final Duration MAX_LENGTH = Duration.ofHours(24);
+    /** The reason stored when an account's deletion cancels or declines its bookings. */
+    public static final String ACCOUNT_DELETED_REASON = "Konto zostało usunięte";
+    /** The name a purged account's bookings show instead of its stage or venue name. */
+    public static final String DELETED_NAME = "Usunięte konto";
+    /** Stands in for an empty list in {@code IN (...)}. */
+    private static final Set<UUID> NO_VENUES = Set.of(new UUID(0, 0));
     /** Keeps booking locks apart from the calendar's and the listings' locks on the same artist id. */
     private static final long LOCK_SALT = 0x424f4f4bL;
 
@@ -322,6 +330,72 @@ public class BookingService {
         return timedOut.size();
     }
 
+    // ---- accounts
+
+    /**
+     * Ends what an account waiting for deletion has open, as the artist or as a venue only they are in
+     * ({@code venueIds}): pending proposals they made are withdrawn, those waiting for them declined, and accepted
+     * bookings that have not started are cancelled with {@link #ACCOUNT_DELETED_REASON} (their time is free again in
+     * the artist's calendar). The steps are the person's own, so the usual notifications reach only the other side.
+     * Returns how many bookings were closed.
+     */
+    @Transactional
+    public int closeForDeletedAccount(UUID userId, Set<UUID> venueIds) {
+        var now = now();
+        var closed = 0;
+        for (var id : bookings.findOpenOfArtistOrVenues(userId, venueIds.isEmpty() ? NO_VENUES : venueIds, now)) {
+            var booking = locked(id);
+            var party = userId.equals(booking.getArtistId()) ? BookingParty.ARTIST : BookingParty.VENUE;
+            var status = booking.statusAt(now);
+            if (status == BookingStatus.PENDING && booking.proposer() == party) {
+                booking.withdraw(party, userId, now);
+                events.publishEvent(new BookingWithdrawn(booking.getId(), booking.getArtistId(),
+                        booking.getVenueId(), booking.getStartsAt(), booking.getEndsAt(), party, userId));
+            } else if (status == BookingStatus.PENDING) {
+                booking.decline(party, userId, ACCOUNT_DELETED_REASON, now);
+                events.publishEvent(new BookingDeclined(booking.getId(), booking.getArtistId(),
+                        booking.getVenueId(), booking.getStartsAt(), booking.getEndsAt(), party, userId));
+            } else if (status == BookingStatus.ACCEPTED && booking.getStartsAt().isAfter(now)) {
+                availability.release(booking.getId());
+                booking.cancel(party, userId, ACCOUNT_DELETED_REASON, now);
+                events.publishEvent(new BookingCancelled(booking.getId(), booking.getArtistId(),
+                        booking.getVenueId(), booking.getStartsAt(), booking.getEndsAt(), party, userId));
+            } else {
+                continue;
+            }
+            closed++;
+        }
+        return closed;
+    }
+
+    /** The bookings of the person as the artist and of the venues whose team they are in, newest first. */
+    @Transactional(readOnly = true)
+    public List<BookingView> listAllOf(UUID userId) {
+        return list(userId, new BookingFilter(Set.of(), null, null, null, false),
+                PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.DESC, "createdAt"))).getContent();
+    }
+
+    /**
+     * After an account is purged: its stage name in its bookings becomes {@link #DELETED_NAME} and the messages it
+     * wrote in any booking (as the artist or in a venue's team) are erased. Dates, amounts and statuses stay for the other side.
+     */
+    @Transactional
+    public void anonymizeArtist(UUID userId) {
+        jdbc.update("UPDATE booking SET artist_stage_name = ?, updated_at = now(), version = version + 1"
+                + " WHERE artist_id = ?", DELETED_NAME, userId);
+        // The reason the deletion itself stored stays: it is what the other side needs to read.
+        jdbc.update("UPDATE booking_step SET message = NULL, message_deleted = true, updated_at = now(),"
+                + " version = version + 1 WHERE actor_id = ? AND message IS NOT NULL AND message <> ?", userId,
+                ACCOUNT_DELETED_REASON);
+    }
+
+    /** After venues went with a purged account: their names in bookings become {@link #DELETED_NAME}. */
+    @Transactional
+    public void anonymizeVenues(Set<UUID> venueIds) {
+        venueIds.forEach(venueId -> jdbc.update("UPDATE booking SET venue_name = ?, updated_at = now(),"
+                + " version = version + 1 WHERE venue_id = ?", DELETED_NAME, venueId));
+    }
+
     // ---- internals
 
     /** Filters by the status as of {@code now}, as {@link Booking#statusAt} reads it. */
@@ -429,14 +503,14 @@ public class BookingService {
         var steps = new ArrayList<BookingView.Step>();
         booking.getSteps().forEach(step -> steps.add(new BookingView.Step(step.getType(), step.getParty(),
                 viewer == step.getParty(), step.getAt(), step.getStartsAt(), step.getEndsAt(),
-                step.getAmount(), step.getMessage())));
+                step.getAmount(), step.getMessage(), step.isMessageDeleted())));
         // A time-based status reads before the job stores its step.
         var stored = booking.getSteps().getLast().getType();
         var timedOut = status == BookingStatus.EXPIRED ? BookingStepType.EXPIRED
                 : status == BookingStatus.COMPLETED ? BookingStepType.COMPLETED : null;
         if (timedOut != null && stored != timedOut) {
             steps.add(new BookingView.Step(timedOut, BookingParty.SYSTEM, false, booking.timedOutAt(),
-                    booking.getStartsAt(), booking.getEndsAt(), booking.getAmount(), null));
+                    booking.getStartsAt(), booking.getEndsAt(), booking.getAmount(), null, false));
         }
         var artist = lookups.artist(booking.getArtistId());
         var venue = lookups.venue(booking.getVenueId());

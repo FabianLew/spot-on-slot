@@ -20,6 +20,7 @@ import pl.spotonslot.artist.ArtistProfiles;
 import pl.spotonslot.artist.Genre;
 import pl.spotonslot.availability.Availability;
 import pl.spotonslot.booking.Bookings;
+import pl.spotonslot.identity.Accounts;
 import pl.spotonslot.listing.ActiveListing;
 import pl.spotonslot.listing.ListingKind;
 import pl.spotonslot.listing.ListingPublished;
@@ -60,6 +61,7 @@ class NearbyListingAlerts {
     private final Locations locations;
     private final Availability availability;
     private final Bookings bookings;
+    private final Accounts accounts;
     private final NotificationRepository notifications;
     private final NotificationPreferenceRepository preferences;
     private final ApplicationEventPublisher events;
@@ -74,7 +76,10 @@ class NearbyListingAlerts {
         }
         var alerts = listing.kind() == ListingKind.VENUE_SEEKING ? forArtists(listing) : forVenueTeams(listing);
         var told = notifications.findRecipientsOfListing(listing.id());
-        var fresh = alerts.entrySet().stream().filter(alert -> !told.contains(alert.getKey())).toList();
+        // Accounts waiting for deletion hear nothing until restored.
+        var leaving = accounts.deletionPending(alerts.keySet());
+        var fresh = alerts.entrySet().stream()
+                .filter(alert -> !told.contains(alert.getKey()) && !leaving.contains(alert.getKey())).toList();
         for (var alert : fresh) {
             var notification = notifications.save(
                     Notification.nearbyListing(alert.getKey(), listing.id(), payloads.write(alert.getValue())));

@@ -4,7 +4,10 @@ import java.time.Instant;
 import java.util.UUID;
 import pl.spotonslot.messaging.ConversationSide;
 
-/** A message for one viewer: {@code mine} = written by the viewer's side; {@code clientId} only on the viewer's own. */
+/**
+ * A message for one viewer: {@code mine} = written by the viewer's side; {@code clientId} only on the viewer's own;
+ * {@code deleted} = its author's account was deleted and the text with it (the body is empty).
+ */
 public record MessageView(UUID id, UUID conversationId, ConversationSide side, boolean mine, String body,
-        Instant createdAt, String clientId) {
+        Instant createdAt, String clientId, boolean deleted) {
 }

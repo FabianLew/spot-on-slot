@@ -12,7 +12,11 @@ import lombok.NoArgsConstructor;
 import pl.spotonslot.messaging.ConversationSide;
 import pl.spotonslot.shared.persistence.BaseEntity;
 
-/** A text message; it cannot be edited or deleted. Its {@code createdAt} orders the history. */
+/**
+ * A text message; it cannot be edited or deleted, except that the purge of its author's account erases the text
+ * ({@code deleted}, empty body) while the message stays in the other side's history. Its {@code createdAt} orders
+ * the history.
+ */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -36,6 +40,9 @@ public class ConversationMessage extends BaseEntity {
 
     @Column(name = "client_id", updatable = false, length = 64)
     private String clientId;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 
     public ConversationMessage(UUID conversationId, UUID senderId, ConversationSide senderSide, String body,
             String clientId) {

@@ -2,6 +2,7 @@ package pl.spotonslot.media.application;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -106,6 +107,27 @@ public class MediaService {
             events.publishEvent(new MediaDeleted(image.getId(), ownerId));
         });
         image.keys().forEach(storage::deleteQuietly);
+    }
+
+    /** The owner's images, oldest first. */
+    @Transactional(readOnly = true)
+    public List<Media> listOf(UUID ownerId) {
+        return media.findByOwnerIdOrderByCreatedAtAsc(ownerId);
+    }
+
+    /**
+     * Deletes every image and unfinished upload of a purged account, from storage too. Each image publishes
+     * {@link MediaDeleted}, so profiles of other people stop showing it. Returns how many images went.
+     */
+    public int deleteAllOf(UUID ownerId) {
+        uploads.findByOwnerId(ownerId).forEach(this::discard);
+        var images = media.findByOwnerIdOrderByCreatedAtAsc(ownerId);
+        transaction.executeWithoutResult(status -> images.forEach(image -> {
+            media.deleteById(image.getId());
+            events.publishEvent(new MediaDeleted(image.getId(), ownerId));
+        }));
+        images.forEach(image -> image.keys().forEach(storage::deleteQuietly));
+        return images.size();
     }
 
     /** Uploads never completed within {@code pending-retention}: the record and whatever reached storage. */

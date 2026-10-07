@@ -8,6 +8,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page({ searchParams }: PageProps<"/login">) {
-  const { next } = await searchParams;
-  return <LoginForm next={typeof next === "string" ? next : undefined} />;
+  const { next, deleted } = await searchParams;
+  return (
+    <LoginForm
+      next={typeof next === "string" ? next : undefined}
+      deletedAt={typeof deleted === "string" && !Number.isNaN(Date.parse(deleted)) ? deleted : undefined}
+    />
+  );
 }

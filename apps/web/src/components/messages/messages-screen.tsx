@@ -149,6 +149,7 @@ function ConversationList({ role, venueId, activeId }: { role: string; venueId?:
 
 function ConversationItem({ conversation, href, active }: { conversation: Conversation; href: string; active: boolean }) {
   const t = useTranslations("messages");
+  const tCommon = useTranslations("common");
   const format = useFormatter();
   const last = conversation.lastMessage;
   const unread = conversation.unreadCount;
@@ -194,7 +195,7 @@ function ConversationItem({ conversation, href, active }: { conversation: Conver
           )}
           <span className="flex items-center justify-between gap-2">
             <span className={cn("truncate text-xs", unread > 0 ? "text-foreground" : "text-muted-foreground")}>
-              {last ? (last.mine ? t("mine", { text: last.body }) : last.body) : t("noMessages")}
+              {last ? (last.deleted ? tCommon("messageDeleted") : last.mine ? t("mine", { text: last.body }) : last.body) : t("noMessages")}
             </span>
             {unread > 0 && (
               <span className="shrink-0 bg-primary px-1.5 py-0.5 text-[0.65rem] font-bold leading-none text-primary-foreground">

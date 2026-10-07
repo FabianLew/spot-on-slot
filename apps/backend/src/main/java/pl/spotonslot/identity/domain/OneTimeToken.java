@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.spotonslot.shared.persistence.BaseEntity;
 
-/** A single-use token sent by e-mail (verification or password reset). */
+/** A single-use token sent by e-mail (verification, password reset or a new address to confirm). */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -35,12 +35,22 @@ public class OneTimeToken extends BaseEntity {
     @Column(name = "used_at")
     private Instant usedAt;
 
+    /** The address an {@link TokenType#EMAIL_CHANGE} token moves the account to. */
+    @Column(name = "target_email", length = 254, updatable = false)
+    private String targetEmail;
+
     public static OneTimeToken issue(UUID userId, TokenType type, String tokenHash, Instant expiresAt) {
         var token = new OneTimeToken();
         token.userId = userId;
         token.type = type;
         token.tokenHash = tokenHash;
         token.expiresAt = expiresAt;
+        return token;
+    }
+
+    public static OneTimeToken emailChange(UUID userId, String tokenHash, String targetEmail, Instant expiresAt) {
+        var token = issue(userId, TokenType.EMAIL_CHANGE, tokenHash, expiresAt);
+        token.targetEmail = targetEmail;
         return token;
     }
 

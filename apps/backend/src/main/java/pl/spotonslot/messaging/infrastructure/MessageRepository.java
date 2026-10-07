@@ -21,6 +21,8 @@ public interface MessageRepository extends JpaRepository<ConversationMessage, UU
 
     long countBySenderIdAndCreatedAtAfter(UUID senderId, Instant after);
 
+    List<ConversationMessage> findByConversationIdOrderByCreatedAtAscIdAsc(UUID conversationId);
+
     @Query("""
             SELECT m FROM ConversationMessage m WHERE m.conversationId = :conversationId
             ORDER BY m.createdAt DESC, m.id DESC""")

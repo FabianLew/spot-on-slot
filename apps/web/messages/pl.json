@@ -3,7 +3,8 @@
     "appName": "Spot On Slot",
     "tagline": "Umawiaj występy i wydarzenia bez stresu.",
     "notifications": "Powiadomienia",
-    "close": "Zamknij"
+    "close": "Zamknij",
+    "messageDeleted": "Wiadomość usunięta"
   },
   "settings": {
     "theme": {
@@ -18,6 +19,7 @@
       "en": "English"
     },
     "title": "Ustawienia",
+    "appearance": "Język i wygląd",
     "description": "Język i wygląd aplikacji.",
     "save": "Zapisz",
     "saved": "Zapisano"
@@ -73,7 +75,8 @@
     "daysRequired": "Wybierz co najmniej jeden dzień.",
     "untilOrder": "Data końca nie może być wcześniejsza niż początek.",
     "outsideFree": "Godziny muszą mieścić się w wybranym wolnym terminie.",
-    "duration": "Termin musi trwać od 30 minut do 24 godzin."
+    "duration": "Termin musi trwać od 30 minut do 24 godzin.",
+    "confirmDeletion": "Zaznacz, że rozumiesz, co się stanie."
   },
   "design": {
     "title": "Podgląd designu",
@@ -1165,6 +1168,86 @@
       "hint": "Do 2000 znaków. Dane kontaktowe najlepiej zostaw na później.",
       "send": "Wyślij",
       "failed": "Nie udało się wysłać wiadomości."
+    }
+  },
+  "account": {
+    "title": "Konto",
+    "description": "Adres e-mail, hasło i dane, które o Tobie przechowujemy.",
+    "currentPassword": "Obecne hasło",
+    "tooManyAttempts": "Za dużo prób. Spróbuj za kilka minut.",
+    "cancel": "Anuluj",
+    "email": {
+      "label": "E-mail",
+      "change": "Zmień e-mail",
+      "title": "Zmień e-mail",
+      "hint": "Wyślemy link na nowy adres. Adres zmieni się dopiero po jego kliknięciu.",
+      "newEmail": "Nowy e-mail",
+      "submit": "Wyślij link",
+      "sending": "Wysyłam…",
+      "sent": "Sprawdź skrzynkę {email}, link jest ważny 24 h."
+    },
+    "password": {
+      "label": "Hasło",
+      "change": "Zmień hasło",
+      "title": "Zmień hasło",
+      "hint": "Po zmianie inne urządzenia zostaną wylogowane, to zostanie zalogowane.",
+      "submit": "Zmień hasło",
+      "saving": "Zapisuję…",
+      "changed": "Hasło zmienione. Inne urządzenia zostały wylogowane."
+    },
+    "export": {
+      "label": "Twoje dane",
+      "hint": "Plik JSON ze wszystkim, co serwis o Tobie przechowuje. Zdjęcia są w nim linkami.",
+      "download": "Pobierz moje dane",
+      "downloading": "Przygotowuję plik…",
+      "done": "Pobrano plik z danymi"
+    },
+    "delete": {
+      "section": "Usuń konto",
+      "text": "Profil zniknie od razu, a dane zostaną usunięte na dobre po 14 dniach. Do tego czasu możesz przywrócić konto, logując się.",
+      "open": "Usuń konto",
+      "title": "Usunąć konto?",
+      "loading": "Sprawdzam, czy konto można usunąć…",
+      "blocked": "Jesteś ostatnim właścicielem lokali, w których zespole są inne osoby. Najpierw przekaż komuś rolę właściciela albo usuń lokal:",
+      "team": "Zespół lokalu {name}",
+      "whatHappens": "Co się stanie:",
+      "consequences": {
+        "hidden": "Twój profil i ogłoszenia od razu znikną publicznie, a aktywne ogłoszenia zostaną zamknięte.",
+        "bookings": "Nadchodzące bookingi zostaną anulowane, a oczekujące wycofane lub odrzucone. Druga strona dostanie powiadomienie.",
+        "restore": "Przez {days} dni możesz przywrócić konto, logując się. Profil i lokale opublikujesz wtedy ponownie, ale zamknięte ogłoszenia i anulowane bookingi nie wrócą.",
+        "final": "Potem usuniemy Twoje dane na dobre.",
+        "history": "Bookingi i rozmowy zostaną u drugiej strony jako „Usunięte konto”, bez treści Twoich wiadomości."
+      },
+      "understand": "Rozumiem",
+      "confirm": "Usuń konto",
+      "deleting": "Usuwam…",
+      "scheduled": "Konto zostanie usunięte {date}. Zaloguj się przed tym dniem, jeśli chcesz je przywrócić."
+    },
+    "pending": {
+      "title": "Twoje konto zostanie usunięte {date}",
+      "text": "Do tego dnia możesz je przywrócić. Profil i lokale opublikujesz potem ponownie jednym kliknięciem.",
+      "restore": "Przywróć konto",
+      "restoring": "Przywracam…",
+      "restored": "Konto przywrócone",
+      "signOut": "Wyloguj"
+    },
+    "terms": {
+      "title": "Zaktualizowaliśmy regulamin",
+      "text": "Żeby dalej korzystać z aplikacji, przeczytaj i zaakceptuj nowy <terms>regulamin</terms> i <privacy>politykę prywatności</privacy>.",
+      "accept": "Akceptuję",
+      "accepting": "Zapisuję…",
+      "settings": "Ustawienia",
+      "signOut": "Wyloguj"
+    },
+    "confirmEmail": {
+      "title": "Zmiana e-maila",
+      "pending": "Potwierdzam nowy adres…",
+      "success": "Adres e-mail zmieniony. Zaloguj się nowym adresem.",
+      "successSignedIn": "Adres e-mail zmieniony.",
+      "toSettings": "Przejdź do ustawień",
+      "invalid": "Link jest nieważny albo wygasł. Poproś o zmianę adresu jeszcze raz w ustawieniach.",
+      "taken": "Na ten adres jest już konto. Wybierz inny adres w ustawieniach.",
+      "login": "Zaloguj się"
     }
   }
 }

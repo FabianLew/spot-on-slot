@@ -8,3 +8,6 @@ spotonslot:
   # Tests run the unread-message reminders themselves.
   messaging:
     reminder-cron: "-"
+  # Tests purge accounts themselves (AccountPurgeService).
+  identity:
+    purge-cron: "-"

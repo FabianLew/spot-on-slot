@@ -42,6 +42,11 @@ public class ProblemDetailsExceptionHandler extends ResponseEntityExceptionHandl
 
     @ExceptionHandler(DomainException.class)
     ResponseEntity<Object> handleDomain(DomainException ex, WebRequest request) {
+        if (ex instanceof InvalidFieldException invalid) {
+            var text = errorMessages.resolve(ex.code(), ex.status(), ex.detailArgs(), locale(request));
+            var errors = List.of(Map.of("field", invalid.field(), "code", ex.code(), "message", text.detail()));
+            return respond(ex, ex.status(), ex.code(), ex.detailArgs(), errors, new HttpHeaders(), request);
+        }
         return respond(ex, ex.status(), ex.code(), ex.detailArgs(), List.of(), new HttpHeaders(), request);
     }
 

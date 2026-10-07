@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.spotonslot.identity.application.AccountService;
+import pl.spotonslot.identity.application.AccountSettingsService;
 import pl.spotonslot.identity.application.PasswordResetService;
 import pl.spotonslot.identity.application.SessionService;
 import pl.spotonslot.identity.application.SessionTokens;
@@ -31,6 +32,7 @@ class AuthController {
     private final SessionService sessions;
     private final PasswordResetService passwordReset;
     private final RefreshCookie refreshCookie;
+    private final AccountSettingsService accountSettings;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -84,6 +86,13 @@ class AuthController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void confirmPasswordReset(@Valid @RequestBody PasswordResetConfirmRequest request) {
         passwordReset.confirm(request.token(), request.password());
+    }
+
+    /** Confirms a new e-mail address from the link sent to it; 409 {@code IDENTITY_EMAIL_TAKEN} if taken meanwhile. */
+    @PostMapping("/email-change/confirm")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void confirmEmailChange(@Valid @RequestBody TokenRequest request) {
+        accountSettings.confirmEmailChange(request.token());
     }
 
     private ResponseEntity<AccessTokenResponse> withSession(SessionTokens tokens) {

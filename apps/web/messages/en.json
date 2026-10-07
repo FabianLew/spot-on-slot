@@ -3,7 +3,8 @@
     "appName": "Spot On Slot",
     "tagline": "Book gigs and events without the stress.",
     "notifications": "Notifications",
-    "close": "Close"
+    "close": "Close",
+    "messageDeleted": "Message deleted"
   },
   "settings": {
     "theme": {
@@ -18,6 +19,7 @@
       "en": "English"
     },
     "title": "Settings",
+    "appearance": "Language and appearance",
     "description": "Language and appearance of the app.",
     "save": "Save",
     "saved": "Saved"
@@ -73,7 +75,8 @@
     "daysRequired": "Pick at least one day.",
     "untilOrder": "The end date cannot be before the start.",
     "outsideFree": "The hours must stay within the chosen free time.",
-    "duration": "The time must last from 30 minutes to 24 hours."
+    "duration": "The time must last from 30 minutes to 24 hours.",
+    "confirmDeletion": "Tick the box to confirm you understand what happens."
   },
   "design": {
     "title": "Design preview",
@@ -1165,6 +1168,86 @@
       "hint": "Up to 2000 characters. Contact details are best left for later.",
       "send": "Send",
       "failed": "The message could not be sent."
+    }
+  },
+  "account": {
+    "title": "Account",
+    "description": "Your e-mail address, password and the data we keep about you.",
+    "currentPassword": "Current password",
+    "tooManyAttempts": "Too many attempts. Try again in a few minutes.",
+    "cancel": "Cancel",
+    "email": {
+      "label": "E-mail",
+      "change": "Change e-mail",
+      "title": "Change e-mail",
+      "hint": "We will send a link to the new address. The address changes only after you click it.",
+      "newEmail": "New e-mail",
+      "submit": "Send link",
+      "sending": "Sending…",
+      "sent": "Check the inbox of {email}, the link is valid for 24 h."
+    },
+    "password": {
+      "label": "Password",
+      "change": "Change password",
+      "title": "Change password",
+      "hint": "Other devices will be signed out; this one stays signed in.",
+      "submit": "Change password",
+      "saving": "Saving…",
+      "changed": "Password changed. Other devices were signed out."
+    },
+    "export": {
+      "label": "Your data",
+      "hint": "A JSON file with everything the service keeps about you. Photos are included as links.",
+      "download": "Download my data",
+      "downloading": "Preparing the file…",
+      "done": "Your data file was downloaded"
+    },
+    "delete": {
+      "section": "Delete account",
+      "text": "Your profile disappears at once and your data is deleted for good after 14 days. Until then you can restore the account by signing in.",
+      "open": "Delete account",
+      "title": "Delete your account?",
+      "loading": "Checking whether the account can be deleted…",
+      "blocked": "You are the last owner of venues whose team has other people. First hand over the owner role or delete the venue:",
+      "team": "Team of {name}",
+      "whatHappens": "What happens:",
+      "consequences": {
+        "hidden": "Your profile and listings disappear from public view at once, and active listings are closed.",
+        "bookings": "Upcoming bookings are cancelled and pending ones withdrawn or declined. The other side is notified.",
+        "restore": "For {days} days you can restore the account by signing in. You can then publish your profile and venues again, but closed listings and cancelled bookings do not come back.",
+        "final": "After that your data is deleted for good.",
+        "history": "Bookings and conversations stay with the other side as “Deleted account”, without the text of your messages."
+      },
+      "understand": "I understand",
+      "confirm": "Delete account",
+      "deleting": "Deleting…",
+      "scheduled": "Your account will be deleted on {date}. Sign in before then if you want to restore it."
+    },
+    "pending": {
+      "title": "Your account will be deleted on {date}",
+      "text": "Until then you can restore it. You can publish your profile and venues again with one click afterwards.",
+      "restore": "Restore account",
+      "restoring": "Restoring…",
+      "restored": "Account restored",
+      "signOut": "Sign out"
+    },
+    "terms": {
+      "title": "We have updated our terms",
+      "text": "To keep using the app, read and accept the new <terms>terms of service</terms> and <privacy>privacy policy</privacy>.",
+      "accept": "I accept",
+      "accepting": "Saving…",
+      "settings": "Settings",
+      "signOut": "Sign out"
+    },
+    "confirmEmail": {
+      "title": "E-mail change",
+      "pending": "Confirming your new address…",
+      "success": "Your e-mail address was changed. Sign in with the new address.",
+      "successSignedIn": "Your e-mail address was changed.",
+      "toSettings": "Go to settings",
+      "invalid": "This link is invalid or has expired. Request the change again in settings.",
+      "taken": "This address already has an account. Choose another address in settings.",
+      "login": "Sign in"
     }
   }
 }

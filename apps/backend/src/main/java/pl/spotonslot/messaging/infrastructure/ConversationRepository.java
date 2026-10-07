@@ -37,6 +37,10 @@ public interface ConversationRepository extends JpaRepository<Conversation, UUID
     Page<Conversation> findActiveOf(@Param("userId") UUID userId, @Param("venueIds") Collection<UUID> venueIds,
             Pageable pageable);
 
+    /** Every conversation of the artist or of the venues (never empty), oldest first. */
+    @Query("SELECT c FROM Conversation c WHERE c.artistId = :userId OR c.venueId IN :venueIds ORDER BY c.createdAt")
+    List<Conversation> findAllOf(@Param("userId") UUID userId, @Param("venueIds") Collection<UUID> venueIds);
+
     /** Conversations written in since {@code since}: the ones that may hold messages to remind about. */
     List<Conversation> findByLastMessageAtAfter(Instant since);
 }

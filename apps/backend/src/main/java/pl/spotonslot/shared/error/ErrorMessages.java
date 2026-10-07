@@ -66,6 +66,7 @@ public class ErrorMessages {
             case CONFLICT -> "CONFLICT";
             case UNSUPPORTED_MEDIA_TYPE -> "UNSUPPORTED_MEDIA_TYPE";
             case UNPROCESSABLE_ENTITY -> "BUSINESS_RULE_VIOLATED";
+            case TOO_MANY_REQUESTS -> "TOO_MANY_REQUESTS";
             case SERVICE_UNAVAILABLE -> "SERVICE_UNAVAILABLE";
             default -> INTERNAL_ERROR;
         };

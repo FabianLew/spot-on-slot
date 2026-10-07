@@ -50,6 +50,7 @@ const message = (overrides: Partial<Message> = {}): Message => ({
   mine: false,
   body: "Cześć!",
   createdAt: "2026-10-14T09:00:00Z",
+  deleted: false,
   ...overrides,
 });
 
@@ -317,6 +318,18 @@ describe("MessagesScreen, a conversation", () => {
     expect(screen.queryByText("1799 / 2000")).not.toBeInTheDocument();
     await user.paste("x");
     expect(screen.getByText("1800 / 2000")).toBeInTheDocument();
+  });
+
+  it("shows a deleted account's messages as deleted", async () => {
+    current = conversation({ other: { name: "Usunięte konto" } });
+    history = [message({ id: "m7", body: "", deleted: true })];
+    conversations = [conversation({ other: { name: "Usunięte konto" }, lastMessage: history[0] })];
+    renderUi(<MessagesScreen conversationId={C1} />);
+    const log = await screen.findByRole("log", { name: "Historia rozmowy" });
+    expect(within(log).getByText("Wiadomość usunięta")).toBeInTheDocument();
+    const item = within(screen.getByRole("list", { name: "Rozmowy" })).getByRole("link");
+    expect(item).toHaveTextContent("Usunięte konto");
+    expect(item).toHaveTextContent("Wiadomość usunięta");
   });
 
   it("loads older messages", async () => {
