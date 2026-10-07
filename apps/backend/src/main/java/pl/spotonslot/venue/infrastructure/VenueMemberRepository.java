@@ -20,5 +20,7 @@ public interface VenueMemberRepository extends JpaRepository<VenueMember, UUID> 
 
     long countByUserId(UUID userId);
 
+    long countByVenueId(UUID venueId);
+
     long countByVenueIdAndRole(UUID venueId, VenueRole role);
 }

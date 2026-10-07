@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.spotonslot.availability.domain.AvailabilitySlot;
@@ -23,4 +24,10 @@ public interface AvailabilitySlotRepository extends JpaRepository<AvailabilitySl
     Optional<AvailabilitySlot> findByBookingId(UUID bookingId);
 
     long countByOwnerIdAndStartsAtAfter(UUID ownerId, Instant after);
+
+    List<AvailabilitySlot> findByOwnerIdOrderByStartsAt(UUID ownerId);
+
+    @Modifying
+    @Query("DELETE FROM AvailabilitySlot s WHERE s.ownerId = :ownerId")
+    int deleteAllOf(@Param("ownerId") UUID ownerId);
 }

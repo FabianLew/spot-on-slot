@@ -1,8 +1,12 @@
 package pl.spotonslot.identity.domain;
 
 import org.springframework.http.HttpStatus;
+import pl.spotonslot.shared.error.ConflictException;
 import pl.spotonslot.shared.error.DomainException;
+import pl.spotonslot.shared.error.ForbiddenException;
+import pl.spotonslot.shared.error.InvalidFieldException;
 import pl.spotonslot.shared.error.InvalidRequestException;
+import pl.spotonslot.shared.error.TooManyRequestsException;
 
 /** Identity failures with their problem codes. */
 public final class IdentityErrors {
@@ -47,6 +51,55 @@ public final class IdentityErrors {
     public static class PasswordEqualsEmail extends InvalidRequestException {
         public PasswordEqualsEmail() {
             super("IDENTITY_PASSWORD_EQUALS_EMAIL");
+        }
+    }
+
+    /** The current password given to confirm an account change is wrong; reported at {@code field}. */
+    public static class WrongPassword extends InvalidFieldException {
+        public WrongPassword(String field) {
+            super("IDENTITY_WRONG_PASSWORD", field);
+        }
+    }
+
+    /** Too many wrong passwords in account changes within the window. */
+    public static class TooManyAttempts extends TooManyRequestsException {
+        public TooManyAttempts() {
+            super("ACCOUNT_TOO_MANY_ATTEMPTS");
+        }
+    }
+
+    /** The new e-mail address is the current one. */
+    public static class EmailUnchanged extends InvalidFieldException {
+        public EmailUnchanged() {
+            super("IDENTITY_EMAIL_UNCHANGED", "newEmail");
+        }
+    }
+
+    /** Another account took the address between the request and its confirmation. */
+    public static class EmailTaken extends ConflictException {
+        public EmailTaken() {
+            super("IDENTITY_EMAIL_TAKEN");
+        }
+    }
+
+    /** The data export was downloaded less than a minute ago. */
+    public static class ExportTooSoon extends TooManyRequestsException {
+        public ExportTooSoon() {
+            super("ACCOUNT_EXPORT_TOO_SOON");
+        }
+    }
+
+    /** The account waits for deletion: only restoring it and signing out work. */
+    public static class DeletionPending extends ForbiddenException {
+        public DeletionPending() {
+            super("ACCOUNT_DELETION_PENDING");
+        }
+    }
+
+    /** The account is the last owner of venues whose team has other people; {@code names} lists them. */
+    public static class LastVenueOwner extends ConflictException {
+        public LastVenueOwner(String names) {
+            super("ACCOUNT_LAST_VENUE_OWNER", names);
         }
     }
 }

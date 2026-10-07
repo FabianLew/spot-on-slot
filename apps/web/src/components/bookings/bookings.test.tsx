@@ -54,6 +54,7 @@ const booking = (overrides: Partial<Booking> = {}): Booking => ({
       endsAt: "2026-10-17T00:00:00Z",
       amount: 100000,
       message: "Zagrasz u nas?",
+      messageDeleted: false,
     },
     {
       type: "COUNTERED",
@@ -64,6 +65,7 @@ const booking = (overrides: Partial<Booking> = {}): Booking => ({
       endsAt: "2026-10-17T00:00:00Z",
       amount: 150000,
       message: "Za 1500 zł chętnie",
+      messageDeleted: false,
     },
   ],
   createdAt: "2026-10-13T10:00:00Z",
@@ -355,6 +357,15 @@ describe("BookingsScreen", () => {
 });
 
 describe("BookingDetail", () => {
+  it("shows a deleted account's step message as deleted", async () => {
+    const [requested, countered] = booking().steps;
+    current = booking({ steps: [requested!, { ...countered!, message: "", messageDeleted: true }] });
+    renderUi(<BookingDetail id={booking().id} />);
+    expect(await screen.findByRole("heading", { name: "DJ Ola", level: 1 })).toBeInTheDocument();
+    const step = document.querySelector('[data-step="COUNTERED"]') as HTMLElement;
+    expect(within(step).getByText("Wiadomość usunięta")).toHaveClass("italic");
+  });
+
   it("shows the terms and the history, newest first, and accepts the current offer", async () => {
     const user = userEvent.setup();
     renderUi(<BookingDetail id={booking().id} />);

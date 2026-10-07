@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.spotonslot.artist.Genre;
 import pl.spotonslot.location.GeoPoint;
+import pl.spotonslot.venue.application.VenueAccountService;
 import pl.spotonslot.venue.application.VenueService;
 import pl.spotonslot.venue.domain.Venue;
 import pl.spotonslot.venue.infrastructure.VenueRepository;
@@ -32,12 +33,18 @@ public class Venues {
 
     private final VenueService venues;
     private final VenueRepository repository;
+    private final VenueAccountService accounts;
 
     /** The venues a person is in the team of, with their role; drafts included. */
     public List<VenueMembership> findManagedBy(UUID userId) {
         return venues.membershipsOf(userId).stream()
                 .map(member -> new VenueMembership(member.getVenueId(), member.getRole()))
                 .toList();
+    }
+
+    /** Venues whose team is the user alone (they go with the user's account). */
+    public Set<UUID> soleMemberVenues(UUID userId) {
+        return accounts.soleMemberVenues(userId);
     }
 
     /** The team (user ids) of each of the venues; venues without a team are left out. */

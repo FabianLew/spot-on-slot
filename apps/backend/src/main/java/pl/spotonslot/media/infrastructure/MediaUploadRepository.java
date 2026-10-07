@@ -10,5 +10,7 @@ public interface MediaUploadRepository extends JpaRepository<MediaUpload, UUID> 
 
     long countByOwnerId(UUID ownerId);
 
+    List<MediaUpload> findByOwnerId(UUID ownerId);
+
     List<MediaUpload> findByCreatedAtBefore(Instant cutoff);
 }

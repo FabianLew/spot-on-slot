@@ -154,6 +154,18 @@ public class ArtistProfileService {
         return profiles.existsByOwnerId(ownerId);
     }
 
+    /** Unpublishes the profile of an account waiting for deletion; no profile, nothing to do. */
+    @Transactional
+    public void hide(UUID ownerId) {
+        profiles.findByOwnerId(ownerId).ifPresent(ArtistProfile::unpublish);
+    }
+
+    /** Deletes the profile of a purged account with everything in it. */
+    @Transactional
+    public void deleteOf(UUID ownerId) {
+        profiles.findByOwnerId(ownerId).ifPresent(profiles::delete);
+    }
+
     /** Called when an image is deleted in the media module. */
     @Transactional
     public void forgetMedia(UUID mediaId) {

@@ -37,6 +37,11 @@ public class VenueMember extends BaseEntity {
         return member;
     }
 
+    /** Used when the last owner's account is purged, so the venue keeps an owner. */
+    public void promoteToOwner() {
+        role = VenueRole.OWNER;
+    }
+
     public boolean isOwner() {
         return role == VenueRole.OWNER;
     }

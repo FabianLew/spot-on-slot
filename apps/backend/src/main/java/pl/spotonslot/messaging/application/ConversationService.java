@@ -288,7 +288,7 @@ public class ConversationService {
     static MessageView view(ConversationMessage message, ConversationSide viewer) {
         var mine = message.getSenderSide() == viewer;
         return new MessageView(message.getId(), message.getConversationId(), message.getSenderSide(), mine,
-                message.getBody(), message.getCreatedAt(), mine ? message.getClientId() : null);
+                message.getBody(), message.getCreatedAt(), mine ? message.getClientId() : null, message.isDeleted());
     }
 
     /** Views of the conversations for the user, in the same order, with names, photos and counts looked up once. */

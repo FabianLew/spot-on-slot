@@ -88,7 +88,9 @@ final class BookingDtos {
             @Schema(requiredMode = REQUIRED) Instant startsAt,
             @Schema(requiredMode = REQUIRED) Instant endsAt,
             @Schema(requiredMode = REQUIRED, description = "Grosze") long amount,
-            String message) {
+            String message,
+            @Schema(requiredMode = REQUIRED, description = "The author's account was deleted and the message with "
+                    + "it; show \"message deleted\"") boolean messageDeleted) {
     }
 
     /**
@@ -129,7 +131,8 @@ final class BookingDtos {
                     view.message(), new ArtistRef(view.artistSlug(), booking.getArtistStageName()),
                     new VenueRef(booking.getVenueId(), view.venueSlug(), booking.getVenueName()),
                     view.conversationId(), view.steps().stream().map(step -> new StepResponse(step.type(), step.party(), step.mine(),
-                            step.at(), step.startsAt(), step.endsAt(), step.amount(), step.message())).toList(),
+                            step.at(), step.startsAt(), step.endsAt(), step.amount(), step.message(),
+                            step.messageDeleted())).toList(),
                     booking.getCreatedAt());
         }
     }

@@ -10,14 +10,17 @@ export type SessionUser = ApiSchemas["MeResponse"];
 export type SessionState =
   | { status: "loading" }
   | { status: "authenticated"; user: SessionUser }
-  | { status: "anonymous" }
+  /** `redirectTo` replaces the usual trip to the login page, e.g. after the account was scheduled for deletion. */
+  | { status: "anonymous"; redirectTo?: string }
   | { status: "error"; problem: ApiProblem };
 
 interface SessionContextValue {
   session: SessionState;
   /** Stores the token from `/auth/login` and loads the user. */
   signIn: (token: ApiSchemas["AccessTokenResponse"]) => Promise<void>;
-  signOut: () => Promise<void>;
+  signOut: (options?: { redirectTo?: string }) => Promise<void>;
+  /** Loads `/me` again after the account changed (terms accepted, deletion cancelled). */
+  reloadUser: () => Promise<void>;
   /** Restarts the startup check after it failed (e.g. offline). */
   retry: () => void;
 }
@@ -56,23 +59,31 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setSession({ status: "authenticated", user: await loadUser() });
   }, []);
 
-  const signOut = useCallback(async () => {
+  const signOut = useCallback(async ({ redirectTo }: { redirectTo?: string } = {}) => {
     try {
       await api.POST("/api/v1/auth/logout");
     } finally {
       // Signed out locally even when the request failed; the server-side token expires on its own.
       setAccessToken(null);
       queryClient.clear();
-      setSession({ status: "anonymous" });
+      setSession({ status: "anonymous", redirectTo });
     }
   }, [queryClient]);
+
+  const reloadUser = useCallback(async () => {
+    const user = await loadUser();
+    setSession({ status: "authenticated", user });
+  }, []);
 
   const retry = useCallback(() => {
     setSession({ status: "loading" });
     setAttempt((n) => n + 1);
   }, []);
 
-  const value = useMemo(() => ({ session, signIn, signOut, retry }), [session, signIn, signOut, retry]);
+  const value = useMemo(
+    () => ({ session, signIn, signOut, reloadUser, retry }),
+    [session, signIn, signOut, reloadUser, retry],
+  );
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
 

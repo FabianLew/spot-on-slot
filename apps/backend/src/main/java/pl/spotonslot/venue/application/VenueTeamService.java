@@ -129,6 +129,12 @@ public class VenueTeamService {
         });
     }
 
+    /** Invitations the user sent that are still stored (pending or expired), oldest first. */
+    @Transactional(readOnly = true)
+    public List<VenueInvitation> invitationsSentBy(UUID userId) {
+        return invitations.findByInvitedByOrderByCreatedAtAsc(userId);
+    }
+
     private <T> T inTransaction(Supplier<T> work) {
         try {
             return transaction.execute(status -> work.get());

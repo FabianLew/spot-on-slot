@@ -15,4 +15,8 @@ public interface VenueInvitationRepository extends JpaRepository<VenueInvitation
     Optional<VenueInvitation> findByIdAndVenueId(UUID id, UUID venueId);
 
     List<VenueInvitation> findByVenueIdOrderByCreatedAtAsc(UUID venueId);
+
+    List<VenueInvitation> findByInvitedByOrderByCreatedAtAsc(UUID invitedBy);
+
+    long deleteByInvitedBy(UUID invitedBy);
 }

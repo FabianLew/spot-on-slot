@@ -65,5 +65,6 @@ public class PasswordResetService {
         account.changePassword(passwordEncoder.encode(newPassword));
         account.verifyEmail(now);
         sessions.revokeAll(account.getId());
+        tokens.useAllOf(account.getId(), TokenType.EMAIL_CHANGE, now);
     }
 }
