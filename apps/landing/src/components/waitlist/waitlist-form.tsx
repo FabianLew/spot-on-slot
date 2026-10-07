@@ -51,7 +51,7 @@ export function WaitlistForm() {
 
   if (signedUpEmail) {
     return (
-      <div role="status" className="rounded-lg border border-border bg-background p-6 text-foreground">
+      <div role="status" className="border-2 border-border bg-card p-6 text-foreground shadow-md">
         <p>
           <strong className="font-semibold">{t("waitlist.successTitle")}</strong>{" "}
           {t("waitlist.successText", { email: signedUpEmail })}

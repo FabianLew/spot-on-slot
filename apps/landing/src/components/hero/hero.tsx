@@ -6,6 +6,7 @@ import {
   HERO_BASE_IMAGE,
   HERO_CTA_COLOR,
   HERO_CTA_HOVER_COLOR,
+  HERO_CTA_SHADOW_COLOR,
   HERO_REVEAL_IMAGE,
   HERO_SECTION_ID,
 } from "./hero.config";
@@ -52,10 +53,14 @@ export function Hero() {
     };
   }, [heroVisible]);
 
-  const ctaStyle = { "--hero-cta": HERO_CTA_COLOR, "--hero-cta-hover": HERO_CTA_HOVER_COLOR } as CSSProperties;
+  const ctaStyle = {
+    "--hero-cta": HERO_CTA_COLOR,
+    "--hero-cta-hover": HERO_CTA_HOVER_COLOR,
+    "--hero-cta-shadow": HERO_CTA_SHADOW_COLOR,
+  } as CSSProperties;
 
   return (
-    <div className="min-h-screen bg-black tracking-[-0.02em] font-sans">
+    <div className="min-h-screen bg-black">
       <section
         ref={sectionRef}
         id={HERO_SECTION_ID}
@@ -71,16 +76,17 @@ export function Hero() {
         <RevealLayer image={HERO_REVEAL_IMAGE} cursorX={cursorPos.x} cursorY={cursorPos.y} />
 
         <div className="absolute top-[14%] left-0 right-0 z-50 flex flex-col items-center text-center px-5 pointer-events-none">
-          <h1 className="text-white leading-[0.95]">
+          <h1 className="leading-[1.05]">
             <span
-              className="block font-playfair italic font-normal text-5xl sm:text-7xl md:text-8xl hero-anim hero-reveal"
-              style={{ letterSpacing: "-0.05em", animationDelay: "0.25s" }}
+              className="inline-block bg-black px-3 py-1 font-display text-3xl sm:text-5xl md:text-6xl text-white hero-headline hero-anim hero-reveal"
+              style={{ animationDelay: "0.25s" }}
             >
               {t("headlineLine1")}
             </span>
+            <br />
             <span
-              className="block font-normal text-5xl sm:text-7xl md:text-8xl -mt-1 hero-anim hero-reveal"
-              style={{ letterSpacing: "-0.08em", animationDelay: "0.42s" }}
+              className="inline-block bg-black px-3 py-1 font-display text-3xl sm:text-5xl md:text-6xl mt-2 text-[#ffd400] hero-headline hero-anim hero-reveal"
+              style={{ animationDelay: "0.42s" }}
             >
               {t("headlineLine2")}
             </span>
@@ -91,17 +97,21 @@ export function Hero() {
           className="hidden sm:block absolute bottom-14 left-10 md:left-14 z-50 max-w-[260px] hero-anim hero-fade"
           style={{ animationDelay: "0.7s" }}
         >
-          <p className="text-sm text-white/80 leading-relaxed">{t("descriptionLeft")}</p>
+          <p className="text-sm text-white leading-relaxed bg-black/80 border-2 border-[#ffd400] p-4">
+            {t("descriptionLeft")}
+          </p>
         </div>
 
         <div
           className="absolute bottom-10 sm:bottom-24 left-5 right-5 sm:left-auto sm:right-10 md:right-14 z-50 max-w-full sm:max-w-[260px] flex flex-col items-start gap-4 sm:gap-5 hero-anim hero-fade"
           style={{ animationDelay: "0.85s" }}
         >
-          <p className="text-xs sm:text-sm text-white/80 leading-relaxed">{t("descriptionRight")}</p>
+          <p className="text-xs sm:text-sm text-white leading-relaxed bg-black/80 border-2 border-[#ffd400] p-4">
+            {t("descriptionRight")}
+          </p>
           <a
             href="#waitlist"
-            className="hero-cta text-white text-sm font-medium px-7 py-3 rounded-full transition-all hover:scale-[1.03] active:scale-95 hover:shadow-lg"
+            className="hero-cta font-display text-black text-sm px-7 py-3 border-2 border-black transition-colors"
             style={ctaStyle}
           >
             {t("cta")}
