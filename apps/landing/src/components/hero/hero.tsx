@@ -111,6 +111,8 @@ export function Hero() {
           </p>
           <a
             href="#waitlist"
+            data-umami-event="join-cta"
+            data-umami-event-location="hero"
             className="hero-cta font-display text-black text-sm px-7 py-3 border-2 border-black transition-colors"
             style={ctaStyle}
           >

@@ -10,8 +10,10 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Umami } from "@/components/analytics/umami";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { routing } from "@/i18n/routing";
+import { baseOpenGraph, siteUrl } from "@/lib/site";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -22,11 +24,15 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "meta" });
+  // Pages set their own canonical and hreflang addresses (`pageAlternates`); the preview image
+  // comes from `opengraph-image.tsx` next to this layout.
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001"),
+    metadataBase: new URL(siteUrl()),
     title: t("title"),
     description: t("description"),
-    alternates: { languages: { pl: "/pl", en: "/en" } },
+    applicationName: "Spot On Slot",
+    openGraph: { ...baseOpenGraph(locale), title: t("title"), description: t("description") },
+    twitter: { card: "summary_large_image", title: t("title"), description: t("description") },
   };
 }
 
@@ -52,6 +58,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         <NextIntlClientProvider>
           <ThemeProvider>{children}</ThemeProvider>
         </NextIntlClientProvider>
+        <Umami />
       </body>
     </html>
   );

@@ -18,6 +18,7 @@ export const registerSchema = z
     email,
     password: newPassword,
     passwordRepeat: z.string(),
+    acceptTerms: z.boolean().refine((v) => v, "validation.acceptTerms"),
     privacyNoticeAccepted: z.boolean().refine((v) => v, "validation.privacyRequired"),
   })
   .refine((v) => v.password === v.passwordRepeat, { path: ["passwordRepeat"], message: "validation.passwordMismatch" })

@@ -27,6 +27,7 @@ describe("messages", () => {
         "footer",
         "hero",
         "howItWorks",
+        "legal",
         "meta",
         "nav",
         "privacy",

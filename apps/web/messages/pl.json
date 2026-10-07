@@ -59,6 +59,7 @@
     "passwordMismatch": "Hasła się różnią.",
     "passwordEqualsEmail": "Hasło nie może być takie samo jak e-mail.",
     "privacyRequired": "Zaznacz, że znasz informację o przetwarzaniu danych.",
+    "acceptTerms": "Zaakceptuj regulamin i politykę prywatności.",
     "genresRequired": "Wybierz co najmniej jeden gatunek.",
     "tooLong": "Ten tekst jest za długi.",
     "https": "Podaj pełny adres zaczynający się od https://.",
@@ -202,6 +203,7 @@
         "VENUE": "lokal"
       },
       "changeRole": "Zmień rolę",
+      "termsAccept": "Akceptuję <terms>regulamin</terms> i <privacy>politykę prywatności</privacy>",
       "privacyAccept": "Znam informację o przetwarzaniu moich danych",
       "privacyClause": "Administratorem Twoich danych jest {administrator}, kontakt: {contact}. Przetwarzamy adres e-mail, hasło (w postaci skrótu) i rolę, żeby założyć i prowadzić Twoje konto w Spot On Slot (art. 6 ust. 1 lit. b RODO). Niepotwierdzone konta usuwamy po 7 dniach, pozostałe przechowujemy do usunięcia konta. Masz prawo dostępu do danych, ich sprostowania i usunięcia oraz prawo skargi do Prezesa UODO.",
       "submit": "Załóż konto",

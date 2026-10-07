@@ -27,7 +27,7 @@ import java.util.Map;
  * {@code shared.security} picks up the decoder and converter beans; the {@code role} claim becomes {@code ROLE_*}.
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(IdentityProperties.class)
+@EnableConfigurationProperties({IdentityProperties.class, TermsProperties.class})
 @EnableScheduling
 class IdentityConfig {
 

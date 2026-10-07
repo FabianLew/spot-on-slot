@@ -41,7 +41,7 @@ final class IdentityTestSupport {
 
     ResultActions register(String email, String role) throws Exception {
         return post("/api/v1/auth/register", Map.of("email", email, "password", PASSWORD, "role", role,
-                "locale", "pl", "privacyNoticeAccepted", true));
+                "locale", "pl", "privacyNoticeAccepted", true, "acceptTerms", true));
     }
 
     /** Registers and verifies an account; returns nothing, the account can log in afterwards. */

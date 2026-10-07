@@ -67,6 +67,7 @@ describe("PrivacyNotice", () => {
     expect(text).toContain("Acme sp. z o.o.");
     expect(text).toContain("privacy@acme.pl");
     expect(text).not.toContain("{");
+    expect(screen.getByRole("link", { name: pl.privacy.policyLink })).toHaveAttribute("href", "/pl/polityka-prywatnosci");
   });
 });
 
@@ -84,7 +85,13 @@ describe("Footer", () => {
     vi.stubEnv("NEXT_PUBLIC_PRIVACY_CONTROLLER", "");
     vi.stubEnv("NEXT_PUBLIC_PRIVACY_EMAIL", "");
     renderPl(<Footer />);
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /e-mail kontaktowy/ })).not.toBeInTheDocument();
     expect(screen.getByText(/\[e-mail kontaktowy\]/)).toBeInTheDocument();
+  });
+
+  it("links to the privacy policy and the terms in the current locale", () => {
+    renderPl(<Footer />);
+    expect(screen.getByRole("link", { name: pl.legal.privacy.title })).toHaveAttribute("href", "/pl/polityka-prywatnosci");
+    expect(screen.getByRole("link", { name: pl.legal.terms.title })).toHaveAttribute("href", "/pl/regulamin");
   });
 });

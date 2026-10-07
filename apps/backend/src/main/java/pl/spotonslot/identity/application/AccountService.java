@@ -13,6 +13,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import pl.spotonslot.identity.AccountAlreadyExists;
 import pl.spotonslot.identity.EmailVerificationRequested;
 import pl.spotonslot.identity.IdentityProperties;
+import pl.spotonslot.identity.TermsProperties;
 import pl.spotonslot.identity.UserRegistered;
 import pl.spotonslot.identity.domain.AccountStatus;
 import pl.spotonslot.identity.domain.IdentityErrors;
@@ -37,6 +38,7 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher events;
     private final IdentityProperties properties;
+    private final TermsProperties terms;
     private final TransactionTemplate transaction;
     private final Clock clock;
 
@@ -60,7 +62,7 @@ public class AccountService {
         var existing = accounts.findByEmail(email);
         if (existing.isEmpty()) {
             var account = accounts.saveAndFlush(UserAccount.register(email, passwordEncoder.encode(command.password()),
-                    command.role(), command.locale(), now));
+                    command.role(), command.locale(), terms.version(), now));
             events.publishEvent(new UserRegistered(account.getId(), account.getRole()));
             sendVerification(account, now);
             return;

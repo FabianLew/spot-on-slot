@@ -55,17 +55,26 @@ function renderWithSession(ui: ReactNode) {
 }
 
 const field = (name: string) => screen.getByLabelText(name, { exact: true });
+const termsName = "Akceptuję regulamin i politykę prywatności";
+
+async function fillRegistration(user: ReturnType<typeof userEvent.setup>, email: string) {
+  await user.type(field(pl.auth.fields.email), email);
+  await user.type(field(pl.auth.fields.password), "bardzo dlugie haslo");
+  await user.type(field(pl.auth.fields.passwordRepeat), "bardzo dlugie haslo");
+  await user.click(screen.getByRole("checkbox", { name: pl.auth.register.privacyAccept }));
+}
 
 describe("registerSchema", () => {
-  const valid = { email: "dj@example.com", password: "dlugie haslo", passwordRepeat: "dlugie haslo", privacyNoticeAccepted: true };
+  const valid = { email: "dj@example.com", password: "dlugie haslo", passwordRepeat: "dlugie haslo", acceptTerms: true, privacyNoticeAccepted: true };
   const messageFor = (values: object) => registerSchema.safeParse({ ...valid, ...values }).error?.issues[0]?.message;
 
   it("accepts valid values", () => expect(registerSchema.safeParse(valid).success).toBe(true));
-  it("checks e-mail, length, repeat, e-mail as password and the privacy notice", () => {
+  it("checks e-mail, length, repeat, e-mail as password, the terms and the privacy notice", () => {
     expect(messageFor({ email: "nope" })).toBe("validation.email");
     expect(messageFor({ password: "short", passwordRepeat: "short" })).toBe("validation.passwordTooShort");
     expect(messageFor({ passwordRepeat: "inne haslo!" })).toBe("validation.passwordMismatch");
     expect(messageFor({ password: "DJ@example.com", passwordRepeat: "DJ@example.com" })).toBe("validation.passwordEqualsEmail");
+    expect(messageFor({ acceptTerms: false })).toBe("validation.acceptTerms");
     expect(messageFor({ privacyNoticeAccepted: false })).toBe("validation.privacyRequired");
   });
 });
@@ -77,6 +86,43 @@ describe("RegisterForm", () => {
     expect(await screen.findByText(pl.validation.required)).toBeInTheDocument();
     expect(screen.getByText(pl.validation.passwordTooShort)).toBeInTheDocument();
     expect(screen.getByText(pl.validation.privacyRequired)).toBeInTheDocument();
+    expect(screen.getByText(pl.validation.acceptTerms)).toBeInTheDocument();
+  });
+
+  it("requires accepting the terms before calling the server", async () => {
+    routes["POST /api/v1/auth/register"] = accepted;
+    renderWithSession(<RegisterForm role="ARTIST" />);
+    const user = userEvent.setup();
+    await fillRegistration(user, "dj@example.com");
+    await user.click(screen.getByRole("button", { name: pl.auth.register.submit }));
+    expect(await screen.findByText(pl.validation.acceptTerms)).toBeInTheDocument();
+    expect(bodies["POST /api/v1/auth/register"]).toBeUndefined();
+  });
+
+  it("links the terms and the privacy policy on the landing in a new tab", () => {
+    renderWithSession(<RegisterForm role="ARTIST" />);
+    const terms = screen.getByRole("link", { name: "regulamin" });
+    const policy = screen.getByRole("link", { name: "politykę prywatności" });
+    expect(terms).toHaveAttribute("href", "http://localhost:3001/pl/regulamin");
+    expect(policy).toHaveAttribute("href", "http://localhost:3001/pl/polityka-prywatnosci");
+    for (const link of [terms, policy]) {
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    }
+  });
+
+  it("maps a server error for the terms to the checkbox", async () => {
+    routes["POST /api/v1/auth/register"] = () =>
+      Response.json(
+        { type: "about:blank", title: "Błąd", status: 400, code: "VALIDATION_FAILED", requestId: "r", errors: [{ field: "acceptTerms", message: "Musisz zaakceptować regulamin" }] },
+        { status: 400 },
+      );
+    renderWithSession(<RegisterForm role="ARTIST" />);
+    const user = userEvent.setup();
+    await fillRegistration(user, "dj@example.com");
+    await user.click(screen.getByRole("checkbox", { name: termsName }));
+    await user.click(screen.getByRole("button", { name: pl.auth.register.submit }));
+    expect(await screen.findByText("Musisz zaakceptować regulamin")).toBeInTheDocument();
   });
 
   it("registers with the chosen role and locale, then asks to check the inbox", async () => {
@@ -84,10 +130,8 @@ describe("RegisterForm", () => {
     routes["POST /api/v1/auth/verify-email/resend"] = accepted;
     renderWithSession(<RegisterForm role="VENUE" />);
     const user = userEvent.setup();
-    await user.type(field(pl.auth.fields.email), "klub@example.com");
-    await user.type(field(pl.auth.fields.password), "bardzo dlugie haslo");
-    await user.type(field(pl.auth.fields.passwordRepeat), "bardzo dlugie haslo");
-    await user.click(screen.getByRole("checkbox", { name: pl.auth.register.privacyAccept }));
+    await fillRegistration(user, "klub@example.com");
+    await user.click(screen.getByRole("checkbox", { name: termsName }));
     await user.click(screen.getByRole("button", { name: pl.auth.register.submit }));
     expect(await screen.findByRole("heading", { name: pl.auth.checkEmail.title })).toBeInTheDocument();
     expect(bodies["POST /api/v1/auth/register"]).toEqual({
@@ -96,6 +140,7 @@ describe("RegisterForm", () => {
       role: "VENUE",
       locale: "pl",
       privacyNoticeAccepted: true,
+      acceptTerms: true,
     });
     await user.click(screen.getByRole("button", { name: pl.auth.checkEmail.resend }));
     expect(await screen.findByRole("status")).toHaveTextContent(pl.auth.checkEmail.resent);
@@ -110,10 +155,8 @@ describe("RegisterForm", () => {
       );
     renderWithSession(<RegisterForm role="ARTIST" />);
     const user = userEvent.setup();
-    await user.type(field(pl.auth.fields.email), "dj@example.com");
-    await user.type(field(pl.auth.fields.password), "bardzo dlugie haslo");
-    await user.type(field(pl.auth.fields.passwordRepeat), "bardzo dlugie haslo");
-    await user.click(screen.getByRole("checkbox", { name: pl.auth.register.privacyAccept }));
+    await fillRegistration(user, "dj@example.com");
+    await user.click(screen.getByRole("checkbox", { name: termsName }));
     await user.click(screen.getByRole("button", { name: pl.auth.register.submit }));
     expect(await screen.findByText("Zły adres z serwera")).toBeInTheDocument();
   });
