@@ -95,8 +95,8 @@ class BookingMailer {
                                 + "cellspacing=\"0\">" + rows + "</table>", "12px 24px 0")
                         + MailLayout.button(link, button(update, locale)),
                 MailLayout.footnote(text("reason", locale))
-                        + MailLayout.fallbackLink(text("fallback", locale), link),
-                text("footer", locale));
+                        + MailLayout.fallbackLink(messages.getMessage("mail.layout.fallback", null, locale), link),
+                messages.getMessage("mail.layout.tagline", null, locale));
     }
 
     /** The text for this step: {@code key.KIND.BY} where the side matters (who asked, the system), else {@code key.KIND}. */

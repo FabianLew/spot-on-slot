@@ -138,7 +138,8 @@ class BookingNotificationIntegrationTest {
         assertThat(request.getSubject()).isEqualTo("Klub pyta o termin");
         var link = "http://localhost:3000/bookings/" + id;
         assertThat(part(request, "text/plain")).contains("Klub").containsPattern("1.?500 zł").contains(link);
-        assertThat(part(request, "text/html")).contains("href=\"" + link + "\"").contains("Odpowiedz");
+        assertThat(part(request, "text/html")).contains("href=\"" + link + "\"").contains("Odpowiedz")
+                .contains("Przycisk nie działa?");
         assertThat(mailTo(mails, OWNER).getSubject()).isEqualTo("DJ Alfa proponuje nowe warunki");
         assertThat(mailTo(mails, MANAGER).getSubject()).isEqualTo("DJ Alfa proposes new terms");
         assertThat(part(mailTo(mails, MANAGER), "text/plain")).contains("2,000 zł");
