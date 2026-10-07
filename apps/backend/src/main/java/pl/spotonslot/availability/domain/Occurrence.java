@@ -6,10 +6,10 @@ import java.util.UUID;
 
 /**
  * One concrete stretch of time in an artist's calendar: a single slot, or one date of a weekly rule
- * ({@code ruleId} and {@code date} set).
+ * ({@code ruleId} and {@code date} set). A booked slot names the booking that holds it.
  */
 public record Occurrence(Instant startsAt, Instant endsAt, SlotStatus status, String note, Source source, UUID slotId,
-        UUID ruleId, LocalDate date) {
+        UUID ruleId, LocalDate date, UUID bookingId) {
 
     public enum Source {
         SLOT,

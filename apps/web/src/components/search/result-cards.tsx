@@ -3,6 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
 import { PixelHeadphones, PixelPin, Tag, cn } from "@spot-on-slot/ui";
+import { BookingCta, type BookingTarget } from "@/components/bookings/booking-cta";
 import { usePriceText, useTermText } from "@/components/listings/listing-time";
 import type { ArtistHit, Hit, ListingHit, VenueHit } from "./queries";
 
@@ -23,8 +24,16 @@ export function hitTitle(hit: Hit): string {
   return hit.hit.venue?.name ?? hit.hit.artist?.stageName ?? "";
 }
 
-/** One result on the list; the whole card links to the profile or listing. */
+/** What a result's booking button answers; venues have none (artists answer their listings). */
+function bookingTarget(hit: Hit): BookingTarget | null {
+  if (hit.tab === "artists") return { kind: "artist", slug: hit.hit.slug };
+  if (hit.tab === "listings") return { kind: "listing", id: hit.hit.id, listingKind: hit.hit.kind };
+  return null;
+}
+
+/** One result on the list; the card links to the profile or listing, the button under it starts a booking. */
 export function ResultCard({ hit, selected }: { hit: Hit; selected: boolean }) {
+  const target = bookingTarget(hit);
   return (
     <li
       id={`result-${hitId(hit)}`}
@@ -46,6 +55,11 @@ export function ResultCard({ hit, selected }: { hit: Hit; selected: boolean }) {
           <ListingBody hit={hit.hit} />
         )}
       </Link>
+      {target && (
+        <div className="flex justify-end px-3 pb-3 empty:hidden">
+          <BookingCta target={target} size="sm" />
+        </div>
+      )}
     </li>
   );
 }

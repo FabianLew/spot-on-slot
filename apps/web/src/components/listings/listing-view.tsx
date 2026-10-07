@@ -1,11 +1,12 @@
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { buttonVariants, PageHeader, Panel, Tag } from "@spot-on-slot/ui";
 import type { Listing } from "./queries";
 import { usePriceText, useTermText } from "./listing-time";
 
-/** A listing as anyone with its link sees it (`/o/[id]`). Server- and client-safe. */
-export function ListingView({ listing }: { listing: Listing }) {
+/** A listing as anyone with its link sees it (`/o/[id]`). Server- and client-safe; `action` answers it (W9). */
+export function ListingView({ listing, action }: { listing: Listing; action?: ReactNode }) {
   const t = useTranslations();
   const term = useTermText();
   const price = usePriceText();
@@ -53,7 +54,7 @@ export function ListingView({ listing }: { listing: Listing }) {
             <Link href={author.href} className={buttonVariants({ variant: "outline" }) + " self-start"}>
               {t("listings.public.seeProfile")}
             </Link>
-            <p className="text-xs text-muted-foreground">{t("listings.public.bookingSoon")}</p>
+            {action}
           </Panel>
         )}
       </div>

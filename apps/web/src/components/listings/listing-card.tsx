@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, CopyPlus, ExternalLink, Pencil, X } from "lucide-react";
+import { CalendarCheck, Copy, CopyPlus, ExternalLink, Pencil, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button, Tag, toast } from "@spot-on-slot/ui";
@@ -120,16 +120,26 @@ export function ListingCard({
             </Button>
           </>
         ) : (
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={onCopy}
-            aria-label={t("listings.similarAt", { when })}
-          >
-            <CopyPlus className="size-3.5" aria-hidden="true" />
-            {t("listings.similar")}
-          </Button>
+          <>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={onCopy}
+              aria-label={t("listings.similarAt", { when })}
+            >
+              <CopyPlus className="size-3.5" aria-hidden="true" />
+              {t("listings.similar")}
+            </Button>
+            {listing.bookingId != null && (
+              <Button asChild size="sm" variant="ghost">
+                <Link href={`/bookings/${listing.bookingId}`}>
+                  <CalendarCheck className="size-3.5" aria-hidden="true" />
+                  {t("listings.seeBooking")}
+                </Link>
+              </Button>
+            )}
+          </>
         )}
       </div>
     </li>

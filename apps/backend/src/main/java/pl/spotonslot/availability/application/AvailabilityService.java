@@ -71,7 +71,7 @@ public class AvailabilityService {
         if (slots.countByOwnerIdAndStartsAtAfter(ownerId, now()) >= MAX_FUTURE_SLOTS) {
             throw new AvailabilityErrors.LimitReached();
         }
-        checkFree(ownerId, List.of(new Occurrence(startsAt, endsAt, null, null, null, null, null, null)), o -> false);
+        checkFree(ownerId, List.of(new Occurrence(startsAt, endsAt, null, null, null, null, null, null, null)), o -> false);
         return slots.save(AvailabilitySlot.free(ownerId, startsAt, endsAt, note));
     }
 
@@ -81,7 +81,7 @@ public class AvailabilityService {
         lock(ownerId);
         var slot = changeableSlot(ownerId, slotId);
         checkSlot(startsAt, endsAt);
-        checkFree(ownerId, List.of(new Occurrence(startsAt, endsAt, null, null, null, null, null, null)),
+        checkFree(ownerId, List.of(new Occurrence(startsAt, endsAt, null, null, null, null, null, null, null)),
                 o -> slotId.equals(o.slotId()));
         slot.change(startsAt, endsAt, note);
         changed(ownerId);

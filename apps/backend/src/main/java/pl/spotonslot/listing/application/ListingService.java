@@ -216,10 +216,10 @@ public class ListingService {
 
     /** Marks an active listing as taken by a booking; fails with {@code LISTING_NOT_ACTIVE}. */
     @Transactional
-    public void markFilled(UUID listingId) {
+    public void markFilled(UUID listingId, UUID bookingId) {
         var listing = listings.findById(listingId).orElseThrow(ListingErrors.ListingNotFound::new);
         requireActive(listing);
-        listing.fill(now());
+        listing.fill(bookingId, now());
     }
 
     /** Expires the artist's upcoming listings whose time is no longer free in their calendar. */

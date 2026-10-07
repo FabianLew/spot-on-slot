@@ -74,7 +74,9 @@ final class ListingDtos {
             ArtistRef artist,
             VenueRef venue,
             @Schema(requiredMode = REQUIRED) Instant createdAt,
-            Instant closedAt) {
+            Instant closedAt,
+            @Schema(description = "The booking that filled the listing (only filled listings, never public)")
+            UUID bookingId) {
 
         static ListingResponse of(ListingView view) {
             var listing = view.listing();
@@ -83,7 +85,7 @@ final class ListingDtos {
                     listing.getPriceFrom(), listing.getPriceTo(), listing.getCity(), listing.getTravelRadiusKm(),
                     view.artist() == null ? null : new ArtistRef(view.artist().slug(), view.artist().stageName()),
                     view.venue() == null ? null : new VenueRef(view.venue().slug(), view.venue().name()),
-                    listing.getCreatedAt(), listing.getClosedAt());
+                    listing.getCreatedAt(), listing.getClosedAt(), listing.getBookingId());
         }
     }
 }

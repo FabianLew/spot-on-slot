@@ -74,6 +74,6 @@ public class AvailabilitySlot extends BaseEntity {
     }
 
     public Occurrence toOccurrence() {
-        return new Occurrence(startsAt, endsAt, status, note, Occurrence.Source.SLOT, getId(), null, null);
+        return new Occurrence(startsAt, endsAt, status, note, Occurrence.Source.SLOT, getId(), null, null, bookingId);
     }
 }

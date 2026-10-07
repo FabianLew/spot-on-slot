@@ -1216,6 +1216,11 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             closedAt?: string;
+            /**
+             * Format: uuid
+             * @description The booking that filled the listing (only filled listings, never public)
+             */
+            bookingId?: string;
         };
         ListingVenue: {
             slug: string;
@@ -1508,7 +1513,7 @@ export interface components {
             revision: number;
             /**
              * Format: date-time
-             * @description While pending: when it expires without an answer
+             * @description While pending: when it expires unanswered (72 h after the latest proposal, or its start if sooner)
              */
             respondBy?: string;
             message?: string;
@@ -1814,6 +1819,21 @@ export interface components {
             /** @enum {string} */
             status: "FREE" | "BOOKED";
         };
+        BookingNotificationResponse: {
+            /** Format: uuid */
+            bookingId: string;
+            /** @enum {string} */
+            kind: "REQUESTED" | "COUNTERED" | "ACCEPTED" | "DECLINED" | "WITHDRAWN" | "CANCELLED" | "EXPIRED";
+            /** @enum {string} */
+            by: "ARTIST" | "VENUE" | "SYSTEM";
+            otherName: string;
+            /** Format: date-time */
+            startsAt: string;
+            /** Format: date-time */
+            endsAt: string;
+            /** Format: int64 */
+            amount: number;
+        };
         NearbyListingResponse: {
             /** Format: uuid */
             listingId: string;
@@ -1845,7 +1865,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            type: "NEARBY_LISTING";
+            type: "NEARBY_LISTING" | "BOOKING";
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -1853,6 +1873,8 @@ export interface components {
             active: boolean;
             /** @description Set for NEARBY_LISTING */
             nearbyListing?: components["schemas"]["NearbyListingResponse"];
+            /** @description Set for BOOKING */
+            booking?: components["schemas"]["BookingNotificationResponse"];
         };
         PageResponseNotificationResponse: {
             content?: components["schemas"]["NotificationResponse"][];
@@ -1928,6 +1950,8 @@ export interface components {
             ruleId?: string;
             /** Format: date */
             date?: string;
+            /** Format: uuid */
+            bookingId?: string;
         };
         ProblemDetail: {
             /** @example about:blank */
@@ -4333,7 +4357,7 @@ export interface operations {
     list_1: {
         parameters: {
             query?: {
-                status?: "PENDING" | "ACCEPTED" | "DECLINED" | "WITHDRAWN" | "CANCELLED" | "EXPIRED" | "COMPLETED";
+                status?: ("PENDING" | "ACCEPTED" | "DECLINED" | "WITHDRAWN" | "CANCELLED" | "EXPIRED" | "COMPLETED")[];
                 venueId?: string;
                 from?: string;
                 to?: string;

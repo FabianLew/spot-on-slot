@@ -49,10 +49,11 @@ public class NotificationService {
         var listingIds = page.getContent().stream().map(notification -> notification.getListingId())
                 .filter(Objects::nonNull).toList();
         var active = listings.activeAmong(listingIds);
-        return page.map(notification -> notification.getType() == NotificationType.NEARBY_LISTING
-                ? new NotificationView(notification, payloads.nearbyListing(notification),
-                        active.contains(notification.getListingId()))
-                : new NotificationView(notification, null, true));
+        return page.map(notification -> switch (notification.getType()) {
+            case NEARBY_LISTING -> new NotificationView(notification, payloads.nearbyListing(notification), null,
+                    active.contains(notification.getListingId()));
+            case BOOKING -> new NotificationView(notification, null, payloads.booking(notification), true);
+        });
     }
 
     @Transactional(readOnly = true)
