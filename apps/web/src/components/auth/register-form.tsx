@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toApiProblem, unwrap } from "@spot-on-slot/api-client";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, type ReactNode } from "react";
+import { useForm, type Control } from "react-hook-form";
 import {
   Button,
   Checkbox,
@@ -19,6 +19,7 @@ import {
   translateFormError,
 } from "@spot-on-slot/ui";
 import { api } from "@/lib/api";
+import { getLegalLinks } from "@/lib/legal-links";
 import { getPrivacyConfig } from "@/lib/privacy-config";
 import { AuthCard, authLinkClass } from "./auth-card";
 import { AuthField } from "./auth-field";
@@ -30,10 +31,11 @@ export function RegisterForm({ role }: { role: RegisterRole }) {
   const t = useTranslations();
   const locale = useLocale();
   const privacy = getPrivacyConfig();
+  const legal = getLegalLinks(locale);
   const [sentTo, setSentTo] = useState<string | null>(null);
   const form = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { email: "", password: "", passwordRepeat: "", privacyNoticeAccepted: false },
+    defaultValues: { email: "", password: "", passwordRepeat: "", acceptTerms: false, privacyNoticeAccepted: false },
   });
 
   async function onSubmit(values: RegisterValues) {
@@ -46,6 +48,7 @@ export function RegisterForm({ role }: { role: RegisterRole }) {
             role,
             locale,
             privacyNoticeAccepted: values.privacyNoticeAccepted,
+            acceptTerms: values.acceptTerms,
           },
         }),
       );
@@ -99,27 +102,23 @@ export function RegisterForm({ role }: { role: RegisterRole }) {
             type="password"
             autoComplete="new-password"
           />
-          <FormField
+          <ConsentField
             control={form.control}
-            name="privacyNoticeAccepted"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-start gap-3">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={(checked) => field.onChange(checked === true)}
-                      onBlur={field.onBlur}
-                      ref={field.ref}
-                      className="mt-0.5 size-5 rounded-none border-2"
-                    />
-                  </FormControl>
-                  <FormLabel className="leading-snug">{t("auth.register.privacyAccept")}</FormLabel>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
+            name="acceptTerms"
+            label={t.rich("auth.register.termsAccept", {
+              terms: (chunks) => (
+                <a href={legal.terms} target="_blank" rel="noopener noreferrer" className={authLinkClass}>
+                  {chunks}
+                </a>
+              ),
+              privacy: (chunks) => (
+                <a href={legal.privacy} target="_blank" rel="noopener noreferrer" className={authLinkClass}>
+                  {chunks}
+                </a>
+              ),
+            })}
           />
+          <ConsentField control={form.control} name="privacyNoticeAccepted" label={t("auth.register.privacyAccept")} />
           <p className="text-xs leading-relaxed text-muted-foreground">
             {t("auth.register.privacyClause", { administrator: privacy.controller, contact: privacy.email })}
           </p>
@@ -130,5 +129,39 @@ export function RegisterForm({ role }: { role: RegisterRole }) {
         </form>
       </Form>
     </AuthCard>
+  );
+}
+
+function ConsentField({
+  control,
+  name,
+  label,
+}: {
+  control: Control<RegisterValues>;
+  name: "acceptTerms" | "privacyNoticeAccepted";
+  label: ReactNode;
+}) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <div className="flex items-start gap-3">
+            <FormControl>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+                onBlur={field.onBlur}
+                ref={field.ref}
+                className="mt-0.5 size-5 rounded-none border-2"
+              />
+            </FormControl>
+            <FormLabel className="leading-snug">{label}</FormLabel>
+          </div>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 }

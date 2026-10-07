@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ class RegistrationIntegrationTest {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    TermsProperties terms;
 
     IdentityTestSupport api;
 
@@ -93,19 +97,52 @@ class RegistrationIntegrationTest {
     @Test
     void rejectsInvalidRegistrationWithFieldErrors() throws Exception {
         api.post("/api/v1/auth/register", Map.of("email", "nope", "password", "short", "role", "ADMIN",
-                        "locale", "de", "privacyNoticeAccepted", false))
+                        "locale", "de", "privacyNoticeAccepted", false, "acceptTerms", false))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
                 .andExpect(jsonPath("$.errors[*].field").value(org.hamcrest.Matchers.containsInAnyOrder(
-                        "email", "password", "role", "locale", "privacyNoticeAccepted")));
+                        "email", "password", "role", "locale", "privacyNoticeAccepted", "acceptTerms")));
         assertThat(jdbc.queryForObject("SELECT count(*) FROM identity_user", Integer.class)).isZero();
+    }
+
+    @Test
+    void storesAcceptedTermsVersion() throws Exception {
+        api.register("artist@example.com", "ARTIST").andExpect(status().isAccepted());
+
+        var row = jdbc.queryForMap("SELECT terms_accepted_at, terms_version FROM identity_user");
+        assertThat(row.get("terms_accepted_at")).isNotNull();
+        assertThat(row).containsEntry("terms_version", terms.version());
+        assertThat(terms.version()).isEqualTo("2026-10-07");
+    }
+
+    @Test
+    void rejectsRegistrationWithoutAcceptedTerms() throws Exception {
+        var body = new HashMap<String, Object>(Map.of("email", "artist@example.com",
+                "password", IdentityTestSupport.PASSWORD, "role", "ARTIST", "locale", "pl",
+                "privacyNoticeAccepted", true));
+        api.post("/api/v1/auth/register", body)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
+                .andExpect(jsonPath("$.errors[*].field").value(org.hamcrest.Matchers.contains("acceptTerms")));
+
+        body.put("acceptTerms", false);
+        api.post("/api/v1/auth/register", body)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[*].field").value(org.hamcrest.Matchers.contains("acceptTerms")));
+
+        // An existing address is rejected the same way, before anything about the account is looked at.
+        api.activeAccount("venue@example.com", events);
+        body.put("email", "venue@example.com");
+        api.post("/api/v1/auth/register", body).andExpect(status().isBadRequest());
+        assertThat(events.stream(AccountAlreadyExists.class)).isEmpty();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM identity_user", Integer.class)).isEqualTo(1);
     }
 
     @Test
     void rejectsPasswordEqualToEmail() throws Exception {
         api.post("/api/v1/auth/register", Map.of("email", "artist.long@example.com",
                         "password", "Artist.Long@example.com", "role", "ARTIST", "locale", "en",
-                        "privacyNoticeAccepted", true))
+                        "privacyNoticeAccepted", true, "acceptTerms", true))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("IDENTITY_PASSWORD_EQUALS_EMAIL"));
     }

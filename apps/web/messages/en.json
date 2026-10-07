@@ -59,6 +59,7 @@
     "passwordMismatch": "The passwords don't match.",
     "passwordEqualsEmail": "The password can't be the same as the email.",
     "privacyRequired": "Confirm that you have read how your data is processed.",
+    "acceptTerms": "Accept the terms of service and the privacy policy.",
     "genresRequired": "Pick at least one genre.",
     "tooLong": "This text is too long.",
     "https": "Enter a full address starting with https://.",
@@ -204,6 +205,7 @@
         "VENUE": "venue"
       },
       "changeRole": "Change role",
+      "termsAccept": "I accept the <terms>terms of service</terms> and the <privacy>privacy policy</privacy>",
       "privacyAccept": "I have read how my data is processed",
       "privacyClause": "Your data is controlled by {administrator}, contact: {contact}. We process your email address, password (as a hash) and role to create and run your Spot On Slot account (Art. 6(1)(b) GDPR). Unconfirmed accounts are deleted after 7 days; others are kept until the account is deleted. You have the right to access, correct and delete your data and to lodge a complaint with the supervisory authority (in Poland, the President of UODO).",
       "submit": "Create account",

@@ -78,6 +78,9 @@ spotonslot:
     base-url: ${LANDING_BASE_URL:http://localhost:3001}
   web:
     base-url: ${WEB_BASE_URL:http://localhost:3000}
+  terms:
+    # Version of the terms of service and privacy policy accepted at registration (stored with the account).
+    version: "2026-10-07"
   identity:
     # Development-only key; prod requires JWT_SECRET (application-prod.yml has no default).
     jwt-secret: ${JWT_SECRET:dev-only-secret-change-me-0123456789abcdef}

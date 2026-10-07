@@ -42,10 +42,17 @@ public class UserAccount extends BaseEntity {
     @Column(name = "privacy_notice_accepted_at", nullable = false, updatable = false)
     private Instant privacyNoticeAcceptedAt;
 
+    @Column(name = "terms_accepted_at", updatable = false)
+    private Instant termsAcceptedAt;
+
+    @Column(name = "terms_version", length = 32, updatable = false)
+    private String termsVersion;
+
     @Column(name = "email_verified_at")
     private Instant emailVerifiedAt;
 
-    public static UserAccount register(String email, String passwordHash, Role role, String locale, Instant now) {
+    public static UserAccount register(String email, String passwordHash, Role role, String locale, String termsVersion,
+            Instant now) {
         var account = new UserAccount();
         account.email = email;
         account.passwordHash = passwordHash;
@@ -53,6 +60,8 @@ public class UserAccount extends BaseEntity {
         account.locale = locale;
         account.status = AccountStatus.PENDING_VERIFICATION;
         account.privacyNoticeAcceptedAt = now;
+        account.termsAcceptedAt = now;
+        account.termsVersion = termsVersion;
         return account;
     }
 

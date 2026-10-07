@@ -75,7 +75,8 @@
     "consentRequired": "Consent is required to sign up"
   },
   "privacy": {
-    "clause": "Your data is controlled by {administrator}, contact: {contact}. We process your email address, role and city only to tell you when Spot On Slot launches, based on your consent (Art. 6(1)(a) GDPR). Unconfirmed sign-ups are deleted after 7 days; confirmed ones are kept until you withdraw consent or the waitlist closes. You can withdraw consent at any time by writing to the address above. You have the right to access, correct and delete your data and to lodge a complaint with the supervisory authority (in Poland, the President of UODO)."
+    "clause": "Your data is controlled by {administrator}, contact: {contact}. We process your email address, role and city only to tell you when Spot On Slot launches, based on your consent (Art. 6(1)(a) GDPR). Unconfirmed sign-ups are deleted after 7 days; confirmed ones are kept until you withdraw consent or the waitlist closes. You can withdraw consent at any time by writing to the address above. You have the right to access, correct and delete your data and to lodge a complaint with the supervisory authority (in Poland, the President of UODO).",
+    "policyLink": "More in the privacy policy."
   },
   "faq": {
     "heading": "FAQ",
@@ -124,10 +125,163 @@
   },
   "footer": {
     "copyright": "© {year} Spot On Slot",
-    "controller": "Data controller: {administrator}, contact: {contact}"
+    "controller": "Data controller: {administrator}, contact: {contact}",
+    "legalNav": "Legal documents"
   },
   "common": {
     "notFoundTitle": "Page not found",
     "backHome": "Back to home"
+  },
+  "legal": {
+    "draftNotice": "Draft document. A lawyer will review it before the service launches.",
+    "version": "Version of {date}",
+    "back": "Back to the home page",
+    "otherDocument": "See also:",
+    "privacy": {
+      "title": "Privacy policy",
+      "metaDescription": "What data Spot On Slot processes, why, for how long, and what your rights are.",
+      "intro": "This policy explains how Spot On Slot processes the personal data of people who visit the site, join the waitlist and use the app.",
+      "sections": [
+        {
+          "heading": "1. Controller",
+          "body": [
+            "The data controller is {administrator}. For anything about personal data, write to {contact}."
+          ]
+        },
+        {
+          "heading": "2. What data we process and why",
+          "body": [
+            "- Waitlist: email address, role and city, to tell you when the service launches. Legal basis: your consent (Art. 6(1)(a) GDPR).",
+            "- Account: email address, password (we only store its hash, never the password itself), role, language and the date you accepted the terms. Legal basis: the contract for using the service (Art. 6(1)(b) GDPR).",
+            "- Artist or venue profile: stage name or venue name, description, genres, links, rates, photos and the venue's address. These are public once the profile is published. An artist's real name is never shown publicly. Legal basis: the contract.",
+            "- Location: for an account we store a point rounded to about 1 km and the name of the town. We never store the exact position from your device. A venue's address is stored exactly, because it is public business information. Legal basis: the contract.",
+            "- Calendar, listings and bookings: dates, amounts, the messages attached to booking steps and their history. Legal basis: the contract.",
+            "- Notifications: the in-app list, your settings and emails. Emails about listings nearby are sent in our legitimate interest (Art. 6(1)(f) GDPR), and each one has an unsubscribe link.",
+            "- Security and statistics: server logs (IP address, time, page address) protect the service from abuse, and aggregate visit statistics help us improve the site. Legal basis: legitimate interest."
+          ]
+        },
+        {
+          "heading": "3. Who sees your data",
+          "body": [
+            "A published artist or venue profile and active listings can be seen by anyone with the link. Search in the app is available to signed-in users only. A booking is visible only to the artist and the venue's team.",
+            "We entrust data to providers who help us run the service and act on our instructions:",
+            "- the server and database provider;",
+            "- Cloudflare (photo storage and delivery, the R2 service);",
+            "- the email delivery provider;",
+            "- Umami (visit statistics without cookies and without storing IP addresses);",
+            "- the Photon geocoder (komoot), which turns a typed address into coordinates. Our server sends the query, so the geocoder only receives the typed text or a rounded point, never your IP address.",
+            "The map in search loads tiles directly from OpenFreeMap, so its servers see your browser's IP address. Some email programs load the fonts of our emails from Google Fonts. We do not sell data or share it with advertisers."
+          ]
+        },
+        {
+          "heading": "4. Transfers outside the EEA",
+          "body": [
+            "If a provider processes data outside the European Economic Area, this is based on a European Commission adequacy decision (e.g. the EU-US Data Privacy Framework) or standard contractual clauses."
+          ]
+        },
+        {
+          "heading": "5. How long we keep data",
+          "body": [
+            "- Unconfirmed waitlist sign-ups: 7 days. Confirmed ones: until you withdraw consent or the waitlist closes.",
+            "- Accounts whose email address was never confirmed: 7 days.",
+            "- Account, profile, calendar and listings: until the account is deleted.",
+            "- Bookings: until the account is deleted, or, where they are needed to establish or defend legal claims, until those claims expire.",
+            "- In-app notifications: 90 days.",
+            "- Server logs: no longer than 90 days."
+          ]
+        },
+        {
+          "heading": "6. Your rights",
+          "body": [
+            "You have the right to access, correct and delete your data, to restrict its processing and to data portability, and the right to object to processing based on legitimate interest. You can withdraw consent at any time; this does not affect earlier processing. Write to {contact}.",
+            "You can also lodge a complaint with the supervisory authority; in Poland this is the President of the Personal Data Protection Office (UODO, ul. Stawki 2, 00-193 Warsaw).",
+            "Providing data is voluntary, but without an email address you cannot create an account or join the waitlist."
+          ]
+        },
+        {
+          "heading": "7. Cookies and browser storage",
+          "body": [
+            "We only use cookies and entries the service needs to work:",
+            "- sos_refresh: keeps you signed in to the app (30 days, not readable by page scripts);",
+            "- NEXT_LOCALE: the language you chose in the app;",
+            "- browser storage (localStorage): light or dark theme and view settings, such as map search.",
+            "We use no advertising or analytics cookies. Umami statistics store nothing in your browser, which is why we do not ask for cookie consent."
+          ]
+        },
+        {
+          "heading": "8. Changes to this policy",
+          "body": [
+            "When we change this policy, we publish the new version on this page with a new date, and we tell app users about significant changes by email."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of service",
+      "metaDescription": "The rules for using Spot On Slot, for artists and venues.",
+      "intro": "These terms set out the rules for using Spot On Slot, a service that helps artists and venues find each other and arrange performances.",
+      "sections": [
+        {
+          "heading": "1. Provider and contact",
+          "body": [
+            "The service is run by {administrator}. Contact: {contact}.",
+            "Using the service is free of charge."
+          ]
+        },
+        {
+          "heading": "2. Account",
+          "body": [
+            "- An account can be created by an adult or a business, as an artist or as a venue.",
+            "- You give true information and keep your password safe. Each account belongs to one person.",
+            "- A venue account can run several venues and invite colleagues to them. The venue's owner is responsible for what happens in the venue.",
+            "- The contract for using the service is concluded when you create an account. You can end it at any time by writing to {contact}."
+          ]
+        },
+        {
+          "heading": "3. User content",
+          "body": [
+            "You are responsible for what you publish: descriptions, photos, links and listings. You must hold the rights to it, and people shown in photos must agree to their publication.",
+            "You grant us a non-exclusive, free licence to display this content in the service and in link previews for as long as it is published.",
+            "Content that is unlawful, offensive or misleading, that infringes others' rights, spam, and impersonating other people or venues are forbidden."
+          ]
+        },
+        {
+          "heading": "4. Listings and bookings",
+          "body": [
+            "- Listings and requests must be about real dates and terms.",
+            "- Accepting a booking means the artist and the venue have agreed on a performance on the terms of the latest offer. That agreement binds only the artist and the venue. Spot On Slot is not a party to it, does not handle payments and is not responsible for its performance.",
+            "- A booking can be cancelled before the performance, with a reason. What a cancellation means between the parties follows from their agreement and the law.",
+            "- A request with no answer expires after 72 hours or when its time starts."
+          ]
+        },
+        {
+          "heading": "5. Moderation",
+          "body": [
+            "We may hide content or block an account that breaks these terms or the law. We will tell you why, unless the law forbids it. You can appeal by writing to {contact}.",
+            "You can report unlawful content to {contact}."
+          ]
+        },
+        {
+          "heading": "6. Liability and availability",
+          "body": [
+            "We work to keep the service running without interruption, but maintenance and outages can happen. To the extent the law allows, we are not responsible for content published by users or for the performance of agreements between them."
+          ]
+        },
+        {
+          "heading": "7. Complaints",
+          "body": [
+            "Send complaints about how the service works to {contact}. We will answer within 14 days."
+          ]
+        },
+        {
+          "heading": "8. Changes and governing law",
+          "body": [
+            "We will email you about changes to these terms at least 14 days before they take effect. If you do not agree with them, you can end the contract before then.",
+            "These terms are governed by Polish law. They do not limit the rights consumers have under mandatory provisions.",
+            "How we process data is described in the privacy policy."
+          ]
+        }
+      ]
+    }
   }
 }

@@ -24,6 +24,10 @@ afterEach(() => {
 
 afterAll(() => vi.unstubAllGlobals());
 
+afterEach(() => {
+  delete (globalThis as { umami?: unknown }).umami;
+});
+
 function renderForm() {
   const user = userEvent.setup();
   render(
@@ -142,5 +146,29 @@ describe("WaitlistForm", () => {
 
     expect(await screen.findByText(successText("bot@example.com"))).toBeInTheDocument();
     expect(await sentRequest().json()).toMatchObject({ website: "spam" });
+  });
+});
+
+describe("WaitlistForm analytics", () => {
+  it("reports a sign-up with the role only, never the e-mail", async () => {
+    const track = vi.fn();
+    (globalThis as { umami?: unknown }).umami = { track };
+    fetchMock.mockResolvedValue(new Response(null, { status: 202 }));
+    const user = renderForm();
+    await fillValid(user);
+    await submit(user);
+    await screen.findByRole("status");
+    expect(track).toHaveBeenCalledWith("waitlist-signup", { role: "ARTIST" });
+  });
+
+  it("does not report a failed sign-up", async () => {
+    const track = vi.fn();
+    (globalThis as { umami?: unknown }).umami = { track };
+    fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+    const user = renderForm();
+    await fillValid(user);
+    await submit(user);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(track).not.toHaveBeenCalled();
   });
 });

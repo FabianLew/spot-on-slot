@@ -75,7 +75,8 @@
     "consentRequired": "Zgoda jest wymagana do zapisu"
   },
   "privacy": {
-    "clause": "Administratorem Twoich danych jest {administrator}, kontakt: {contact}. Przetwarzamy adres e-mail, rolę i miasto wyłącznie po to, żeby poinformować Cię o starcie Spot On Slot, na podstawie Twojej zgody (art. 6 ust. 1 lit. a RODO). Niepotwierdzone zapisy usuwamy po 7 dniach, a potwierdzone przechowujemy do wycofania zgody albo zamknięcia listy oczekujących. Zgodę możesz wycofać w każdej chwili, pisząc na powyższy adres. Masz prawo dostępu do danych, ich sprostowania i usunięcia oraz prawo skargi do Prezesa UODO."
+    "clause": "Administratorem Twoich danych jest {administrator}, kontakt: {contact}. Przetwarzamy adres e-mail, rolę i miasto wyłącznie po to, żeby poinformować Cię o starcie Spot On Slot, na podstawie Twojej zgody (art. 6 ust. 1 lit. a RODO). Niepotwierdzone zapisy usuwamy po 7 dniach, a potwierdzone przechowujemy do wycofania zgody albo zamknięcia listy oczekujących. Zgodę możesz wycofać w każdej chwili, pisząc na powyższy adres. Masz prawo dostępu do danych, ich sprostowania i usunięcia oraz prawo skargi do Prezesa UODO.",
+    "policyLink": "Więcej w polityce prywatności."
   },
   "faq": {
     "heading": "FAQ",
@@ -124,10 +125,163 @@
   },
   "footer": {
     "copyright": "© {year} Spot On Slot",
-    "controller": "Administrator danych: {administrator}, kontakt: {contact}"
+    "controller": "Administrator danych: {administrator}, kontakt: {contact}",
+    "legalNav": "Dokumenty prawne"
   },
   "common": {
     "notFoundTitle": "Nie znaleziono strony",
     "backHome": "Wróć na stronę główną"
+  },
+  "legal": {
+    "draftNotice": "Projekt dokumentu. Przed startem serwisu przejrzy go prawnik.",
+    "version": "Wersja z {date}",
+    "back": "Wróć na stronę główną",
+    "otherDocument": "Zobacz też:",
+    "privacy": {
+      "title": "Polityka prywatności",
+      "metaDescription": "Jakie dane przetwarza Spot On Slot, po co, jak długo i jakie masz prawa.",
+      "intro": "Ta polityka opisuje, jak Spot On Slot przetwarza dane osobowe osób, które odwiedzają stronę, zapisują się na listę oczekujących i korzystają z aplikacji.",
+      "sections": [
+        {
+          "heading": "1. Administrator",
+          "body": [
+            "Administratorem danych jest {administrator}. We wszystkich sprawach dotyczących danych osobowych napisz na {contact}."
+          ]
+        },
+        {
+          "heading": "2. Jakie dane przetwarzamy i po co",
+          "body": [
+            "- Lista oczekujących: adres e-mail, rola i miasto, żeby poinformować Cię o starcie serwisu. Podstawa: Twoja zgoda (art. 6 ust. 1 lit. a RODO).",
+            "- Konto: adres e-mail, hasło (przechowujemy tylko jego skrót, nigdy samo hasło), rola, język oraz data akceptacji regulaminu. Podstawa: umowa o korzystanie z serwisu (art. 6 ust. 1 lit. b RODO).",
+            "- Profil artysty lub lokalu: nazwa sceniczna albo nazwa lokalu, opis, gatunki, linki, stawki, zdjęcia i adres lokalu. Te dane są publiczne po opublikowaniu profilu. Imię i nazwisko artysty nie są pokazywane publicznie. Podstawa: umowa.",
+            "- Lokalizacja: przy koncie zapisujemy punkt zaokrąglony do ok. 1 km i nazwę miejscowości. Dokładnego położenia z urządzenia nie zapisujemy. Adres lokalu jest zapisywany dokładnie, bo jest danymi firmy pokazywanymi publicznie. Podstawa: umowa.",
+            "- Kalendarz, ogłoszenia i bookingi: terminy, kwoty, wiadomości dołączone do kroków bookingu i ich historia. Podstawa: umowa.",
+            "- Powiadomienia: lista powiadomień w aplikacji, ustawienia i e-maile. E-maile o ogłoszeniach w okolicy wysyłamy w naszym prawnie uzasadnionym interesie (art. 6 ust. 1 lit. f RODO), a każdy z nich ma link do wypisania się.",
+            "- Bezpieczeństwo i statystyki: logi serwera (adres IP, czas, adres strony) służą ochronie przed nadużyciami, a zbiorcze statystyki odwiedzin pozwalają ulepszać stronę. Podstawa: prawnie uzasadniony interes."
+          ]
+        },
+        {
+          "heading": "3. Kto widzi Twoje dane",
+          "body": [
+            "Opublikowany profil artysty lub lokalu i aktywne ogłoszenia może zobaczyć każdy, kto ma do nich link. Wyszukiwarka w aplikacji jest dostępna tylko dla zalogowanych. Booking widzą wyłącznie artysta i zespół danego lokalu.",
+            "Dane powierzamy dostawcom, którzy pomagają nam prowadzić serwis i działają na nasze polecenie:",
+            "- dostawca serwerów i bazy danych;",
+            "- Cloudflare (przechowywanie i udostępnianie zdjęć, usługa R2);",
+            "- dostawca wysyłki e-maili;",
+            "- Umami (statystyki odwiedzin bez plików cookies, bez zapisywania adresu IP);",
+            "- geokoder Photon (komoot), który zamienia wpisany adres na współrzędne. Zapytanie wysyła nasz serwer, więc geokoder dostaje tylko wpisany tekst albo zaokrąglony punkt, bez Twojego adresu IP.",
+            "Mapa w wyszukiwarce pobiera kafelki bezpośrednio z serwisu OpenFreeMap, więc jego serwery widzą adres IP przeglądarki. Część programów pocztowych wczytuje czcionki naszych e-maili z Google Fonts. Nie sprzedajemy danych i nie udostępniamy ich reklamodawcom."
+          ]
+        },
+        {
+          "heading": "4. Przekazywanie danych poza EOG",
+          "body": [
+            "Jeśli któryś z dostawców przetwarza dane poza Europejskim Obszarem Gospodarczym, odbywa się to na podstawie decyzji Komisji Europejskiej stwierdzającej odpowiedni poziom ochrony (np. EU-US Data Privacy Framework) albo standardowych klauzul umownych."
+          ]
+        },
+        {
+          "heading": "5. Jak długo przechowujemy dane",
+          "body": [
+            "- Niepotwierdzone zapisy na listę oczekujących: 7 dni. Potwierdzone: do wycofania zgody albo zamknięcia listy.",
+            "- Konta, których adres e-mail nie został potwierdzony: 7 dni.",
+            "- Konto, profil, kalendarz i ogłoszenia: do usunięcia konta.",
+            "- Bookingi: do usunięcia konta, a jeśli są potrzebne do ustalenia lub obrony roszczeń, do ich przedawnienia.",
+            "- Powiadomienia w aplikacji: 90 dni.",
+            "- Logi serwera: nie dłużej niż 90 dni."
+          ]
+        },
+        {
+          "heading": "6. Twoje prawa",
+          "body": [
+            "Masz prawo dostępu do swoich danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przeniesienia, a także prawo sprzeciwu wobec przetwarzania opartego na prawnie uzasadnionym interesie. Zgodę możesz wycofać w każdej chwili, co nie wpływa na wcześniejsze przetwarzanie. Napisz na {contact}.",
+            "Masz też prawo wnieść skargę do Prezesa Urzędu Ochrony Danych Osobowych (ul. Stawki 2, 00-193 Warszawa).",
+            "Podanie danych jest dobrowolne, ale bez adresu e-mail nie założysz konta ani nie zapiszesz się na listę oczekujących."
+          ]
+        },
+        {
+          "heading": "7. Pliki cookies i pamięć przeglądarki",
+          "body": [
+            "Używamy wyłącznie plików i wpisów niezbędnych do działania serwisu:",
+            "- sos_refresh: utrzymuje zalogowanie w aplikacji (30 dni, niedostępny dla skryptów strony);",
+            "- NEXT_LOCALE: zapamiętany język aplikacji;",
+            "- pamięć przeglądarki (localStorage): motyw jasny lub ciemny oraz ustawienia widoku, np. wyszukiwania na mapie.",
+            "Nie używamy plików cookies reklamowych ani analitycznych. Statystyki Umami nie zapisują niczego w Twojej przeglądarce, dlatego nie prosimy o zgodę na cookies."
+          ]
+        },
+        {
+          "heading": "8. Zmiany polityki",
+          "body": [
+            "Gdy zmienimy tę politykę, opublikujemy nową wersję na tej stronie z nową datą, a o istotnych zmianach poinformujemy użytkowników aplikacji e-mailem."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Regulamin",
+      "metaDescription": "Zasady korzystania z serwisu Spot On Slot dla artystów i lokali.",
+      "intro": "Regulamin określa zasady korzystania z serwisu Spot On Slot, który pomaga artystom i lokalom znaleźć się nawzajem i umówić występ.",
+      "sections": [
+        {
+          "heading": "1. Usługodawca i kontakt",
+          "body": [
+            "Serwis prowadzi {administrator}. Kontakt: {contact}.",
+            "Korzystanie z serwisu jest bezpłatne."
+          ]
+        },
+        {
+          "heading": "2. Konto",
+          "body": [
+            "- Konto może założyć osoba pełnoletnia albo przedsiębiorca, jako artysta lub jako lokal.",
+            "- Podajesz prawdziwe dane i dbasz o bezpieczeństwo hasła. Jedno konto należy do jednej osoby.",
+            "- Konto lokalu może prowadzić kilka lokali i zapraszać do nich współpracowników. Za działania w lokalu odpowiada jego właściciel.",
+            "- Umowa o korzystanie z serwisu zawiera się z chwilą założenia konta. Możesz ją rozwiązać w każdej chwili, pisząc na {contact}."
+          ]
+        },
+        {
+          "heading": "3. Treści użytkowników",
+          "body": [
+            "Odpowiadasz za treści, które publikujesz: opisy, zdjęcia, linki i ogłoszenia. Musisz mieć do nich prawa, a osoby widoczne na zdjęciach muszą się zgadzać na ich publikację.",
+            "Udzielasz nam niewyłącznej, bezpłatnej licencji na wyświetlanie tych treści w serwisie i w podglądach linków, na czas ich publikacji.",
+            "Zabronione są treści bezprawne, obraźliwe, wprowadzające w błąd, naruszające cudze prawa, spam oraz podszywanie się pod inne osoby lub lokale."
+          ]
+        },
+        {
+          "heading": "4. Ogłoszenia i bookingi",
+          "body": [
+            "- Ogłoszenia i zapytania muszą dotyczyć prawdziwych terminów i warunków.",
+            "- Zaakceptowanie bookingu oznacza, że artysta i lokal umówili się na występ na warunkach z ostatniej oferty. Umowa o występ łączy wyłącznie artystę i lokal. Spot On Slot nie jest jej stroną, nie pośredniczy w płatnościach i nie odpowiada za jej wykonanie.",
+            "- Booking można anulować przed występem, podając powód. Skutki anulowania między stronami wynikają z ich umowy i przepisów prawa.",
+            "- Zapytanie bez odpowiedzi wygasa po 72 godzinach albo z chwilą rozpoczęcia terminu."
+          ]
+        },
+        {
+          "heading": "5. Moderacja",
+          "body": [
+            "Możemy ukryć treść albo zablokować konto, które narusza regulamin lub prawo. Napiszemy do Ciebie, dlaczego, chyba że zakazuje nam tego prawo. Możesz się od tej decyzji odwołać, pisząc na {contact}.",
+            "Treści naruszające prawo możesz zgłosić na {contact}."
+          ]
+        },
+        {
+          "heading": "6. Odpowiedzialność i dostępność",
+          "body": [
+            "Dbamy o to, żeby serwis działał bez przerw, ale mogą zdarzać się prace techniczne i awarie. Nie odpowiadamy za treści publikowane przez użytkowników ani za wykonanie umów między nimi, w granicach dopuszczalnych przez prawo."
+          ]
+        },
+        {
+          "heading": "7. Reklamacje",
+          "body": [
+            "Reklamacje dotyczące działania serwisu wyślij na {contact}. Odpowiemy w ciągu 14 dni."
+          ]
+        },
+        {
+          "heading": "8. Zmiany regulaminu i prawo właściwe",
+          "body": [
+            "O zmianach regulaminu poinformujemy e-mailem co najmniej 14 dni przed ich wejściem w życie. Jeśli się z nimi nie zgadzasz, możesz wcześniej rozwiązać umowę.",
+            "Regulamin podlega prawu polskiemu. Nie ogranicza praw, które przysługują konsumentom na podstawie bezwzględnie obowiązujących przepisów.",
+            "Zasady przetwarzania danych opisuje polityka prywatności."
+          ]
+        }
+      ]
+    }
   }
 }

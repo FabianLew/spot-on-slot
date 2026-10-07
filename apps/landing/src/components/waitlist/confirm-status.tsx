@@ -70,7 +70,7 @@ export function ConfirmStatus({ token }: { token: string | null }) {
         </div>
       )}
       {state === "expired" ? (
-        <Link href="/#waitlist" className={linkClass}>
+        <Link href={{ pathname: "/", hash: "waitlist" }} className={linkClass}>
           {t("backHome")}
         </Link>
       ) : (

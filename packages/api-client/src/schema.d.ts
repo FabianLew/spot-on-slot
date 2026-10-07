@@ -1585,6 +1585,7 @@ export interface components {
             role: string;
             locale: string;
             privacyNoticeAccepted?: boolean;
+            acceptTerms?: boolean;
         };
         AccessTokenResponse: {
             accessToken: string;

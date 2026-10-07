@@ -24,6 +24,7 @@ import {
   SelectValue,
   translateFormError,
 } from "@spot-on-slot/ui";
+import { trackEvent } from "@/lib/analytics";
 import { api } from "@/lib/api";
 import { WAITLIST_ROLES, waitlistSchema, type WaitlistValues } from "./waitlist-schema";
 
@@ -46,6 +47,7 @@ export function WaitlistForm() {
       else form.setError("root.server", { type: "server", message: t("waitlist.error") });
       return;
     }
+    trackEvent("waitlist-signup", { role: values.role });
     setSignedUpEmail(values.email);
   }
 
