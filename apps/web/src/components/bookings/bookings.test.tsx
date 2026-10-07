@@ -54,6 +54,7 @@ const booking = (overrides: Partial<Booking> = {}): Booking => ({
       endsAt: "2026-10-17T00:00:00Z",
       amount: 100000,
       message: "Zagrasz u nas?",
+      messageDeleted: false,
     },
     {
       type: "COUNTERED",
@@ -64,6 +65,7 @@ const booking = (overrides: Partial<Booking> = {}): Booking => ({
       endsAt: "2026-10-17T00:00:00Z",
       amount: 150000,
       message: "Za 1500 zł chętnie",
+      messageDeleted: false,
     },
   ],
   createdAt: "2026-10-13T10:00:00Z",

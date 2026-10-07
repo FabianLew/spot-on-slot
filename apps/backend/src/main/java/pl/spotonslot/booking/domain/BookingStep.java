@@ -55,8 +55,13 @@ public class BookingStep extends BaseEntity {
     @Column(name = "amount", nullable = false, updatable = false)
     private long amount;
 
-    @Column(name = "message", updatable = false, length = 1000)
+    /** Null when the step carried none, or after its author's account was purged ({@link #messageDeleted}). */
+    @Column(name = "message", length = 1000)
     private String message;
+
+    /** The author's account was purged and the message erased; clients show "message deleted". */
+    @Column(name = "message_deleted", nullable = false)
+    private boolean messageDeleted;
 
     BookingStep(Booking booking, int seq, BookingStepType type, BookingParty party, UUID actorId, Instant at,
             BookingTerms terms) {

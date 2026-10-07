@@ -18,8 +18,17 @@ import org.springframework.validation.annotation.Validated;
 public record NotificationProperties(@Valid @NotNull Mail mail, @Valid @NotNull Landing landing,
         @Valid @NotNull Web web) {
 
-    /** @param from sender address of every e-mail */
-    public record Mail(@NotBlank @Email String from) {
+    /**
+     * @param from    sender address of every e-mail
+     * @param contact where people write when something looks wrong (e.g. "this wasn't me"); blank = {@code from}
+     */
+    public record Mail(@NotBlank @Email String from, String contact) {
+
+        public Mail {
+            if (contact == null || contact.isBlank()) {
+                contact = from;
+            }
+        }
     }
 
     /** @param baseUrl landing origin without a trailing slash, e.g. {@code https://spotonslot.pl} */

@@ -57,7 +57,7 @@ class LocationController {
         locationService.deleteForUser(user(jwt));
     }
 
-    private static LocationResponse toResponse(Location location) {
+    static LocationResponse toResponse(Location location) {
         return new LocationResponse(location.getLabel(), location.getCity(), location.getRegion(),
                 location.getCountryCode(), location.getLatitude(), location.getLongitude(), location.getSource(),
                 location.getUpdatedAt());

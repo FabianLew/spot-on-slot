@@ -22,7 +22,7 @@ import pl.spotonslot.shared.persistence.BaseEntity;
 @Table(name = "identity_user")
 public class UserAccount extends BaseEntity {
 
-    @Column(name = "email", nullable = false, length = 254, updatable = false)
+    @Column(name = "email", nullable = false, length = 254)
     private String email;
 
     @Column(name = "password_hash", nullable = false, length = 255)
@@ -42,14 +42,18 @@ public class UserAccount extends BaseEntity {
     @Column(name = "privacy_notice_accepted_at", nullable = false, updatable = false)
     private Instant privacyNoticeAcceptedAt;
 
-    @Column(name = "terms_accepted_at", updatable = false)
+    @Column(name = "terms_accepted_at")
     private Instant termsAcceptedAt;
 
-    @Column(name = "terms_version", length = 32, updatable = false)
+    @Column(name = "terms_version", length = 32)
     private String termsVersion;
 
     @Column(name = "email_verified_at")
     private Instant emailVerifiedAt;
+
+    /** When the owner asked to delete the account; set while {@link AccountStatus#DELETION_PENDING}. */
+    @Column(name = "deletion_requested_at")
+    private Instant deletionRequestedAt;
 
     public static UserAccount register(String email, String passwordHash, Role role, String locale, String termsVersion,
             Instant now) {
@@ -77,6 +81,40 @@ public class UserAccount extends BaseEntity {
 
     public void changePassword(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    /** {@code email} is already normalized and checked to be free. */
+    public void changeEmail(String email) {
+        this.email = email;
+    }
+
+    public void acceptTerms(String version, Instant now) {
+        this.termsVersion = version;
+        this.termsAcceptedAt = now;
+    }
+
+    public boolean hasAcceptedTerms(String currentVersion) {
+        return currentVersion.equals(termsVersion);
+    }
+
+    /** Starts the grace period after which the account is purged; sessions are ended by the caller. */
+    public void requestDeletion(Instant now) {
+        status = AccountStatus.DELETION_PENDING;
+        deletionRequestedAt = now;
+    }
+
+    /** Takes back a deletion request; does nothing for an account that is not pending deletion. */
+    public boolean restore() {
+        if (status != AccountStatus.DELETION_PENDING) {
+            return false;
+        }
+        status = AccountStatus.ACTIVE;
+        deletionRequestedAt = null;
+        return true;
+    }
+
+    public boolean isDeletionPending() {
+        return status == AccountStatus.DELETION_PENDING;
     }
 
     public boolean isPendingVerification() {

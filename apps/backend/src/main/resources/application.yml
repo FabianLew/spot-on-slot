@@ -74,6 +74,8 @@ spotonslot:
   version: ${APP_VERSION:dev}
   mail:
     from: ${MAIL_FROM:no-reply@spotonslot.local}
+    # Contact address in account e-mails ("this wasn't me"); defaults to the sender.
+    contact: ${MAIL_CONTACT:}
   landing:
     base-url: ${LANDING_BASE_URL:http://localhost:3001}
   web:

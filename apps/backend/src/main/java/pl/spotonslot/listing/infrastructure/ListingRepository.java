@@ -61,6 +61,25 @@ public interface ListingRepository extends JpaRepository<Listing, UUID>, JpaSpec
         double getDistance();
     }
 
+    /** Listings the person posted or that are theirs as the artist, newest first. */
+    @Query("SELECT l FROM Listing l WHERE l.authorId = :userId OR l.artistId = :userId ORDER BY l.createdAt DESC")
+    List<Listing> findOfPerson(@Param("userId") UUID userId);
+
+    /** Active listings the person posted, theirs as the artist, or of the venues. */
+    @Query("SELECT l FROM Listing l WHERE l.status = pl.spotonslot.listing.domain.ListingStatus.ACTIVE"
+            + " AND (l.authorId = :userId OR l.artistId = :userId OR l.venueId IN :venueIds)")
+    List<Listing> findActiveOfPersonOrVenues(@Param("userId") UUID userId,
+            @Param("venueIds") Collection<UUID> venueIds);
+
+    /** Genres go with the listings (the foreign key cascades). */
+    @Modifying
+    @Query("DELETE FROM Listing l WHERE l.authorId = :userId OR l.artistId = :userId")
+    int deleteOfPerson(@Param("userId") UUID userId);
+
+    @Modifying
+    @Query("DELETE FROM Listing l WHERE l.venueId IN :venueIds")
+    int deleteOfVenues(@Param("venueIds") Collection<UUID> venueIds);
+
     /** Stores the expiry of active listings that have started; returns how many. */
     @Modifying
     @Query("UPDATE Listing l SET l.status = :expired, l.closedAt = :now, l.updatedAt = :now, l.version = l.version + 1"

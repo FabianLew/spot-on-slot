@@ -47,6 +47,8 @@ public class ListingService {
     public static final int MAX_ACTIVE_PER_VENUE = 30;
     public static final int MAX_ARTIST_DESCRIPTION = 500;
     public static final long MAX_DAYS_AHEAD = 365;
+    /** Stands in for an empty list in {@code IN (...)}. */
+    private static final Set<UUID> NO_VENUES = Set.of(new UUID(0, 0));
     static final Duration MIN_LENGTH = Duration.ofMinutes(30);
     static final Duration MAX_LENGTH = Duration.ofHours(24);
     /** Keeps listing locks apart from the calendar's per-artist lock on the same id. */
@@ -234,6 +236,40 @@ public class ListingService {
                 .toList();
         gone.forEach(listing -> listing.expire(now));
         return gone.size();
+    }
+
+    // ---- accounts
+
+    /**
+     * Closes the active listings of an account waiting for deletion: posted by them, theirs as the artist, or of
+     * {@code venueIds} (venues only they are in). A restore does not reopen them. Returns how many.
+     */
+    @Transactional
+    public int closeOfDeletedAccount(UUID userId, Set<UUID> venueIds) {
+        var now = now();
+        var active = listings.findActiveOfPersonOrVenues(userId, venueIds.isEmpty() ? NO_VENUES : venueIds)
+                .stream().filter(listing -> listing.isActiveAt(now)).toList();
+        active.forEach(listing -> listing.close(now));
+        return active.size();
+    }
+
+    /** Every listing the person posted or that is theirs as the artist, newest first, for their data export. */
+    @Transactional(readOnly = true)
+    public List<ListingView> listOfPerson(UUID userId) {
+        var lookups = new Lookups();
+        return listings.findOfPerson(userId).stream().map(listing -> view(listing, lookups)).toList();
+    }
+
+    /** Deletes a purged account's listings; returns how many. */
+    @Transactional
+    public int deleteOfPerson(UUID userId) {
+        return listings.deleteOfPerson(userId);
+    }
+
+    /** Deletes the listings of venues deleted with an account; returns how many. */
+    @Transactional
+    public int deleteOfVenues(Set<UUID> venueIds) {
+        return venueIds.isEmpty() ? 0 : listings.deleteOfVenues(venueIds);
     }
 
     /** Stores the expiry of active listings that have started; returns how many. */

@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,6 +25,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.support.TransactionTemplate;
 import pl.spotonslot.identity.AccountAlreadyExists;
+import pl.spotonslot.identity.AccountDeleted;
+import pl.spotonslot.identity.AccountDeletionRequested;
+import pl.spotonslot.identity.EmailChangeRequested;
+import pl.spotonslot.identity.PasswordChanged;
 import pl.spotonslot.identity.EmailVerificationRequested;
 import pl.spotonslot.identity.PasswordResetRequested;
 import pl.spotonslot.support.IntegrationTest;
@@ -101,6 +106,78 @@ class AccountMailerIntegrationTest {
 
         assertThat(message.getSubject()).isEqualTo("Invitation to the Basement team on Spot On Slot");
         assertThat(part(message, "text/plain")).contains("as owner").contains("valid for 7 days");
+    }
+
+    @Test
+    void sendsPasswordChangedNotice() throws Exception {
+        var message = publishAndCapture(new PasswordChanged(EMAIL, "pl"));
+
+        assertThat(message.getSubject()).isEqualTo("Hasło do Spot On Slot zostało zmienione");
+        assertThat(part(message, "text/plain"))
+                .contains("Inne urządzenia zostały wylogowane")
+                .contains("http://localhost:3000/forgot-password")
+                .contains("no-reply@spotonslot.local");
+    }
+
+    @Test
+    void sendsTheEmailChangeLinkToTheNewAddressAndANoticeToTheCurrentOne() throws Exception {
+        var sent = publishAndCaptureAll(new EmailChangeRequested(EMAIL, "new@example.com", "pl", TOKEN, false), 2);
+
+        var link = sent.stream().filter(message -> to(message).equals("new@example.com")).findFirst().orElseThrow();
+        assertThat(link.getSubject()).isEqualTo("Potwierdź nowy adres e-mail w Spot On Slot");
+        assertThat(part(link, "text/plain")).contains("http://localhost:3000/confirm-email-change?token=" + TOKEN)
+                .contains("24 godziny");
+        var notice = sent.stream().filter(message -> to(message).equals(EMAIL)).findFirst().orElseThrow();
+        assertThat(notice.getSubject()).isEqualTo("Prośba o zmianę adresu e-mail w Spot On Slot");
+        assertThat(part(notice, "text/plain")).contains("new@example.com").doesNotContain(TOKEN);
+    }
+
+    @Test
+    void anAddressWithAnAccountGetsANoticeInsteadOfTheLink() throws Exception {
+        var sent = publishAndCaptureAll(new EmailChangeRequested(EMAIL, "taken@example.com", "en", null, true), 2);
+
+        var taken = sent.stream().filter(message -> to(message).equals("taken@example.com")).findFirst()
+                .orElseThrow();
+        assertThat(taken.getSubject()).isEqualTo("You already have a Spot On Slot account");
+        assertThat(part(taken, "text/plain")).contains("http://localhost:3000/login").doesNotContain("token=");
+    }
+
+    @Test
+    void sendsTheDeletionDateAndTheWayBack() throws Exception {
+        var message = publishAndCapture(new AccountDeletionRequested(UUID.randomUUID(), EMAIL, "pl",
+                Instant.parse("2026-10-21T10:00:00Z")));
+
+        assertThat(message.getSubject()).isEqualTo("Twoje konto w Spot On Slot zostanie usunięte");
+        assertThat(part(message, "text/plain")).contains("21 października 2026").contains("http://localhost:3000/login");
+        assertThat(part(message, "text/html")).contains("Przywr&oacute;ć konto");
+    }
+
+    @Test
+    void sendsTheLastEmailWithoutAButton() throws Exception {
+        var message = publishAndCapture(new AccountDeleted(UUID.randomUUID(), EMAIL, "en"));
+
+        assertThat(message.getSubject()).isEqualTo("Your Spot On Slot account was deleted");
+        assertThat(part(message, "text/plain")).contains("dates and amounts").doesNotContain("http");
+        assertThat(part(message, "text/html")).doesNotContain("&rarr;");
+    }
+
+    private List<MimeMessage> publishAndCaptureAll(Object event, int count) throws Exception {
+        transactions.executeWithoutResult(status -> events.publishEvent(event));
+
+        var captor = ArgumentCaptor.forClass(MimeMessage.class);
+        verify(mailSender, timeout(5_000).times(count)).send(captor.capture());
+        for (var message : captor.getAllValues()) {
+            message.saveChanges();
+        }
+        return captor.getAllValues();
+    }
+
+    private static String to(MimeMessage message) {
+        try {
+            return ((InternetAddress) message.getRecipients(Message.RecipientType.TO)[0]).getAddress();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private MimeMessage publishAndCapture(Object event) throws Exception {

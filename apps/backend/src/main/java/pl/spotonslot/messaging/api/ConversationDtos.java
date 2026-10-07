@@ -50,7 +50,10 @@ final class ConversationDtos {
     record PartyResponse(@Schema(requiredMode = REQUIRED) String name, String slug, String photoUrl) {
     }
 
-    /** {@code mine} = written by the viewer's side; {@code clientId} only on the viewer's own messages. */
+    /**
+     * {@code mine} = written by the viewer's side; {@code clientId} only on the viewer's own messages; {@code deleted}
+     * = the author's account was deleted and the text with it ({@code body} is empty, show "message deleted").
+     */
     record MessageResponse(
             @Schema(requiredMode = REQUIRED) UUID id,
             @Schema(requiredMode = REQUIRED) UUID conversationId,
@@ -58,11 +61,12 @@ final class ConversationDtos {
             @Schema(requiredMode = REQUIRED) boolean mine,
             @Schema(requiredMode = REQUIRED) String body,
             @Schema(requiredMode = REQUIRED) Instant createdAt,
-            String clientId) {
+            String clientId,
+            @Schema(requiredMode = REQUIRED) boolean deleted) {
 
         static MessageResponse of(MessageView view) {
             return new MessageResponse(view.id(), view.conversationId(), view.side(), view.mine(), view.body(),
-                    view.createdAt(), view.clientId());
+                    view.createdAt(), view.clientId(), view.deleted());
         }
     }
 

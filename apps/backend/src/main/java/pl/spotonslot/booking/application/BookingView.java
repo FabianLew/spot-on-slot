@@ -18,6 +18,6 @@ public record BookingView(Booking booking, BookingStatus status, BookingParty aw
         List<Step> steps) {
 
     public record Step(BookingStepType type, BookingParty party, boolean mine, Instant at, Instant startsAt,
-            Instant endsAt, long amount, String message) {
+            Instant endsAt, long amount, String message, boolean messageDeleted) {
     }
 }

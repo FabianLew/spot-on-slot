@@ -1,6 +1,7 @@
 package pl.spotonslot.notification.application;
 
 import java.util.Locale;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -31,7 +32,8 @@ class MessageUnreadMailer {
 
     @ApplicationModuleListener
     void on(MessageUnread event) {
-        if (!notifications.wantsMessageEmails(event.recipientId())) {
+        if (!notifications.wantsMessageEmails(event.recipientId())
+                || !accounts.deletionPending(Set.of(event.recipientId())).isEmpty()) {
             return;
         }
         var account = accounts.find(event.recipientId()).orElse(null);
