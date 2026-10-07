@@ -17,7 +17,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.HtmlUtils;
 import pl.spotonslot.identity.Accounts;
 import pl.spotonslot.listing.ListingKind;
 import pl.spotonslot.listing.Listings;
@@ -151,31 +150,27 @@ class NearbyListingMailer {
         if (range != null) {
             rows.append(row(text("label.price." + alert.kind(), locale), escape(range)));
         }
-        var free = Boolean.TRUE.equals(alert.free())
-                ? FREE.formatted(escape(text("free", locale)))
-                : "";
+        if (Boolean.TRUE.equals(alert.free())) {
+            rows.append(FREE.formatted(escape(text("free", locale))));
+        }
         var start = alert.startsAt().atZone(WARSAW);
         var end = alert.endsAt().atZone(WARSAW);
         var day = DateTimeFormatter.ofPattern("EEEE, d MMMM", locale).format(start);
         var hours = DateTimeFormatter.ofPattern("HH:mm", locale).format(start) + "–"
                 + DateTimeFormatter.ofPattern("HH:mm", locale).format(end);
+        var title = text("title." + alert.kind(), locale, alert.authorName());
         var settings = properties.web().baseUrl() + "/settings#notifications";
-        return LAYOUT.formatted(
-                locale.getLanguage(),
-                escape(text("title." + alert.kind(), locale, alert.authorName())),
-                escape(intro(alert, locale)),
-                escape(text("kicker." + alert.kind(), locale)),
-                escape(text("title." + alert.kind(), locale, alert.authorName())),
-                escape(intro(alert, locale)),
-                escape(text("label.when", locale)),
-                escape(day), escape(hours),
-                rows,
-                free,
-                escape(link), escape(text("button", locale)),
-                escape(text("reason." + alert.kind(), locale)),
-                escape(settings), escape(text("settingsLink", locale)),
-                escape(unsubscribe), escape(text("unsubscribe", locale)),
-                escape(text("footer", locale)));
+        return MailLayout.page(locale.getLanguage(), title, intro(alert, locale),
+                MailLayout.intro(text("kicker." + alert.kind(), locale), title, intro(alert, locale))
+                        + MailLayout.section(WHEN.formatted(escape(text("label.when", locale)), escape(day),
+                                escape(hours)), "16px 24px 0")
+                        + MailLayout.section("<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" "
+                                + "cellspacing=\"0\">" + rows + "</table>", "12px 24px 0")
+                        + MailLayout.button(link, text("button", locale)),
+                MailLayout.footnote(text("reason." + alert.kind(), locale))
+                        + MailLayout.links(settings, text("settingsLink", locale), unsubscribe,
+                                text("unsubscribe", locale)),
+                messages.getMessage("mail.layout.tagline", null, locale));
     }
 
     private static String row(String label, String valueHtml) {
@@ -183,98 +178,29 @@ class NearbyListingMailer {
     }
 
     private static String escape(String text) {
-        return HtmlUtils.htmlEscape(text);
+        return MailLayout.escape(text);
     }
-
-    // The web app's arcade look in e-mail-safe HTML: tables and inline styles. Silkscreen and Space Mono load where
-    // the client allows web fonts (Apple Mail, iOS); elsewhere the monospace fallback keeps the feel.
-    private static final String PIXEL = "font-family:'Silkscreen','Courier New',Courier,monospace;";
-    private static final String MONO = "font-family:'Space Mono','Courier New',Courier,monospace;";
-    private static final String YELLOW = "#ffd400";
-    private static final String RED = "#ff261f";
 
     private static final String CHIP = "<span style=\"display:inline-block;margin:0 4px 4px 0;padding:3px 8px;"
             + "border:1px solid #f2f2f2;color:#f2f2f2;font-size:12px;font-weight:bold;text-transform:uppercase;"
-            + MONO + "\">%s</span>";
+            + MailLayout.MONO + "\">%s</span>";
 
-    private static final String FREE = "<tr><td colspan=\"2\" style=\"padding:14px 0 0;" + MONO
-            + "font-size:14px;font-weight:bold;color:" + YELLOW + ";\">&#10003; %s</td></tr>";
+    private static final String FREE = "<tr><td colspan=\"2\" style=\"padding:14px 0 0;" + MailLayout.MONO
+            + "font-size:14px;font-weight:bold;color:" + MailLayout.YELLOW + ";\">&#10003; %s</td></tr>";
 
-    private static final String ROW = "<tr><td valign=\"top\" style=\"padding:10px 12px 10px 0;width:96px;" + PIXEL
-            + "font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#a3a3a3;"
-            + "border-top:1px dashed #3a3a3a;\">%s</td><td valign=\"top\" style=\"padding:10px 0;" + MONO
+    private static final String ROW = "<tr><td valign=\"top\" style=\"padding:10px 12px 10px 0;width:96px;"
+            + MailLayout.PIXEL + "font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#a3a3a3;"
+            + "border-top:1px dashed #3a3a3a;\">%s</td><td valign=\"top\" style=\"padding:10px 0;" + MailLayout.MONO
             + "font-size:15px;color:#f2f2f2;border-top:1px dashed #3a3a3a;\">%s</td></tr>";
 
-    /** The pixel stripe under the logo: red and black squares, like the app's sidebar. */
-    private static final String STRIPE = "<table role=\"presentation\" width=\"100%%\" cellpadding=\"0\" "
-            + "cellspacing=\"0\" style=\"border-collapse:collapse;\"><tr>"
-            + ("<td height=\"6\" style=\"height:6px;line-height:6px;font-size:0;background:" + RED
-            + ";\">&nbsp;</td><td height=\"6\" style=\"height:6px;line-height:6px;font-size:0;background:#0a0a0a;\">"
-            + "&nbsp;</td>").repeat(16)
-            + "</tr></table>";
-
-    private static final String LAYOUT = """
-            <!DOCTYPE html>
-            <html lang="%s">
-            <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <meta name="color-scheme" content="dark">
-            <meta name="supported-color-schemes" content="dark">
-            <link href="https://fonts.googleapis.com/css2?family=Silkscreen&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
-            <title>%s</title>
-            </head>
-            <body style="margin:0;padding:0;background:#0a0a0a;">
-            <div style="display:none;max-height:0;overflow:hidden;opacity:0;">%s</div>
-            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;">
-            <tr><td align="center" style="padding:28px 12px;">
-            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="max-width:560px;">
-            <tr><td style="padding:0 0 16px;PIXEL_font-size:20px;line-height:20px;letter-spacing:2px;\
-            color:YELLOW_;">SPOT<br>ON<br>SLOT</td></tr>
-            <tr><td style="background:#141414;border:2px solid YELLOW_;">
-            STRIPE_
-            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:28px 24px 8px;">
-            <span style="display:inline-block;padding:5px 10px;background:YELLOW_;color:#0a0a0a;PIXEL_\
-            font-size:12px;letter-spacing:1px;text-transform:uppercase;">%s</span>
-            <h1 style="margin:18px 0 8px;MONO_font-size:24px;line-height:30px;font-weight:bold;color:#ffffff;">%s</h1>
-            <p style="margin:0;MONO_font-size:15px;line-height:22px;color:#c8c8c8;">%s</p>
-            </td></tr>
-            <tr><td style="padding:16px 24px 0;">
-            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" \
-            style="border:2px solid #f2f2f2;background:#0a0a0a;">
-            <tr><td style="padding:14px 16px;">
-            <div style="PIXEL_font-size:11px;letter-spacing:1px;text-transform:uppercase;color:YELLOW_;">%s</div>
-            <div style="margin-top:6px;MONO_font-size:18px;line-height:24px;font-weight:bold;color:#ffffff;">%s</div>
-            <div style="MONO_font-size:22px;line-height:30px;font-weight:bold;color:RED_;">%s</div>
-            </td></tr>
-            </table>
-            </td></tr>
-            <tr><td style="padding:12px 24px 0;">
-            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">%s%s</table>
-            </td></tr>
-            <tr><td style="padding:24px 24px 28px;">
-            <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-            <td style="background:RED_;border:2px solid #0a0a0a;box-shadow:4px 4px 0 YELLOW_;">
-            <a href="%s" style="display:inline-block;padding:14px 22px;PIXEL_font-size:14px;letter-spacing:1px;\
-            text-transform:uppercase;color:#0a0a0a;text-decoration:none;">%s &rarr;</a>
-            </td></tr></table>
-            </td></tr>
-            </table>
-            </td></tr>
-            <tr><td style="padding:20px 4px 0;MONO_font-size:12px;line-height:18px;color:#8a8a8a;">
-            <p style="margin:0 0 12px;">%s</p>
-            <p style="margin:0 0 12px;"><a href="%s" style="color:#f2f2f2;">%s</a>
-            &nbsp;&middot;&nbsp; <a href="%s" style="color:#f2f2f2;">%s</a></p>
-            <p style="margin:0;PIXEL_font-size:11px;letter-spacing:1px;color:#5c5c5c;">%s</p>
-            </td></tr>
-            </table>
-            </td></tr>
-            </table>
-            </body>
-            </html>
-            """.replace("PIXEL_", PIXEL).replace("MONO_", MONO).replace("YELLOW_", YELLOW).replace("RED_", RED)
-            .replace("STRIPE_", STRIPE);
+    /** The date in its own box: label, day, hours. */
+    private static final String WHEN = "<table role=\"presentation\" width=\"100%%\" cellpadding=\"0\" "
+            + "cellspacing=\"0\" style=\"border:2px solid #f2f2f2;background:#0a0a0a;\"><tr>"
+            + "<td style=\"padding:14px 16px;\"><div style=\"" + MailLayout.PIXEL + "font-size:11px;"
+            + "letter-spacing:1px;text-transform:uppercase;color:" + MailLayout.YELLOW + ";\">%s</div>"
+            + "<div style=\"margin-top:6px;" + MailLayout.MONO + "font-size:18px;line-height:24px;font-weight:bold;"
+            + "color:#ffffff;\">%s</div><div style=\"" + MailLayout.MONO + "font-size:22px;line-height:30px;"
+            + "font-weight:bold;color:" + MailLayout.RED + ";\">%s</div></td></tr></table>";
 
     private String intro(NearbyListingAlert alert, Locale locale) {
         return alert.kind() == ListingKind.VENUE_SEEKING
