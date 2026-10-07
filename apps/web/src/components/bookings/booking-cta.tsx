@@ -31,7 +31,11 @@ export function BookingCta({ target, size, className }: { target: BookingTarget;
   const label =
     target.kind === "artist" ? t("ask") : target.listingKind === "VENUE_SEEKING" ? t("apply") : t("askListing");
   return (
-    <Link href={bookingHref(target)} className={cn(buttonVariants({ size }), className)}>
+    <Link
+      href={bookingHref(target)}
+      // Full width and wrapping on phones: the pixel font is wide enough to push a one-line label out of its card.
+      className={cn(buttonVariants({ size }), "h-auto w-full whitespace-normal py-2 text-center sm:w-auto", size === "sm" ? "min-h-9" : "min-h-10", className)}
+    >
       {label}
     </Link>
   );
