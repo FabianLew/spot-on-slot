@@ -51,6 +51,10 @@ public class NotificationPreference extends BaseEntity {
     @Column(name = "genre", nullable = false, length = 32)
     private Set<Genre> nearbyGenres = EnumSet.noneOf(Genre.class);
 
+    /** E-mails about messages left unread in a conversation. */
+    @Column(name = "message_email", nullable = false)
+    private boolean messageEmail;
+
     /** Only switches e-mails off, so it is stored as is and repeated in every e-mail. */
     @Column(name = "unsubscribe_token", nullable = false, updatable = false, length = 64)
     private String unsubscribeToken;
@@ -60,6 +64,7 @@ public class NotificationPreference extends BaseEntity {
         preference.userId = userId;
         preference.nearbyEnabled = true;
         preference.nearbyEmail = true;
+        preference.messageEmail = true;
         preference.unsubscribeToken = SecretToken.generate();
         return preference;
     }
@@ -70,6 +75,10 @@ public class NotificationPreference extends BaseEntity {
         this.nearbyRadiusKm = radiusKm;
         this.nearbyGenres.clear();
         this.nearbyGenres.addAll(genres);
+    }
+
+    public void updateMessages(boolean email) {
+        this.messageEmail = email;
     }
 
     public void unsubscribeNearbyEmail() {

@@ -5,3 +5,6 @@ spring:
 spotonslot:
   cors:
     allowed-origins: http://localhost:3000
+  # Tests run the unread-message reminders themselves.
+  messaging:
+    reminder-cron: "-"

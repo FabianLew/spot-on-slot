@@ -99,7 +99,17 @@ final class NotificationDtos {
     record UnreadCountResponse(@Schema(requiredMode = REQUIRED) long count) {
     }
 
-    record PreferencesRequest(@Valid @NotNull @Schema(requiredMode = REQUIRED) NearbyListingsRequest nearbyListings) {
+    /** {@code messages} left out keeps those settings as they are. */
+    record PreferencesRequest(@Valid @NotNull @Schema(requiredMode = REQUIRED) NearbyListingsRequest nearbyListings,
+            @Valid MessagesRequest messages) {
+    }
+
+    /** E-mails about messages left unread for 10 minutes (once per conversation until read). */
+    record MessagesRequest(@NotNull @Schema(requiredMode = REQUIRED) Boolean email) {
+    }
+
+    @Schema(name = "MessageNotificationsResponse")
+    record MessagesResponse(@Schema(requiredMode = REQUIRED) boolean email) {
     }
 
     /**
@@ -115,11 +125,13 @@ final class NotificationDtos {
             @Size(max = 30) List<@NotNull Genre> genres) {
     }
 
-    record PreferencesResponse(@Schema(requiredMode = REQUIRED) NearbyListingsResponse nearbyListings) {
+    record PreferencesResponse(@Schema(requiredMode = REQUIRED) NearbyListingsResponse nearbyListings,
+            @Schema(requiredMode = REQUIRED) MessagesResponse messages) {
 
         static PreferencesResponse of(NotificationSettings settings) {
             return new PreferencesResponse(new NearbyListingsResponse(settings.enabled(), settings.email(),
-                    settings.radiusKm(), settings.genres(), settings.defaultRadiusKm(), settings.defaultGenres()));
+                    settings.radiusKm(), settings.genres(), settings.defaultRadiusKm(), settings.defaultGenres()),
+                    new MessagesResponse(settings.messageEmail()));
         }
     }
 

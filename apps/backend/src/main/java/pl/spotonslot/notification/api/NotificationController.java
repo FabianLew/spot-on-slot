@@ -73,8 +73,9 @@ class NotificationController {
     PreferencesResponse updateNotificationPreferences(@AuthenticationPrincipal Jwt jwt,
             @Valid @RequestBody PreferencesRequest request) {
         var nearby = request.nearbyListings();
-        return PreferencesResponse.of(notifications.updateNearby(user(jwt), nearby.enabled(), nearby.email(),
-                nearby.radiusKm(), nearby.genres() == null ? List.of() : nearby.genres()));
+        return PreferencesResponse.of(notifications.update(user(jwt), nearby.enabled(), nearby.email(),
+                nearby.radiusKm(), nearby.genres() == null ? List.of() : nearby.genres(),
+                request.messages() == null ? null : request.messages().email()));
     }
 
     private static UUID user(Jwt jwt) {

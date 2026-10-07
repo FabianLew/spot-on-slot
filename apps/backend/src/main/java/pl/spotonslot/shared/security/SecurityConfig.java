@@ -23,7 +23,9 @@ public class SecurityConfig {
             "/api/v1/waitlist/**",
             "/api/v1/auth/**",
             // Read-only public views (published artist profiles).
-            "/api/v1/public/**"
+            "/api/v1/public/**",
+            // The WebSocket handshake; the STOMP CONNECT frame carries the access token (messaging module).
+            "/ws/**"
     };
 
     @Bean
