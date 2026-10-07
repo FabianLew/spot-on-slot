@@ -8,13 +8,15 @@ export function WaitlistSection() {
   const { controller, email } = getPrivacyConfig();
 
   return (
-    <section id="waitlist" className="scroll-mt-20 bg-background text-foreground">
+    <section id="waitlist" className="scroll-mt-20 bg-background pattern-grid text-foreground">
       <div className="mx-auto flex max-w-xl flex-col gap-6 px-6 py-16 sm:py-24">
         <div className="flex flex-col gap-3">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">{t("heading")}</h2>
+          <h2 className="font-display text-2xl sm:text-3xl">{t("heading")}</h2>
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
-        <WaitlistForm />
+        <div className="border-2 border-border bg-card p-6 shadow-lg">
+          <WaitlistForm />
+        </div>
         <PrivacyNotice controller={controller} email={email} />
       </div>
     </section>

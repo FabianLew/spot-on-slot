@@ -1,16 +1,13 @@
 @import "tailwindcss";
 @import "@spot-on-slot/design-tokens/theme.css";
+@import "@spot-on-slot/design-tokens/arcade.css";
 
 @source "../../../../packages/ui/src";
 
-@theme inline {
-  --font-sans: var(--font-inter);
-}
-
-/* next/font sets --font-playfair on <html>; a theme key with the same name would emit a
-   self-referencing `--font-playfair: var(--font-playfair)` on :root, so the utility is declared directly. */
-@utility font-playfair {
-  font-family: var(--font-playfair);
+/* Self-hosted (OFL) via @fontsource, imported in the layout; the same pixel and mono faces as the web app. */
+:root {
+  --font-silkscreen: "Silkscreen";
+  --font-space-mono: "Space Mono";
 }
 
 @keyframes heroReveal { 0% { opacity: 0; transform: translateY(28px); filter: blur(12px); } 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
@@ -22,5 +19,9 @@
 .hero-zoom { animation: heroZoom 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @media (prefers-reduced-motion: reduce) { .hero-anim, .hero-zoom { animation: none; opacity: 1; } }
 
-.hero-cta { background-color: var(--hero-cta); }
+.hero-cta { background-color: var(--hero-cta); box-shadow: 4px 4px 0 0 var(--hero-cta-shadow); }
 .hero-cta:hover { background-color: var(--hero-cta-hover); }
+.hero-cta:active { box-shadow: 0 0 0 0 var(--hero-cta-shadow); transform: translate(4px, 4px); }
+
+/* Each headline line sits on a black label with a hard red pixel shadow, readable on any part of the image. */
+.hero-headline { box-shadow: 6px 6px 0 0 #ff261f; }

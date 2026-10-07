@@ -52,7 +52,7 @@ describe("Hero", () => {
     renderHero();
     const heading = screen.getByRole("heading", { level: 1 });
     expect(heading).toHaveTextContent(`${pl.hero.headlineLine1}${pl.hero.headlineLine2}`);
-    expect(screen.getByText(pl.hero.headlineLine1)).toHaveClass("font-playfair italic hero-reveal");
+    expect(screen.getByText(pl.hero.headlineLine1)).toHaveClass("font-display hero-reveal");
     expect(screen.getByText(pl.hero.headlineLine1)).toHaveStyle({ animationDelay: "0.25s" });
     expect(screen.getByText(pl.hero.headlineLine2)).toHaveStyle({ animationDelay: "0.42s" });
     expect(screen.getByText(pl.hero.descriptionLeft)).toBeInTheDocument();

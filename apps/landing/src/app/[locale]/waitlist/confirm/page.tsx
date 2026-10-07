@@ -19,8 +19,8 @@ export default async function ConfirmPage({ params, searchParams }: PageProps<"/
   const { token } = await searchParams;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
-      <div className="w-full max-w-md rounded-lg border border-border bg-background p-6">
+    <main className="flex min-h-screen items-center justify-center bg-background pattern-grid px-6 text-foreground">
+      <div className="w-full max-w-md border-2 border-border bg-card p-6 shadow-lg">
         <ConfirmStatus token={typeof token === "string" && token ? token : null} />
       </div>
     </main>

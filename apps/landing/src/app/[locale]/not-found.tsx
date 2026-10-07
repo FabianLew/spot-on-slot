@@ -6,7 +6,7 @@ export default function LocaleNotFound() {
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-24 text-center">
-      <h1 className="text-2xl font-semibold">{t("notFoundTitle")}</h1>
+      <h1 className="font-display text-2xl">{t("notFoundTitle")}</h1>
       <Link href="/" className="text-primary underline underline-offset-4">
         {t("backHome")}
       </Link>

@@ -15,7 +15,7 @@ export function Footer() {
   );
 
   return (
-    <footer className="border-t border-border bg-background text-muted-foreground">
+    <footer className="border-t-2 border-border bg-background text-muted-foreground">
       <div className="mx-auto flex max-w-5xl flex-col gap-2 px-6 py-8 text-sm">
         <p>{t("copyright", { year: new Date().getFullYear() })}</p>
         <p>
