@@ -316,6 +316,9 @@ describe("NotificationSettings", () => {
       }),
     );
     await user.click(screen.getByRole("button", { name: "Drum and bass" }));
+    await user.click(
+      screen.getByRole("checkbox", { name: "E-maile o nieprzeczytanych wiadomościach" }),
+    );
     await user.click(screen.getByRole("button", { name: "Zapisz" }));
 
     await waitFor(() =>
@@ -327,6 +330,7 @@ describe("NotificationSettings", () => {
         email: false,
         genres: ["DRUM_AND_BASS"],
       },
+      messages: { email: false },
     });
     expect(
       await screen.findByText("Zapisano ustawienia powiadomień"),

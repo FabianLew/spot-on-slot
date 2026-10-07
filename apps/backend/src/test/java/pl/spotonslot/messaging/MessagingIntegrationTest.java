@@ -126,6 +126,7 @@ class MessagingIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.kind").value("DIRECT"))
                 .andExpect(jsonPath("$.bookingId").doesNotExist())
+                .andExpect(jsonPath("$.bookingStartsAt").doesNotExist())
                 .andExpect(jsonPath("$.venueId").value(VENUE.toString()))
                 .andExpect(jsonPath("$.myParty").value("VENUE"))
                 .andExpect(jsonPath("$.other.name").value("DJ f1"))
@@ -361,6 +362,7 @@ class MessagingIntegrationTest {
         as(ARTIST, "ARTIST", get("/api/v1/conversations/" + thread))
                 .andExpect(jsonPath("$.kind").value("BOOKING"))
                 .andExpect(jsonPath("$.bookingId").value(bookingId))
+                .andExpect(jsonPath("$.bookingStartsAt").value(at(4, "22:00").toString()))
                 .andExpect(jsonPath("$.other.name").value("Pod Ziemią"))
                 .andExpect(jsonPath("$.lastMessage").doesNotExist());
 

@@ -3,6 +3,7 @@ import { BottomTabs } from "@/components/navigation/bottom-tabs";
 import { Sidebar } from "@/components/navigation/sidebar";
 import { SkipLink } from "@/components/navigation/skip-link";
 import { TopBar } from "@/components/navigation/top-bar";
+import { LiveMessages } from "@/components/messages/live-messages";
 import { OnboardingGate } from "@/components/onboarding/onboarding-gate";
 import { AuthGate } from "@/components/session/auth-gate";
 
@@ -10,6 +11,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <AuthGate>
       <OnboardingGate>
+        <LiveMessages />
         <div className="flex min-h-dvh flex-1">
           <SkipLink />
           <Sidebar />

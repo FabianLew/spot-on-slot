@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.spotonslot.artist.ArtistCard;
 import pl.spotonslot.artist.ArtistProfiles;
+import pl.spotonslot.booking.BookingInfo;
 import pl.spotonslot.booking.Bookings;
 import pl.spotonslot.media.MediaImage;
 import pl.spotonslot.media.MediaLibrary;
@@ -339,8 +340,11 @@ public class ConversationService {
                                 photo(photos, card.avatarMediaId()));
             }
             var last = latest.get(conversation.getId());
+            // Booking threads show the gig's date; a page holds few of them, so one lookup each is fine.
+            var startsAt = conversation.getBookingId() == null ? null
+                    : bookings.find(conversation.getBookingId()).map(BookingInfo::startsAt).orElse(null);
             result.add(new ConversationView(conversation, side, other, last == null ? null : view(last, side),
-                    unread.getOrDefault(conversation.getId(), 0L), readUpTo.get(conversation.getId())));
+                    unread.getOrDefault(conversation.getId(), 0L), readUpTo.get(conversation.getId()), startsAt));
         }
         return result;
     }

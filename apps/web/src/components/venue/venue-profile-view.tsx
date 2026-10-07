@@ -1,5 +1,6 @@
 import type { ApiSchemas } from "@spot-on-slot/api-client";
 import { useFormatter, useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 import { Panel, PixelNote, PixelPin, Tag } from "@spot-on-slot/ui";
 import { ExternalLinks, PhotoGalleryView } from "@/components/profile/public-parts";
 
@@ -22,7 +23,16 @@ export function addressLine(address: { street: string; postalCode?: string | nul
  * The venue profile in the arcade layout of the "venue panel" mockup. No client hooks, so the public page renders it
  * on the server and the team's preview in the app.
  */
-export function VenueProfileView({ venue, headingLevel = 2 }: { venue: VenueViewData; headingLevel?: 1 | 2 }) {
+/** `action` (the public page's "Napisz") sits under the name. */
+export function VenueProfileView({
+  venue,
+  headingLevel = 2,
+  action,
+}: {
+  venue: VenueViewData;
+  headingLevel?: 1 | 2;
+  action?: ReactNode;
+}) {
   const t = useTranslations();
   const format = useFormatter();
   const Heading = headingLevel === 1 ? "h1" : "h2";
@@ -76,6 +86,7 @@ export function VenueProfileView({ venue, headingLevel = 2 }: { venue: VenueView
                 ))}
               </ul>
             )}
+            {action}
           </div>
         </Panel>
         <div className="flex flex-col gap-4">
