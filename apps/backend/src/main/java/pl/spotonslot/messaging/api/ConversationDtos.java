@@ -74,7 +74,8 @@ final class ConversationDtos {
      * A conversation for one of its people. {@code bookingId} is set for a booking's thread; {@code lastMessage} is
      * null in a thread nobody wrote in yet. {@code unreadCount} counts the other side's messages the viewer has not
      * read; {@code otherReadUpTo} is the time of the newest message the other side has read (null = none).
-     * {@code canWrite} is false while a direct conversation is blocked by either side.
+     * {@code canWrite} is false while a direct conversation is blocked by either side. {@code bookingStartsAt} is the
+     * booking's current start in a booking thread.
      */
     record ConversationResponse(
             @Schema(requiredMode = REQUIRED) UUID id,
@@ -89,7 +90,8 @@ final class ConversationDtos {
             @Schema(requiredMode = REQUIRED) boolean blockedByMe,
             @Schema(requiredMode = REQUIRED) boolean blockedByOther,
             @Schema(requiredMode = REQUIRED) boolean canWrite,
-            Instant lastMessageAt) {
+            Instant lastMessageAt,
+            Instant bookingStartsAt) {
 
         static ConversationResponse of(ConversationView view) {
             var conversation = view.conversation();
@@ -99,7 +101,7 @@ final class ConversationDtos {
                     new PartyResponse(view.other().name(), view.other().slug(), view.other().photoUrl()),
                     view.lastMessage() == null ? null : MessageResponse.of(view.lastMessage()), view.unread(),
                     view.otherReadUpTo(), blockedBy == view.viewer(), blockedBy == view.viewer().other(),
-                    conversation.isWritable(), conversation.getLastMessageAt());
+                    conversation.isWritable(), conversation.getLastMessageAt(), view.bookingStartsAt());
         }
     }
 
@@ -116,6 +118,7 @@ final class ConversationDtos {
     }
 
     /** For the menu: conversations with unread messages, and those messages. */
+    @Schema(name = "ConversationUnreadCount")
     record UnreadCountResponse(
             @Schema(requiredMode = REQUIRED) long conversations,
             @Schema(requiredMode = REQUIRED) long messages) {

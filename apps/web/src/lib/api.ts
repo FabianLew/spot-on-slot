@@ -5,6 +5,14 @@ let accessToken: string | null = null;
 let refreshing: Promise<boolean> | null = null;
 const sessionEndedListeners = new Set<() => void>();
 
+/** Where the backend lives; the live connection derives its WebSocket address from it. */
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+
+/** The current access token, for the live connection's CONNECT frame (REST calls get it from the client). */
+export function getAccessToken() {
+  return accessToken;
+}
+
 export function setAccessToken(token: ApiSchemas["AccessTokenResponse"] | null) {
   accessToken = token?.accessToken ?? null;
 }
@@ -39,7 +47,7 @@ export function refreshSession(): Promise<boolean> {
 }
 
 export const api = createApiClient({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080",
+  baseUrl: API_URL,
   getLocale: () => (typeof document !== "undefined" ? document.documentElement.lang || undefined : undefined),
   getAccessToken: () => accessToken,
   onUnauthorized: () => refreshSession().catch(() => false),

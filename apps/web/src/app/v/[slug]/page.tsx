@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { MessageCta } from "@/components/messages/message-cta";
 import { VenueProfileView } from "@/components/venue/venue-profile-view";
 import { findPublicVenue } from "@/lib/public-profiles";
 
@@ -32,7 +33,14 @@ export async function generateMetadata({ params }: PageProps<"/v/[slug]">): Prom
 }
 
 export default async function Page({ params }: PageProps<"/v/[slug]">) {
-  const venue = await findPublicVenue((await params).slug);
+  const { slug } = await params;
+  const venue = await findPublicVenue(slug);
   if (!venue) notFound();
-  return <VenueProfileView venue={venue} headingLevel={1} />;
+  return (
+    <VenueProfileView
+      venue={venue}
+      headingLevel={1}
+      action={<MessageCta target={{ kind: "venue", slug }} className="self-start" />}
+    />
+  );
 }

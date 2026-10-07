@@ -14,6 +14,7 @@ export type NearbyListing = ApiSchemas["NearbyListingResponse"];
 export type BookingNotice = ApiSchemas["BookingNotificationResponse"];
 export type NotificationPreferences = ApiSchemas["PreferencesResponse"];
 export type NearbyListingsRequest = ApiSchemas["NearbyListingsRequest"];
+export type PreferencesRequest = ApiSchemas["PreferencesRequest"];
 
 export const NOTIFICATIONS = ["notifications"] as const;
 
@@ -86,12 +87,8 @@ export function useNotificationPreferences() {
 export function useSaveNotificationPreferences() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (nearbyListings: NearbyListingsRequest) =>
-      unwrap(
-        await api.PUT("/api/v1/notifications/preferences", {
-          body: { nearbyListings },
-        }),
-      ),
+    mutationFn: async (body: PreferencesRequest) =>
+      unwrap(await api.PUT("/api/v1/notifications/preferences", { body })),
     onSuccess: (saved) => queryClient.setQueryData(PREFERENCES, saved),
   });
 }

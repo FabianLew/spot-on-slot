@@ -1473,6 +1473,8 @@ export interface components {
             canWrite: boolean;
             /** Format: date-time */
             lastMessageAt?: string;
+            /** Format: date-time */
+            bookingStartsAt?: string;
         };
         MessageResponse: {
             /** Format: uuid */
@@ -2261,6 +2263,12 @@ export interface components {
             hasMore: boolean;
             /** Format: date-time */
             otherReadUpTo?: string;
+        };
+        ConversationUnreadCount: {
+            /** Format: int64 */
+            conversations: number;
+            /** Format: int64 */
+            messages: number;
         };
         PageResponseBookingResponse: {
             content?: components["schemas"]["BookingResponse"][];
@@ -8393,7 +8401,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnreadCountResponse"];
+                    "application/json": components["schemas"]["ConversationUnreadCount"];
                 };
             };
             /** @description Invalid request */

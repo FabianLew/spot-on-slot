@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ArtistProfileView } from "@/components/artist/artist-profile-view";
 import { BookingCta } from "@/components/bookings/booking-cta";
+import { MessageCta } from "@/components/messages/message-cta";
 import { NEXT_FREE_DAYS } from "@/components/calendar/next-free-slots";
 import { findPublicArtist, findPublicAvailability } from "@/lib/public-profiles";
 
@@ -41,7 +42,12 @@ export default async function Page({ params }: PageProps<"/a/[slug]">) {
       profile={artist}
       headingLevel={1}
       freeTime={freeTime}
-      action={<BookingCta target={{ kind: "artist", slug }} className="self-start" />}
+      action={
+        <div className="flex flex-wrap gap-2">
+          <BookingCta target={{ kind: "artist", slug }} />
+          <MessageCta target={{ kind: "artist", slug }} />
+        </div>
+      }
     />
   );
 }

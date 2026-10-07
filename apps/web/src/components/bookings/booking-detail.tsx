@@ -205,11 +205,18 @@ function BookingBody({ booking, refetch }: { booking: Booking; refetch: () => vo
           headingLevel={2}
         >
           <p className="font-display text-xl leading-tight">{side.name}</p>
-          {side.href && (
-            <Button asChild variant="outline" className="self-start">
-              <Link href={side.href}>{t("bookings.detail.seeProfile")}</Link>
-            </Button>
-          )}
+          <div className="flex flex-wrap gap-2">
+            {booking.conversationId != null && (
+              <Button asChild>
+                <Link href={`/messages/${booking.conversationId}`}>{t("bookings.detail.messages")}</Link>
+              </Button>
+            )}
+            {side.href && (
+              <Button asChild variant="outline">
+                <Link href={side.href}>{t("bookings.detail.seeProfile")}</Link>
+              </Button>
+            )}
+          </div>
         </Panel>
       </div>
       <History steps={booking.steps} />

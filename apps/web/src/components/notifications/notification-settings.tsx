@@ -23,6 +23,7 @@ import {
   useSaveNotificationPreferences,
   type NearbyListingsRequest,
   type NotificationPreferences,
+  type PreferencesRequest,
 } from "./queries";
 
 /** Radius choices besides the default (travel radius for artists, 50 km for venues); the backend takes 5–200 km. */
@@ -38,7 +39,7 @@ const toValues = (
   genres: preferences.nearbyListings.genres,
 });
 
-/** "Ustawienia → Powiadomienia": alerts about listings nearby, their e-mail, radius and genres. */
+/** "Ustawienia → Powiadomienia": alerts about listings nearby (e-mail, radius, genres) and unread message e-mails. */
 export function NotificationSettings() {
   const preferences = useNotificationPreferences();
   if (preferences.isError)
@@ -63,6 +64,7 @@ function SettingsForm({
   const [values, setValues] = useState<NearbyListingsRequest>(() =>
     toValues(preferences),
   );
+  const [messageEmail, setMessageEmail] = useState(preferences.messages.email);
 
   const defaults = preferences.nearbyListings;
   const update = (patch: Partial<NearbyListingsRequest>) =>
@@ -76,7 +78,8 @@ function SettingsForm({
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    save.mutate(values, { onSuccess: () => toast.success(t("saved")) });
+    const body: PreferencesRequest = { nearbyListings: values, messages: { email: messageEmail } };
+    save.mutate(body, { onSuccess: () => toast.success(t("saved")) });
   }
 
   return (
@@ -153,6 +156,20 @@ function SettingsForm({
           value={values.genres ?? []}
           onChange={(genres) => update({ genres })}
         />
+        <fieldset className="flex flex-col gap-3 border-t-2 border-border pt-4">
+          <legend className="float-left mb-3 w-full text-sm font-bold uppercase">
+            {t("messagesTitle")}
+          </legend>
+          <div className="flex items-center gap-3">
+            <Checkbox
+              id="messages-email"
+              checked={messageEmail}
+              onCheckedChange={(checked) => setMessageEmail(checked === true)}
+            />
+            <Label htmlFor="messages-email">{t("messagesEmail")}</Label>
+          </div>
+          <p className="text-xs text-muted-foreground">{t("messagesHint")}</p>
+        </fieldset>
         <p className="text-xs text-muted-foreground">{t("push")}</p>
         <Button type="submit" className="self-start" disabled={save.isPending}>
           {t("save")}
