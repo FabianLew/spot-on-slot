@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -84,9 +85,11 @@ class MessagingIntegrationTest {
     Conversations conversations;
 
     private String slug;
+    private Instant started;
 
     @BeforeEach
     void seed() throws Exception {
+        started = Instant.now();
         when(mailSender.createMimeMessage())
                 .thenAnswer(invocation -> new MimeMessage(Session.getInstance(new Properties())));
         jdbc.update("DELETE FROM conversation");
@@ -411,6 +414,17 @@ class MessagingIntegrationTest {
         var answer = captureMails(1).getFirst();
         assertThat(to(answer)).isEqualTo(email(ARTIST));
         assertThat(answer.getSubject()).isEqualTo("Masz nową wiadomość od Pod Ziemią");
+    }
+
+    /**
+     * Lets this test's listeners (booking notifications and e-mails, reminders) finish before the next test deletes
+     * their rows; a listener failing on a deleted row would leave its publication open for other test classes.
+     */
+    @AfterEach
+    void awaitListeners() {
+        await().atMost(Duration.ofSeconds(10)).until(() -> jdbc.queryForObject(
+                "SELECT count(*) FROM event_publication WHERE completion_date IS NULL AND publication_date >= ?",
+                Integer.class, Timestamp.from(started)) == 0);
     }
 
     // ---- helpers
