@@ -1,5 +1,6 @@
 package pl.spotonslot.venue.infrastructure;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,6 +15,8 @@ public interface VenueMemberRepository extends JpaRepository<VenueMember, UUID> 
     List<VenueMember> findByVenueIdOrderByCreatedAtAsc(UUID venueId);
 
     List<VenueMember> findByUserIdOrderByCreatedAtAsc(UUID userId);
+
+    List<VenueMember> findByVenueIdIn(Collection<UUID> venueIds);
 
     long countByUserId(UUID userId);
 

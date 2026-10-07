@@ -25,6 +25,11 @@ public class Availability {
         return availability.freeAmong(artistIds, from, to);
     }
 
+    /** Those of {@code artistIds} with booked time overlapping {@code [from, to)}. */
+    public Set<UUID> bookedAmong(Collection<UUID> artistIds, Instant from, Instant to) {
+        return availability.bookedAmong(artistIds, from, to);
+    }
+
     /** Marks the free time covering {@code [from, to)} as booked; fails with {@code AVAILABILITY_NOT_FREE}. */
     public void occupy(UUID artistId, Instant from, Instant to, UUID bookingId) {
         availability.occupy(artistId, from, to, bookingId);

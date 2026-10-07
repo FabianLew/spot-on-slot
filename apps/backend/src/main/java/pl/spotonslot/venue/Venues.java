@@ -3,7 +3,9 @@ package pl.spotonslot.venue;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -36,6 +38,17 @@ public class Venues {
         return venues.membershipsOf(userId).stream()
                 .map(member -> new VenueMembership(member.getVenueId(), member.getRole()))
                 .toList();
+    }
+
+    /** The team (user ids) of each of the venues; venues without a team are left out. */
+    @Transactional(readOnly = true)
+    public Map<UUID, Set<UUID>> teamsOf(Collection<UUID> venueIds) {
+        var teams = new HashMap<UUID, Set<UUID>>();
+        if (!venueIds.isEmpty()) {
+            venues.membersOf(venueIds).forEach(member -> teams
+                    .computeIfAbsent(member.getVenueId(), id -> new LinkedHashSet<>()).add(member.getUserId()));
+        }
+        return teams;
     }
 
     /** A published venue; drafts are invisible to other modules. Published venues always have a point. */

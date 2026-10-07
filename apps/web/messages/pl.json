@@ -1041,5 +1041,49 @@
       "confirmCancel": "Anuluj booking",
       "keep": "Wróć"
     }
+  },
+  "notifications": {
+    "title": "Powiadomienia",
+    "description": "Nowe ogłoszenia w Twojej okolicy, które pasują do Twoich gatunków.",
+    "bellUnread": "Powiadomienia: {count} nieprzeczytane",
+    "empty": "Nic nowego. Damy znać, gdy w okolicy pojawi się ogłoszenie dla Ciebie.",
+    "markAll": "Oznacz wszystkie jako przeczytane",
+    "more": "Pokaż starsze",
+    "settingsLink": "Ustawienia powiadomień",
+    "unreadTag": "Nowe",
+    "inactive": "Nieaktualne",
+    "free": "Masz wtedy wolne",
+    "nearby": {
+      "VENUE_SEEKING": "{name} szuka artysty",
+      "ARTIST_AVAILABLE": "{name} ma wolny termin"
+    },
+    "distanceSelf": "{city}, {km} km od Ciebie",
+    "distanceSelfNoCity": "{km} km od Ciebie",
+    "distanceVenue": "{city}, {km} km od lokalu {venue}",
+    "distanceVenueNoCity": "{km} km od lokalu {venue}",
+    "settings": {
+      "title": "Powiadomienia",
+      "description": "Alerty o nowych ogłoszeniach „Szukam artysty” i „Jestem wolny” w Twojej okolicy.",
+      "enabled": "Powiadamiaj o nowych ogłoszeniach w okolicy",
+      "email": "Wysyłaj je też e-mailem (najwyżej 5 dziennie)",
+      "radius": "Promień",
+      "radiusDefault": "Domyślny ({km} km)",
+      "radiusKm": "{km} km",
+      "genres": "Gatunki",
+      "genresHint": "Bez wyboru liczą się gatunki z profilu: {genres}.",
+      "genresHintNone": "Bez wyboru liczą się gatunki z profilu.",
+      "push": "Powiadomienia push pojawią się razem z aplikacją na telefon.",
+      "save": "Zapisz",
+      "saved": "Zapisano ustawienia powiadomień"
+    },
+    "unsubscribe": {
+      "title": "Wyłącz e-maile o ogłoszeniach",
+      "description": "Przestaniemy wysyłać e-maile o nowych ogłoszeniach w okolicy. Powiadomienia w aplikacji zostaną.",
+      "button": "Wyłącz e-maile",
+      "done": "Gotowe. Nie wyślemy Ci już e-maili o ogłoszeniach w okolicy. Włączysz je z powrotem w ustawieniach.",
+      "invalid": "Ten link jest nieprawidłowy. Otwórz go jeszcze raz z e-maila albo zmień ustawienia w aplikacji.",
+      "missing": "W linku brakuje kodu. Otwórz go jeszcze raz z e-maila.",
+      "settings": "Przejdź do ustawień powiadomień"
+    }
   }
 }

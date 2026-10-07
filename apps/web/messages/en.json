@@ -1041,5 +1041,49 @@
       "confirmCancel": "Cancel booking",
       "keep": "Back"
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "New listings near you that match your genres.",
+    "bellUnread": "Notifications: {count} unread",
+    "empty": "Nothing new. We will let you know when a listing for you shows up nearby.",
+    "markAll": "Mark all as read",
+    "more": "Show older",
+    "settingsLink": "Notification settings",
+    "unreadTag": "New",
+    "inactive": "No longer active",
+    "free": "You are free then",
+    "nearby": {
+      "VENUE_SEEKING": "{name} is looking for an artist",
+      "ARTIST_AVAILABLE": "{name} is free"
+    },
+    "distanceSelf": "{city}, {km} km from you",
+    "distanceSelfNoCity": "{km} km from you",
+    "distanceVenue": "{city}, {km} km from {venue}",
+    "distanceVenueNoCity": "{km} km from {venue}",
+    "settings": {
+      "title": "Notifications",
+      "description": "Alerts about new \"Looking for an artist\" and \"I'm free\" listings near you.",
+      "enabled": "Tell me about new listings nearby",
+      "email": "Also send them by email (at most 5 a day)",
+      "radius": "Radius",
+      "radiusDefault": "Default ({km} km)",
+      "radiusKm": "{km} km",
+      "genres": "Genres",
+      "genresHint": "With none picked, the genres of your profile count: {genres}.",
+      "genresHintNone": "With none picked, the genres of your profile count.",
+      "push": "Push notifications will come with the phone app.",
+      "save": "Save",
+      "saved": "Notification settings saved"
+    },
+    "unsubscribe": {
+      "title": "Turn off emails about listings",
+      "description": "We will stop emailing you about new listings nearby. Notifications in the app stay.",
+      "button": "Turn off emails",
+      "done": "Done. We will not email you about listings nearby any more. You can turn them back on in the settings.",
+      "invalid": "This link is not valid. Open it again from the email or change the settings in the app.",
+      "missing": "The link is missing its code. Open it again from the email.",
+      "settings": "Go to notification settings"
+    }
   }
 }

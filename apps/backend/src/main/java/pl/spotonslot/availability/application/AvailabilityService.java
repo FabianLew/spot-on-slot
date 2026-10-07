@@ -187,6 +187,19 @@ public class AvailabilityService {
         return free;
     }
 
+    /** Owners with a booked slot overlapping {@code [from, to)}; booked rule dates are slots of their own. */
+    @Transactional(readOnly = true)
+    public Set<UUID> bookedAmong(Collection<UUID> owners, Instant from, Instant to) {
+        if (owners.isEmpty() || !from.isBefore(to)) {
+            return Set.of();
+        }
+        var booked = new LinkedHashSet<UUID>();
+        slots.findOverlapping(owners, from, to).stream()
+                .filter(AvailabilitySlot::isBooked)
+                .forEach(slot -> booked.add(slot.getOwnerId()));
+        return booked;
+    }
+
     /** Takes free time for a booking: a slot turns booked, a rule date becomes its own booked slot. */
     @Transactional
     public void occupy(UUID ownerId, Instant from, Instant to, UUID bookingId) {
