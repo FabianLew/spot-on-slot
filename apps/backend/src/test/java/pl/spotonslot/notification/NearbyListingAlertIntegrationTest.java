@@ -106,6 +106,7 @@ class NearbyListingAlertIntegrationTest {
                 .thenAnswer(invocation -> new MimeMessage(Session.getInstance(new Properties())));
         jdbc.update("DELETE FROM notification_preference");
         jdbc.update("DELETE FROM notification");
+        jdbc.update("DELETE FROM booking");
         jdbc.update("DELETE FROM listing");
         jdbc.update("DELETE FROM availability_slot");
         jdbc.update("DELETE FROM availability_rule");
@@ -202,6 +203,19 @@ class NearbyListingAlertIntegrationTest {
     }
 
     @Test
+    void venuesWithAnAcceptedBookingAtThatTimeAreSkipped() throws Exception {
+        acceptedBooking(KLUB, BETA, at(4, "23:00"), at(5, "03:00"));
+        slot(ALFA, at(4, "18:00"), at(5, "04:00"));
+        var listing = announce(ALFA, at(4, "20:00"), at(5, "02:00"), "TECHNO", ", \"travelRadiusKm\": 100");
+
+        // Klub already has someone that night, so only Piwnica's team (Manager) hears about it.
+        awaitAlerts(listing, 1);
+        assertThat(recipients(listing)).containsExactly(MANAGER);
+        as(MANAGER, "VENUE", get("/api/v1/notifications"))
+                .andExpect(jsonPath("$.content[0].nearbyListing.venueName").value("Piwnica"));
+    }
+
+    @Test
     void preferencesTurnAlertsOffAndNarrowRadiusAndGenres() throws Exception {
         preferences(ALFA, "ARTIST", false, true, null, "")
                 .andExpect(status().isOk())
@@ -243,9 +257,10 @@ class NearbyListingAlertIntegrationTest {
 
     @Test
     void readingNotifications() throws Exception {
+        // Alerts for listings posted together are made in parallel, so wait before posting the newer one.
         var first = seek(KLUB, OWNER, at(4, "20:00"), at(5, "02:00"), "TECHNO", "");
-        var second = seek(KLUB, OWNER, at(5, "20:00"), at(6, "02:00"), "TECHNO", "");
         awaitAlerts(first, 2);
+        var second = seek(KLUB, OWNER, at(5, "20:00"), at(6, "02:00"), "TECHNO", "");
         awaitAlerts(second, 2);
 
         as(ALFA, "ARTIST", get("/api/v1/notifications/unread-count")).andExpect(jsonPath("$.count").value(2));
@@ -446,6 +461,15 @@ class NearbyListingAlertIntegrationTest {
                     + " VALUES (?, ?, ?, 0, ?, ?, ?)", UUID.randomUUID(), now, now, id, team[i],
                     i == 0 ? "OWNER" : "MANAGER");
         }
+    }
+
+    private void acceptedBooking(UUID venue, UUID artist, Instant startsAt, Instant endsAt) {
+        var now = Timestamp.from(Instant.now());
+        jdbc.update("INSERT INTO booking (id, created_at, updated_at, version, artist_id, venue_id, initiator,"
+                + " created_by, status, starts_at, ends_at, amount, revision, respond_by, artist_stage_name,"
+                + " venue_name) VALUES (?, ?, ?, 0, ?, ?, 'VENUE', ?, 'ACCEPTED', ?, ?, 0, 1, ?, 'x', 'x')",
+                UUID.randomUUID(), now, now, artist, venue, OWNER, Timestamp.from(startsAt),
+                Timestamp.from(endsAt), now);
     }
 
     private String seek(UUID venue, UUID user, Instant startsAt, Instant endsAt, String genre, String extra)

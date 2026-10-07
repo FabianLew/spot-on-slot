@@ -19,6 +19,7 @@ import pl.spotonslot.artist.ArtistCard;
 import pl.spotonslot.artist.ArtistProfiles;
 import pl.spotonslot.artist.Genre;
 import pl.spotonslot.availability.Availability;
+import pl.spotonslot.booking.Bookings;
 import pl.spotonslot.listing.ActiveListing;
 import pl.spotonslot.listing.ListingKind;
 import pl.spotonslot.listing.ListingPublished;
@@ -38,7 +39,7 @@ import pl.spotonslot.venue.Venues;
 /**
  * Tells people about a new listing near them: "Szukam artysty" goes to artists whose travel radius reaches the venue,
  * "Jestem wolny" to the teams of venues within the artist's travel radius; both need a shared genre, and artists
- * booked at that time are skipped (venues with a booking then will be, once booking exists in B10). Runs once per
+ * booked at that time and venues with an accepted booking then are skipped. Runs once per
  * listing after it commits; a retry skips people already told.
  */
 @Slf4j
@@ -58,6 +59,7 @@ class NearbyListingAlerts {
     private final Venues venues;
     private final Locations locations;
     private final Availability availability;
+    private final Bookings bookings;
     private final NotificationRepository notifications;
     private final NotificationPreferenceRepository preferences;
     private final ApplicationEventPublisher events;
@@ -140,7 +142,8 @@ class NearbyListingAlerts {
         var alerts = new HashMap<UUID, NearbyListingAlert>();
         var decided = new HashSet<UUID>();
         for (NearbyVenue found : nearby) {
-            if (found.distanceMeters() > reachKm * 1000.0) {
+            if (found.distanceMeters() > reachKm * 1000.0
+                    || bookings.venueHasAcceptedBetween(found.venue().id(), listing.startsAt(), listing.endsAt())) {
                 continue;
             }
             for (var person : teams.getOrDefault(found.venue().id(), Set.of())) {
