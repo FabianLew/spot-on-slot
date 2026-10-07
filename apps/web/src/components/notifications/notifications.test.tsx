@@ -224,6 +224,37 @@ describe("NotificationList", () => {
     );
   });
 
+  it("tells booking steps from the viewer's side and links to the booking", async () => {
+    const booking = (kind: string, by: string, id: string) =>
+      notification({
+        id,
+        type: "BOOKING",
+        nearbyListing: undefined,
+        booking: {
+          bookingId: `b-${id}`,
+          kind: kind as "REQUESTED",
+          by: by as "VENUE",
+          otherName: "Klub",
+          startsAt: "2026-10-16T20:00:00Z",
+          endsAt: "2026-10-17T02:00:00Z",
+          amount: id === "n3" ? 0 : 150000,
+        },
+      });
+    notifications = [
+      booking("REQUESTED", "VENUE", "n1"),
+      booking("DECLINED", "SYSTEM", "n2"),
+      booking("CANCELLED", "VENUE", "n3"),
+    ];
+    renderUi(<NotificationList />);
+    const request = await screen.findByRole("link", { name: /Klub pyta o termin/ });
+    expect(request).toHaveAttribute("href", "/bookings/b-n1");
+    expect(within(request).getByText("pt., 16 października · 22:00–04:00 +1")).toBeInTheDocument();
+    expect(within(request).getByText("Booking · 1500 zł")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Klub ma już booking w tym terminie/ })).toBeInTheDocument();
+    const cancelled = screen.getByRole("link", { name: /Klub odwołuje booking/ });
+    expect(within(cancelled).getByText("Booking · Bez honorarium")).toBeInTheDocument();
+  });
+
   it("says when there is nothing yet", async () => {
     notifications = [];
     renderUi(<NotificationList />);

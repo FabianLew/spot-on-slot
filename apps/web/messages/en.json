@@ -1044,9 +1044,9 @@
   },
   "notifications": {
     "title": "Notifications",
-    "description": "New listings near you that match your genres.",
+    "description": "Changes to your bookings and new listings near you that match your genres.",
     "bellUnread": "Notifications: {count} unread",
-    "empty": "Nothing new. We will let you know when a listing for you shows up nearby.",
+    "empty": "Nothing new. We will let you know when someone answers a booking or a listing for you shows up nearby.",
     "markAll": "Mark all as read",
     "more": "Show older",
     "settingsLink": "Notification settings",
@@ -1084,6 +1084,18 @@
       "invalid": "This link is not valid. Open it again from the email or change the settings in the app.",
       "missing": "The link is missing its code. Open it again from the email.",
       "settings": "Go to notification settings"
+    },
+    "bookingTag": "Booking",
+    "booking": {
+      "REQUESTED_VENUE": "{name} asks about a date",
+      "REQUESTED_ARTIST": "{name} applies to your listing",
+      "COUNTERED": "{name} proposes new terms",
+      "ACCEPTED": "{name} accepts the booking",
+      "DECLINED": "{name} declines the booking",
+      "DECLINED_SYSTEM": "{name} is already booked at that time",
+      "WITHDRAWN": "{name} withdraws the proposal",
+      "CANCELLED": "{name} cancels the booking",
+      "EXPIRED": "The booking with {name} expired"
     }
   }
 }

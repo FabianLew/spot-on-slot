@@ -1044,9 +1044,9 @@
   },
   "notifications": {
     "title": "Powiadomienia",
-    "description": "Nowe ogłoszenia w Twojej okolicy, które pasują do Twoich gatunków.",
+    "description": "Zmiany w Twoich bookingach i nowe ogłoszenia w okolicy, które pasują do Twoich gatunków.",
     "bellUnread": "Powiadomienia: {count} nieprzeczytane",
-    "empty": "Nic nowego. Damy znać, gdy w okolicy pojawi się ogłoszenie dla Ciebie.",
+    "empty": "Nic nowego. Damy znać, gdy ktoś odpowie na booking albo w okolicy pojawi się ogłoszenie dla Ciebie.",
     "markAll": "Oznacz wszystkie jako przeczytane",
     "more": "Pokaż starsze",
     "settingsLink": "Ustawienia powiadomień",
@@ -1084,6 +1084,18 @@
       "invalid": "Ten link jest nieprawidłowy. Otwórz go jeszcze raz z e-maila albo zmień ustawienia w aplikacji.",
       "missing": "W linku brakuje kodu. Otwórz go jeszcze raz z e-maila.",
       "settings": "Przejdź do ustawień powiadomień"
+    },
+    "bookingTag": "Booking",
+    "booking": {
+      "REQUESTED_VENUE": "{name} pyta o termin",
+      "REQUESTED_ARTIST": "{name} zgłasza się do Twojego ogłoszenia",
+      "COUNTERED": "{name} proponuje nowe warunki",
+      "ACCEPTED": "{name} przyjmuje booking",
+      "DECLINED": "{name} odrzuca booking",
+      "DECLINED_SYSTEM": "{name} ma już booking w tym terminie",
+      "WITHDRAWN": "{name} wycofuje propozycję",
+      "CANCELLED": "{name} odwołuje booking",
+      "EXPIRED": "Booking z {name} wygasł"
     }
   }
 }

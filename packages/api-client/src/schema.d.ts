@@ -1819,6 +1819,21 @@ export interface components {
             /** @enum {string} */
             status: "FREE" | "BOOKED";
         };
+        BookingNotificationResponse: {
+            /** Format: uuid */
+            bookingId: string;
+            /** @enum {string} */
+            kind: "REQUESTED" | "COUNTERED" | "ACCEPTED" | "DECLINED" | "WITHDRAWN" | "CANCELLED" | "EXPIRED";
+            /** @enum {string} */
+            by: "ARTIST" | "VENUE" | "SYSTEM";
+            otherName: string;
+            /** Format: date-time */
+            startsAt: string;
+            /** Format: date-time */
+            endsAt: string;
+            /** Format: int64 */
+            amount: number;
+        };
         NearbyListingResponse: {
             /** Format: uuid */
             listingId: string;
@@ -1850,7 +1865,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            type: "NEARBY_LISTING";
+            type: "NEARBY_LISTING" | "BOOKING";
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -1858,6 +1873,8 @@ export interface components {
             active: boolean;
             /** @description Set for NEARBY_LISTING */
             nearbyListing?: components["schemas"]["NearbyListingResponse"];
+            /** @description Set for BOOKING */
+            booking?: components["schemas"]["BookingNotificationResponse"];
         };
         PageResponseNotificationResponse: {
             content?: components["schemas"]["NotificationResponse"][];

@@ -11,6 +11,7 @@ import { api } from "@/lib/api";
 
 export type AppNotification = ApiSchemas["NotificationResponse"];
 export type NearbyListing = ApiSchemas["NearbyListingResponse"];
+export type BookingNotice = ApiSchemas["BookingNotificationResponse"];
 export type NotificationPreferences = ApiSchemas["PreferencesResponse"];
 export type NearbyListingsRequest = ApiSchemas["NearbyListingsRequest"];
 

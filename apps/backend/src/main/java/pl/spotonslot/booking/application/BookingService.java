@@ -297,7 +297,8 @@ public class BookingService {
     @Transactional(readOnly = true)
     public Optional<BookingInfo> find(UUID bookingId) {
         return bookings.findById(bookingId).map(booking -> new BookingInfo(booking.getId(), booking.getArtistId(),
-                booking.getVenueId(), booking.getStartsAt(), booking.getEndsAt(), booking.statusAt(now())));
+                booking.getVenueId(), booking.getStartsAt(), booking.getEndsAt(), booking.statusAt(now()),
+                booking.getArtistStageName(), booking.getVenueName(), booking.getAmount()));
     }
 
     /** Stores the expiry of unanswered and started requests and the completion of played bookings. */
