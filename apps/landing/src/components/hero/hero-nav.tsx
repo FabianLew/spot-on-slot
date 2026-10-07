@@ -41,21 +41,21 @@ export function HeroNav() {
       data-over-hero={overHero}
       className={cn(
         "fixed top-0 left-0 right-0 z-[100] flex items-center justify-between p-4 sm:p-5",
-        !overHero && "bg-background/95 text-foreground border-b border-border shadow-sm backdrop-blur-md",
+        !overHero && "bg-background text-foreground border-b-2 border-border",
         open && "z-40",
       )}
     >
       <div className="flex items-center gap-2">
-        <svg width="26" height="26" viewBox="0 0 256 256" fill={overHero ? "#ffffff" : "currentColor"} aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 256 256" fill={overHero ? "#ffd400" : "currentColor"} aria-hidden="true">
           <path d="M 256 256 L 128 256 L 0 128 L 128 128 Z M 256 128 L 128 128 L 0 0 L 128 0 Z" />
         </svg>
-        <span className={cn("text-2xl font-playfair italic", overHero ? "text-white" : "text-foreground")}>{tHero("brand")}</span>
+        <span className={cn("text-lg font-display", overHero ? "text-[#ffd400]" : "text-foreground")}>{tHero("brand")}</span>
       </div>
 
       <div
         className={cn(
-          "hidden md:flex absolute left-1/2 -translate-x-1/2 rounded-full px-2 py-2 items-center gap-1",
-          overHero ? "bg-white/20 backdrop-blur-md border border-white/30" : "bg-muted border border-border",
+          "hidden md:flex absolute left-1/2 -translate-x-1/2 p-1 items-center gap-1",
+          overHero ? "bg-black/80 border-2 border-[#ffd400]" : "bg-card border-2 border-border",
         )}
       >
         {NAV_ITEMS.map((item) => (
@@ -65,11 +65,11 @@ export function HeroNav() {
             className={
               item.key === ACTIVE_NAV_ITEM
                 ? overHero
-                  ? "bg-white text-gray-900 px-4 py-1.5 rounded-full text-sm font-medium"
-                  : "bg-foreground text-background px-4 py-1.5 rounded-full text-sm font-medium"
+                  ? "bg-[#ffd400] text-black px-4 py-1.5 font-display text-xs"
+                  : "bg-highlight text-highlight-foreground px-4 py-1.5 font-display text-xs"
                 : overHero
-                  ? "text-white/80 px-4 py-1.5 rounded-full text-sm font-medium hover:bg-white/20 hover:text-white transition-colors"
-                  : "text-muted-foreground px-4 py-1.5 rounded-full text-sm font-medium hover:bg-accent hover:text-foreground transition-colors"
+                  ? "text-white px-4 py-1.5 font-display text-xs hover:bg-white/15 transition-colors"
+                  : "text-muted-foreground px-4 py-1.5 font-display text-xs hover:bg-accent hover:text-foreground transition-colors"
             }
           >
             {t(item.key)}
@@ -80,24 +80,24 @@ export function HeroNav() {
       <div className="flex items-center gap-4">
         <LocaleSwitch
           className={cn(
-            "hidden md:block text-sm",
-            overHero ? "text-white/80 hover:text-white" : "text-muted-foreground hover:text-foreground",
+            "hidden md:block font-display text-xs",
+            overHero ? "text-white hover:text-[#ffd400]" : "text-muted-foreground hover:text-foreground",
           )}
         />
         <a
           href="#waitlist"
           className={cn(
-            "hidden md:block text-sm font-semibold px-6 py-2.5 rounded-full transition-colors",
+            "hidden md:block font-display text-xs px-5 py-2.5 border-2 transition-colors",
             overHero
-              ? "bg-white text-gray-900 hover:bg-gray-100"
-              : "bg-primary text-primary-foreground hover:bg-primary/90",
+              ? "bg-[#ff261f] text-black border-black hover:bg-[#d91f17]"
+              : "bg-primary text-primary-foreground border-border hover:bg-primary/90",
           )}
         >
           {t("join")}
         </a>
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger className="md:hidden" aria-label={t("menu")}>
-            <Menu className={overHero ? "text-white" : "text-foreground"} aria-hidden="true" />
+            <Menu className={overHero ? "text-[#ffd400]" : "text-foreground"} aria-hidden="true" />
           </SheetTrigger>
           <SheetContent side="right" closeLabel={t("closeMenu")} aria-describedby={undefined}>
             <SheetHeader>
@@ -109,14 +109,14 @@ export function HeroNav() {
                   <a
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="block py-3 text-base font-medium"
+                    className="block py-3 font-display text-sm"
                   >
                     {t(item.key)}
                   </a>
                 </li>
               ))}
             </ul>
-            <LocaleSwitch className="text-sm font-medium" />
+            <LocaleSwitch className="font-display text-xs" />
           </SheetContent>
         </Sheet>
       </div>

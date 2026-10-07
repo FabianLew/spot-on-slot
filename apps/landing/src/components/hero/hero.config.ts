@@ -1,7 +1,10 @@
+/** Yellow base image; the red one shows inside the cursor spotlight. */
 export const HERO_BASE_IMAGE = "/hero/base.webp";
 export const HERO_REVEAL_IMAGE = "/hero/reveal.webp";
-export const HERO_CTA_COLOR = "#dc2626";
-export const HERO_CTA_HOVER_COLOR = "#b91c1c";
+export const HERO_CTA_COLOR = "#ff261f";
+export const HERO_CTA_HOVER_COLOR = "#d91f17";
+/** The hard pixel shadow under the CTA, in the arcade yellow. */
+export const HERO_CTA_SHADOW_COLOR = "#ffd400";
 export const SPOTLIGHT_R = 260;
 /** `key` is the `nav.*` message key, `href` the section anchor on the page. */
 export const NAV_ITEMS = [

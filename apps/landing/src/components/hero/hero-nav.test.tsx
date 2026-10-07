@@ -26,7 +26,7 @@ afterEach(() => vi.unstubAllGlobals());
 describe("HeroNav", () => {
   it("shows the brand and the section pill with the active item highlighted", () => {
     renderNav();
-    expect(screen.getByText(pl.hero.brand)).toHaveClass("font-playfair italic");
+    expect(screen.getByText(pl.hero.brand)).toHaveClass("font-display");
     const pill = screen.getByRole("navigation").querySelector("div.md\\:flex") as HTMLElement;
     const links = within(pill).getAllByRole("link");
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
@@ -35,8 +35,8 @@ describe("HeroNav", () => {
       "#waitlist",
       "#faq",
     ]);
-    expect(within(pill).getByRole("link", { name: pl.nav.audiences })).toHaveClass("bg-white text-gray-900");
-    expect(within(pill).getByRole("link", { name: pl.nav.faq })).not.toHaveClass("bg-white");
+    expect(within(pill).getByRole("link", { name: pl.nav.audiences })).toHaveClass("bg-[#ffd400] text-black");
+    expect(within(pill).getByRole("link", { name: pl.nav.faq })).not.toHaveClass("bg-[#ffd400]");
   });
 
   it("links the desktop CTA to the waitlist and offers the other locale", () => {
@@ -84,24 +84,24 @@ describe("HeroNav", () => {
 
       expect(io.observers.some((o) => o.targets.includes(hero))).toBe(true);
       expect(nav).toHaveAttribute("data-over-hero", "true");
-      expect(nav).not.toHaveClass("bg-background/95");
-      expect(pill).toHaveClass("bg-white/20 backdrop-blur-md");
-      expect(screen.getByText(pl.hero.brand)).toHaveClass("text-white");
-      expect(menuIcon).toHaveClass("text-white");
+      expect(nav).not.toHaveClass("bg-background");
+      expect(pill).toHaveClass("bg-black/80 border-[#ffd400]");
+      expect(screen.getByText(pl.hero.brand)).toHaveClass("text-[#ffd400]");
+      expect(menuIcon).toHaveClass("text-[#ffd400]");
 
       act(() => io.setIntersecting(hero, false));
       expect(nav).toHaveAttribute("data-over-hero", "false");
-      expect(nav).toHaveClass("bg-background/95 text-foreground border-b");
-      expect(pill).toHaveClass("bg-muted");
-      expect(pill).not.toHaveClass("bg-white/20");
-      expect(within(pill).getByRole("link", { name: pl.nav.audiences })).toHaveClass("bg-foreground text-background");
+      expect(nav).toHaveClass("bg-background text-foreground border-b-2");
+      expect(pill).toHaveClass("bg-card");
+      expect(pill).not.toHaveClass("bg-black/80");
+      expect(within(pill).getByRole("link", { name: pl.nav.audiences })).toHaveClass("bg-highlight text-highlight-foreground");
       expect(screen.getByText(pl.hero.brand)).toHaveClass("text-foreground");
       expect(menuIcon).toHaveClass("text-foreground");
       expect(screen.getByRole("link", { name: pl.nav.join })).toHaveClass("bg-primary");
 
       act(() => io.setIntersecting(hero, true));
       expect(nav).toHaveAttribute("data-over-hero", "true");
-      expect(nav).not.toHaveClass("bg-background/95");
+      expect(nav).not.toHaveClass("bg-background");
     });
 
     it("treats the hero as left once it no longer reaches below the nav bar", () => {

@@ -58,7 +58,11 @@ class AccountMailerIntegrationTest {
         assertThat(message.getSubject()).isEqualTo("Potwierdź adres e-mail w Spot On Slot");
         var link = "http://localhost:3000/verify-email?token=" + TOKEN;
         assertThat(part(message, "text/plain")).contains("Cześć!").contains("48 godzin").contains(link);
-        assertThat(part(message, "text/html")).contains("href=\"" + link + "\"").contains("Potwierdź e-mail");
+        assertThat(part(message, "text/html"))
+                .contains("href=\"" + link + "\"")
+                .contains("Potwierdź e-mail")
+                .contains("Nowe konto")
+                .contains("Przycisk nie działa?");
     }
 
     @Test

@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.HtmlUtils;
 import pl.spotonslot.notification.NotificationProperties;
 import pl.spotonslot.notification.infrastructure.MailSender;
 import pl.spotonslot.venue.VenueInvitationSent;
@@ -47,26 +46,14 @@ class VenueInvitationMailer {
     }
 
     private String html(Locale locale, String link, Object[] args) {
-        var href = HtmlUtils.htmlEscape(link);
-        return """
-                <!DOCTYPE html>
-                <html lang="%s">
-                <body style="margin:0;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#111;">
-                <p>%s</p>
-                <p>%s</p>
-                <p><a href="%s" style="display:inline-block;padding:12px 20px;background:#d91f17;color:#fff;\
-                text-decoration:none;">%s</a></p>
-                <p style="font-size:13px;color:#555;word-break:break-all;"><a href="%s">%s</a></p>
-                <p style="font-size:13px;color:#555;">%s</p>
-                </body>
-                </html>
-                """.formatted(
-                locale.getLanguage(),
-                HtmlUtils.htmlEscape(text("greeting", locale)),
-                HtmlUtils.htmlEscape(text("body", locale, args)),
-                href, HtmlUtils.htmlEscape(text("button", locale)),
-                href, href,
-                HtmlUtils.htmlEscape(text("footer", locale)));
+        var subject = text("subject", locale, args);
+        return MailLayout.page(locale.getLanguage(), subject, text("body", locale, args),
+                MailLayout.intro(text("kicker", locale), subject, text("greeting", locale))
+                        + MailLayout.section(MailLayout.paragraph(text("body", locale, args)), "16px 24px 0")
+                        + MailLayout.button(link, text("button", locale)),
+                MailLayout.fallbackLink(messages.getMessage("mail.layout.fallback", null, locale), link)
+                        + MailLayout.footnote(text("footer", locale)),
+                messages.getMessage("mail.layout.tagline", null, locale));
     }
 
     private String text(String key, Locale locale, Object... args) {
