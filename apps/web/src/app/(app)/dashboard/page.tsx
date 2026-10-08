@@ -1,13 +1,9 @@
 import { navMetadata } from "@/lib/nav-metadata";
-import { ProfileReminder } from "@/components/onboarding/profile-reminder";
-import { PlaceholderPage } from "@/components/page/placeholder-page";
+import { DashboardScreen } from "@/components/dashboard/dashboard-screen";
 
-export default function Page() {
-  return (
-    <PlaceholderPage titleKey="dashboard">
-      <ProfileReminder />
-    </PlaceholderPage>
-  );
+export default async function Page({ searchParams }: PageProps<"/dashboard">) {
+  const { venue } = await searchParams;
+  return <DashboardScreen venueId={typeof venue === "string" ? venue : undefined} />;
 }
 
 export const generateMetadata = () => navMetadata("dashboard");

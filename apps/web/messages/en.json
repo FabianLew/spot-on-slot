@@ -38,9 +38,6 @@
     "skipToContent": "Skip to content",
     "menu": "Menu"
   },
-  "pages": {
-    "placeholder": "This section is coming soon."
-  },
   "errors": {
     "title": "Something went wrong",
     "retry": "Try again",
@@ -1248,6 +1245,72 @@
       "invalid": "This link is invalid or has expired. Request the change again in settings.",
       "taken": "This address already has an account. Choose another address in settings.",
       "login": "Sign in"
+    }
+  },
+  "dashboard": {
+    "hello": "Hi, {name}",
+    "helloPlain": "Hi!",
+    "otherRole": "The dashboard with bookings and messages is for artist and venue accounts.",
+    "draft": "Draft",
+    "published": "Published",
+    "venueSwitch": "Venue",
+    "today": "Today",
+    "tiles": {
+      "awaiting": "Waiting for me",
+      "unread": "Unread",
+      "nextGig": "Next gig",
+      "nearby": "Artists nearby",
+      "none": "—"
+    },
+    "tonight": {
+      "title": "Tonight",
+      "item": "{name} // {time}",
+      "open": "See booking"
+    },
+    "all": "All",
+    "allOf": "All: {section}",
+    "awaiting": {
+      "title": "Waiting for your answer",
+      "empty": "Nothing is waiting for your answer.",
+      "respondBy": "Answer {when}"
+    },
+    "upcoming": {
+      "title": "Upcoming gigs",
+      "emptyArtist": "No upcoming gigs.",
+      "emptyVenue": "No upcoming gigs at this venue.",
+      "actionArtist": "Find listings",
+      "actionVenue": "Find artists"
+    },
+    "messages": {
+      "title": "Messages",
+      "empty": "All read.",
+      "unread": "{count, plural, one {# unread} other {# unread}}"
+    },
+    "free": {
+      "title": "Free time",
+      "empty": "No free time in the next 60 days.",
+      "action": "Add free time",
+      "announced": "Announced"
+    },
+    "listings": {
+      "title": "My listings",
+      "empty": "No active \"Looking for an artist\" listings.",
+      "action": "Add listing"
+    },
+    "noProfile": {
+      "artist": "Create your artist profile first.",
+      "venue": "Add your venue first.",
+      "action": "Create profile"
+    },
+    "actions": {
+      "title": "Quick actions",
+      "addFree": "Add free time",
+      "announce": "Announce",
+      "findListings": "Find listings",
+      "addListing": "Add listing",
+      "findArtists": "Find artists",
+      "inbox": "Messages",
+      "profile": "Profile"
     }
   }
 }

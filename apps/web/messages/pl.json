@@ -38,9 +38,6 @@
     "skipToContent": "Przejdź do treści",
     "menu": "Menu"
   },
-  "pages": {
-    "placeholder": "Ta sekcja jest w przygotowaniu."
-  },
   "errors": {
     "title": "Coś poszło nie tak",
     "retry": "Spróbuj ponownie",
@@ -1248,6 +1245,72 @@
       "invalid": "Link jest nieważny albo wygasł. Poproś o zmianę adresu jeszcze raz w ustawieniach.",
       "taken": "Na ten adres jest już konto. Wybierz inny adres w ustawieniach.",
       "login": "Zaloguj się"
+    }
+  },
+  "dashboard": {
+    "hello": "Cześć, {name}",
+    "helloPlain": "Cześć!",
+    "otherRole": "Pulpit z bookingami i wiadomościami jest dla kont artystów i lokali.",
+    "draft": "Szkic",
+    "published": "Opublikowany",
+    "venueSwitch": "Lokal",
+    "today": "Dziś",
+    "tiles": {
+      "awaiting": "Czeka na mnie",
+      "unread": "Nieprzeczytane",
+      "nextGig": "Najbliższy występ",
+      "nearby": "Artyści w pobliżu",
+      "none": "—"
+    },
+    "tonight": {
+      "title": "Dziś wieczorem",
+      "item": "{name} // {time}",
+      "open": "Zobacz booking"
+    },
+    "all": "Wszystkie",
+    "allOf": "Wszystkie: {section}",
+    "awaiting": {
+      "title": "Czeka na odpowiedź",
+      "empty": "Nic nie czeka na Twoją odpowiedź.",
+      "respondBy": "Odpowiedz {when}"
+    },
+    "upcoming": {
+      "title": "Nadchodzące występy",
+      "emptyArtist": "Brak nadchodzących występów.",
+      "emptyVenue": "Brak nadchodzących występów w tym lokalu.",
+      "actionArtist": "Szukaj ogłoszeń",
+      "actionVenue": "Szukaj artystów"
+    },
+    "messages": {
+      "title": "Wiadomości",
+      "empty": "Wszystko przeczytane.",
+      "unread": "{count, plural, one {# nieprzeczytana} few {# nieprzeczytane} many {# nieprzeczytanych} other {# nieprzeczytanej}}"
+    },
+    "free": {
+      "title": "Wolne terminy",
+      "empty": "Brak wolnych terminów w najbliższych 60 dniach.",
+      "action": "Dodaj wolny termin",
+      "announced": "Ogłoszony"
+    },
+    "listings": {
+      "title": "Moje ogłoszenia",
+      "empty": "Brak aktywnych ogłoszeń „Szukam artysty”.",
+      "action": "Dodaj ogłoszenie"
+    },
+    "noProfile": {
+      "artist": "Najpierw utwórz profil artysty.",
+      "venue": "Najpierw dodaj lokal.",
+      "action": "Utwórz profil"
+    },
+    "actions": {
+      "title": "Szybkie akcje",
+      "addFree": "Dodaj wolny termin",
+      "announce": "Ogłoś się",
+      "findListings": "Szukaj ogłoszeń",
+      "addListing": "Dodaj ogłoszenie",
+      "findArtists": "Szukaj artystów",
+      "inbox": "Wiadomości",
+      "profile": "Profil"
     }
   }
 }
