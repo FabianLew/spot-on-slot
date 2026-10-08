@@ -25,8 +25,9 @@ export const UNREAD = [...MESSAGES, "unread"] as const;
 type Page = { conversations: Conversation[]; totalElements: number };
 
 /** The caller's conversations, latest activity first, of one venue when `venueId` is set. */
-export function useConversations(venueId?: string) {
+export function useConversations(venueId?: string, enabled = true) {
   return useInfiniteQuery({
+    enabled,
     queryKey: listKey(venueId),
     queryFn: async ({ pageParam }): Promise<Page> => {
       const query = { venueId, page: pageParam, size: LIST_SIZE };
