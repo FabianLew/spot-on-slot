@@ -45,6 +45,20 @@ pnpm dev:landing    # http://localhost:3001
 
 Swagger UI: http://localhost:8080/swagger-ui.html · Mailpit: http://localhost:8025
 
+## Demo data
+
+With the backend running on an empty database, fill it with a Kraków demo (6 artists, 6 venues, calendars,
+listings, bookings, conversations and notifications):
+
+```bash
+pnpm seed:demo
+```
+
+Every account uses the password `demo-spot-123` (`DEMO_PASSWORD` changes it); the script prints the list at the end.
+It goes through the REST API and reads e-mail links from Mailpit, so it needs both. Times are relative to today
+(the demo Friday is the first Friday at least two days ahead), so seed shortly before a demo. To start over, stop the
+backend, run `docker compose down -v`, start the backend and seed again.
+
 ## Common tasks
 
 | Task | Command |

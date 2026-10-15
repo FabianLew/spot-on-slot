@@ -14,7 +14,8 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "api:generate": "pnpm --filter @spot-on-slot/api-client generate"
+    "api:generate": "pnpm --filter @spot-on-slot/api-client generate",
+    "seed:demo": "node scripts/seed-demo.mjs"
   },
   "devDependencies": {
     "turbo": "^2.11.7",
