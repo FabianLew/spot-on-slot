@@ -9,10 +9,20 @@ springdoc:
   swagger-ui:
     enabled: false
 
+server:
+  # Behind the Coolify (Traefik) proxy: trust its X-Forwarded-* headers for the scheme and client address.
+  forward-headers-strategy: native
+
 spring:
   mail:
     # Required in prod: no defaults, startup fails without them.
     host: ${MAIL_HOST}
+    # Submission port with STARTTLS; Hetzner blocks outgoing 25 and 465 on new servers.
+    port: ${MAIL_PORT:587}
+    properties:
+      mail.smtp.auth: ${MAIL_SMTP_AUTH:true}
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
 
 spotonslot:
   cors:

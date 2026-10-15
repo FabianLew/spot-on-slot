@@ -17,7 +17,7 @@ Zaakceptowana 2026-10-04
 | Realtime | WebSocket (STOMP) w monolicie, do czatu i statusów bookingu |
 | Powiadomienia | e-mail (Resend/Postmark), push przez Expo Push / FCM+APNs |
 | Pliki | S3-kompatybilny storage (Cloudflare R2) |
-| Hosting MVP | Backend + Postgres: VPS (Hetzner) z Docker Compose albo Railway; frontendy na Vercel |
+| Hosting MVP | Backend, Postgres i Photon: VPS Hetzner z Coolify; frontendy na Vercel (instrukcja: `docs/deployment.md`) |
 | Jakość | JUnit 5, Testcontainers, Spring Modulith tests, Playwright (e2e web), Sentry |
 
 ## 1. Ocena Twojej propozycji (monolit modułowy, Spring + React)
@@ -129,7 +129,7 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 
 - Lokalnie: `docker compose` (Postgres+PostGIS, S3Mock jako magazyn plików zamiast MinIO, który nie publikuje już darmowych obrazów, Mailpit). Backend wysyła e-maile przez SMTP: w dev do Mailpit (`localhost:1025`, UI `localhost:8025`), na produkcji do skonfigurowanego serwera SMTP.
 - CI: GitHub Actions — build + testy backendu (Testcontainers), lint/typecheck/test frontów przez Turborepo, generowanie klienta API, Playwright e2e na PR.
-- MVP prod: backend w kontenerze na Hetzner (Docker Compose + Caddy) lub Railway, zarządzany Postgres z PostGIS (np. Neon/Railway), frontendy na Vercel, R2 na pliki, Sentry na błędy.
+- MVP prod (decyzja Fabiana, 2026-10-15): backend, PostgreSQL + PostGIS i Photon w kontenerach na Hetzner zarządzanym przez Coolify, frontendy na Vercel, R2 na pliki, później Sentry na błędy. Krok po kroku: `docs/deployment.md`, zmienne backendu: `deploy/backend.env.example`.
 - Mobile (faza 2): EAS Build + EAS Submit do sklepów, EAS Update do poprawek OTA.
 
 ### Zmienne środowiskowe backendu (prod)
@@ -140,7 +140,7 @@ Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`applicat
 |---|---|
 | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | połączenie z PostgreSQL |
 | `CORS_ALLOWED_ORIGINS` | dozwolone originy frontendów |
-| `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` | serwer SMTP |
+| `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` | serwer SMTP (w prod domyślnie port 587, STARTTLS wymagany, uwierzytelnianie włączone; `MAIL_SMTP_AUTH=false` je wyłącza) |
 | `MAIL_FROM` | adres nadawcy e-maili |
 | `LANDING_BASE_URL` | publiczny adres landingu (linki potwierdzające) |
 | `WEB_BASE_URL` | publiczny adres aplikacji webowej (linki aktywacji konta i resetu hasła) |
