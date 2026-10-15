@@ -4,8 +4,9 @@
  * conversations and the notifications they trigger. Everything goes through the public REST API, so the data
  * is exactly what the app would store, and e-mail links (verification, venue invitation) are read from Mailpit.
  *
- * Needs the backend (http://localhost:8080) with docker compose services running. Run on an empty database:
+ * Needs the backend (http://localhost:8080) with docker compose services running:
  *   pnpm seed:demo
+ * Running it again continues where a failed run stopped and skips what is already there.
  * Start over: stop the backend, `docker compose down -v`, start it again and re-run.
  *
  * Env: API_URL (default http://localhost:8080), MAILPIT_URL (default http://localhost:8025),
@@ -134,11 +135,6 @@ const VENUE_ACCOUNTS = [
 
 async function main() {
   await checkServices();
-  if (await tryLogin(ARTISTS[0].email)) {
-    console.log(`Demo data is already there (${ARTISTS[0].email} can sign in). To start over: stop the backend, ` +
-      "run `docker compose down -v`, start the backend and run this again.");
-    return;
-  }
 
   const day = demoDays();
   console.log(`Demo Friday: ${day.fri} (seed close to the demo; times are relative to today)`);
@@ -146,8 +142,16 @@ async function main() {
   step("Artists: accounts, locations, photos, profiles");
   const artist = {};
   for (const a of ARTISTS) {
-    const token = await createAccount(a.email, "ARTIST");
-    await call("PUT", "/api/v1/locations/me", token, { latitude: a.point[0], longitude: a.point[1], source: "MANUAL" });
+    const token = await account(a.email, "ARTIST");
+    const existing = await find("/api/v1/artists/me", token);
+    if (existing?.published) {
+      artist[a.key] = { token, slug: existing.slug };
+      console.log(`  ${a.stageName} -> /a/${existing.slug} (already there)`);
+      continue;
+    }
+    if (!(await find("/api/v1/locations/me", token))) {
+      await call("PUT", "/api/v1/locations/me", token, { latitude: a.point[0], longitude: a.point[1], source: "MANUAL" });
+    }
     const avatar = await upload(token, a.colors, 800, 800, a.key);
     const photos = [await upload(token, a.colors, 1200, 750, `${a.key}-1`), await upload(token, a.colors.toReversed(), 1200, 750, `${a.key}-2`)];
     const profile = await call("PUT", "/api/v1/artists/me", token, {
@@ -163,10 +167,18 @@ async function main() {
   step("Venues: accounts, photos, profiles, team");
   const venue = {};
   const owner = {};
-  for (const account of VENUE_ACCOUNTS) {
-    const token = await createAccount(account.email, "VENUE");
-    owner[account.key] = token;
-    for (const v of account.venues) {
+  for (const owned of VENUE_ACCOUNTS) {
+    const token = await account(owned.email, "VENUE");
+    owner[owned.key] = token;
+    const mine = (await call("GET", "/api/v1/venues/mine", token)) ?? [];
+    for (const v of owned.venues) {
+      const existing = mine.find((m) => m.name === v.name);
+      if (existing) {
+        if (!existing.published) await call("POST", `/api/v1/venues/${existing.id}/publish`, token);
+        venue[v.key] = { id: existing.id, token, slug: existing.slug };
+        console.log(`  ${v.name} -> /v/${existing.slug} (already there)`);
+        continue;
+      }
       const avatar = await upload(token, v.colors, 800, 800, v.key);
       const photos = [await upload(token, v.colors, 1200, 750, `${v.key}-1`), await upload(token, v.colors.toReversed(), 1200, 750, `${v.key}-2`)];
       const saved = await call("POST", "/api/v1/venues", token, {
@@ -177,99 +189,116 @@ async function main() {
       venue[v.key] = { id: saved.id, token, slug: saved.slug };
       console.log(`  ${v.name} -> /v/${saved.slug}`);
     }
-    if (account.manager) {
-      const managerToken = await createAccount(account.manager, "VENUE");
-      const first = venue[account.venues[0].key];
-      await call("POST", `/api/v1/venues/${first.id}/team/invitations`, token, { email: account.manager, role: "MANAGER" });
-      const inviteToken = await linkToken(account.manager, "/venue-invitation?token=");
+    const first = venue[owned.venues[0].key];
+    const team = owned.manager && (await call("GET", `/api/v1/venues/${first.id}/team`, token));
+    if (owned.manager && !team.members.some((member) => member.email === owned.manager)) {
+      const managerToken = await account(owned.manager, "VENUE");
+      await call("POST", `/api/v1/venues/${first.id}/team/invitations`, token, { email: owned.manager, role: "MANAGER" });
+      const inviteToken = await linkToken(owned.manager, "/venue-invitation?token=");
       await call("POST", "/api/v1/venues/invitations/accept", managerToken, { token: inviteToken });
-      console.log(`  ${account.manager} joined ${account.venues[0].name} as manager`);
+      console.log(`  ${owned.manager} joined ${owned.venues[0].name} as manager`);
     }
   }
 
-  step("Calendars");
   const { marek, ola, kuba, lena, tymon, zofia } = artist;
-  // Marek: the demo Friday stays free and unannounced (announced live). Saturdays stay empty: the demo adds a weekly rule.
-  await slot(marek, day.thu, "20:00", day.thu, "23:59", "Bar, spokojniejszy set");
-  await slot(marek, day.fri, "21:00", day.sat, "02:00");
-  await slot(marek, day.add(5), "19:00", day.add(5), "23:00");
-  await slot(marek, day.add(7), "21:00", day.add(8), "02:00");
-  await slot(marek, day.add(14), "21:00", day.add(15), "03:00");
-  await rule(ola, ["FRIDAY", "SATURDAY"], "22:00", 360, day.today);
-  await slot(kuba, day.fri, "22:00", day.sat, "03:00");
-  await slot(kuba, day.add(7), "22:00", day.add(8), "04:00");
-  await slot(lena, day.fri, "21:00", day.sat, "02:00");
-  await slot(lena, day.add(2), "11:00", day.add(2), "15:00", "Brunch");
-  await slot(lena, day.add(7), "20:00", day.add(8), "00:00");
-  await rule(tymon, ["THURSDAY", "SATURDAY"], "21:00", 300, day.today);
-  await rule(zofia, ["WEDNESDAY", "FRIDAY", "SUNDAY"], "19:00", 180, day.today);
+  step("Calendars");
+  if ((await call("GET", `/api/v1/availability/me?from=${new Date().toISOString()}&to=${at(day.add(20), "00:00")}`, marek.token)).length) {
+    console.log("  already there");
+  } else {
+    // Marek: the demo Friday stays free and unannounced (announced live). Saturdays stay empty: the demo adds a weekly rule.
+    await slot(marek, day.thu, "20:00", day.thu, "23:59", "Bar, spokojniejszy set");
+    await slot(marek, day.fri, "21:00", day.sat, "02:00");
+    await slot(marek, day.add(5), "19:00", day.add(5), "23:00");
+    await slot(marek, day.add(7), "21:00", day.add(8), "02:00");
+    await slot(marek, day.add(14), "21:00", day.add(15), "03:00");
+    await rule(ola, ["FRIDAY", "SATURDAY"], "22:00", 360, day.today);
+    await slot(kuba, day.fri, "22:00", day.sat, "03:00");
+    await slot(kuba, day.add(7), "22:00", day.add(8), "04:00");
+    await slot(lena, day.fri, "21:00", day.sat, "02:00");
+    await slot(lena, day.add(2), "11:00", day.add(2), "15:00", "Brunch");
+    await slot(lena, day.add(7), "20:00", day.add(8), "00:00");
+    await rule(tymon, ["THURSDAY", "SATURDAY"], "21:00", 300, day.today);
+    await rule(zofia, ["WEDNESDAY", "FRIDAY", "SUNDAY"], "19:00", 180, day.today);
+  }
 
   step("Listings");
-  await call("POST", "/api/v1/listings/mine", ola.token, {
-    startsAt: at(day.sat, "22:00"), endsAt: at(day.add(2), "03:00"), genres: ["TECHNO", "MELODIC_TECHNO"],
-    description: "Wolna sobota, chętnie zagram peak time w klubie albo na imprezie w hali.", priceFrom: 150000, priceTo: 250000, travelRadiusKm: 100,
-  });
-  await call("POST", "/api/v1/listings/mine", kuba.token, {
-    startsAt: at(day.add(7), "22:00"), endsAt: at(day.add(8), "04:00"), genres: ["DRUM_AND_BASS"],
-    description: "Wolny piątek, drum and bass do rana. Mogę przyjechać z MC.", priceFrom: 60000, priceTo: 100000, travelRadiusKm: 80,
-  });
-  await call("POST", `/api/v1/venues/${venue.forma.id}/listings`, venue.forma.token, {
-    startsAt: at(day.sat, "21:00"), endsAt: at(day.add(2), "03:00"), genres: ["TECHNO", "MELODIC_TECHNO"],
-    description: "Szukamy headlinera techno na sobotnią imprezę w hali, około 800 osób. Nagłośnienie i oświetlenie na miejscu.", priceFrom: 200000, priceTo: 350000,
-  });
-  await call("POST", `/api/v1/venues/${venue.winyl.id}/listings`, venue.winyl.token, {
-    startsAt: at(day.add(7), "20:00"), endsAt: at(day.add(8), "00:00"), genres: ["DISCO", "FUNK"],
-    description: "Piątkowy wieczór z winylami: disco i funk dla około 100 osób.", priceFrom: 50000, priceTo: 90000,
-  });
-  await call("POST", `/api/v1/venues/${venue.gwiazdyBar.id}/listings`, venue.gwiazdyBar.token, {
-    startsAt: at(day.add(9), "19:00"), endsAt: at(day.add(9), "22:00"), genres: ["JAZZ"],
-    description: "Niedzielny jazz w barze, solo albo duet.", priceFrom: 60000, priceTo: 120000,
-  });
+  if ((await call("GET", "/api/v1/listings/mine", ola.token)).content?.length) {
+    console.log("  already there");
+  } else {
+    await call("POST", "/api/v1/listings/mine", ola.token, {
+      startsAt: at(day.sat, "22:00"), endsAt: at(day.add(2), "03:00"), genres: ["TECHNO", "MELODIC_TECHNO"],
+      description: "Wolna sobota, chętnie zagram peak time w klubie albo na imprezie w hali.", priceFrom: 150000, priceTo: 250000, travelRadiusKm: 100,
+    });
+    await call("POST", "/api/v1/listings/mine", kuba.token, {
+      startsAt: at(day.add(7), "22:00"), endsAt: at(day.add(8), "04:00"), genres: ["DRUM_AND_BASS"],
+      description: "Wolny piątek, drum and bass do rana. Mogę przyjechać z MC.", priceFrom: 60000, priceTo: 100000, travelRadiusKm: 80,
+    });
+    await call("POST", `/api/v1/venues/${venue.forma.id}/listings`, venue.forma.token, {
+      startsAt: at(day.sat, "21:00"), endsAt: at(day.add(2), "03:00"), genres: ["TECHNO", "MELODIC_TECHNO"],
+      description: "Szukamy headlinera techno na sobotnią imprezę w hali, około 800 osób. Nagłośnienie i oświetlenie na miejscu.", priceFrom: 200000, priceTo: 350000,
+    });
+    await call("POST", `/api/v1/venues/${venue.winyl.id}/listings`, venue.winyl.token, {
+      startsAt: at(day.add(7), "20:00"), endsAt: at(day.add(8), "00:00"), genres: ["DISCO", "FUNK"],
+      description: "Piątkowy wieczór z winylami: disco i funk dla około 100 osób.", priceFrom: 50000, priceTo: 90000,
+    });
+    await call("POST", `/api/v1/venues/${venue.gwiazdyBar.id}/listings`, venue.gwiazdyBar.token, {
+      startsAt: at(day.add(9), "19:00"), endsAt: at(day.add(9), "22:00"), genres: ["JAZZ"],
+      description: "Niedzielny jazz w barze, solo albo duet.", priceFrom: 60000, priceTo: 120000,
+    });
+  }
 
   step("Bookings");
-  // Hala Forma books Marek in two weeks after his counteroffer: his "next gig" after the demo Friday.
-  const forma = await call("POST", "/api/v1/bookings", venue.forma.token, {
-    venueId: venue.forma.id, artistSlug: marek.slug, startsAt: at(day.add(14), "22:00"), endsAt: at(day.add(15), "03:00"),
-    amount: 120000, message: "Cześć! Zagrasz u nas otwarcie nocy przed headlinerem?",
-  });
-  const formaCounter = await call("POST", `/api/v1/bookings/${forma.id}/counter`, marek.token, {
-    startsAt: at(day.add(14), "22:00"), endsAt: at(day.add(15), "03:00"), amount: 150000,
-    message: "Chętnie, przy pięciu godzinach wychodzi 1500 zł.",
-  });
-  await call("POST", `/api/v1/bookings/${forma.id}/accept`, venue.forma.token, { revision: formaCounter.revision });
-  // Bar Winyl asks Marek about Thursday: waits for him ("Czeka na mnie").
-  await call("POST", "/api/v1/bookings", venue.winyl.token, {
-    venueId: venue.winyl.id, artistSlug: marek.slug, startsAt: at(day.thu, "20:00"), endsAt: at(day.thu, "23:59"),
-    amount: 70000, message: "Spokojny czwartkowy set, deep house do koktajli?",
-  });
-  // Pod Gwiazdami already booked Ola Nova for next Saturday (a rule date becomes booked).
-  const olaBooking = await call("POST", "/api/v1/bookings", venue.gwiazdy.token, {
-    venueId: venue.gwiazdy.id, artistSlug: ola.slug, startsAt: at(day.add(8), "23:00"), endsAt: at(day.add(9), "04:00"),
-    amount: 200000, message: "Sobota w dużej sali, zamknięcie nocy.",
-  });
-  await call("POST", `/api/v1/bookings/${olaBooking.id}/accept`, ola.token, { revision: olaBooking.revision });
-  // Restauracja Pod Lipą asked Zofia Keys, she declined: something in the history.
-  const lipa = await call("POST", "/api/v1/bookings", venue.lipa.token, {
-    venueId: venue.lipa.id, artistSlug: zofia.slug, startsAt: at(nextWeekday(day.today, 3, 1), "19:00"), endsAt: at(nextWeekday(day.today, 3, 1), "22:00"),
-    amount: 80000, message: "Kolacja firmowa na 40 osób.",
-  });
-  await call("POST", `/api/v1/bookings/${lipa.id}/decline`, zofia.token, { reason: "Ten termin mam już zajęty prywatnie." });
-  // Lena applies to Bar Winyl's "Szukam artysty": waits for the venue.
-  const winylListings = await call("GET", `/api/v1/venues/${venue.winyl.id}/listings`, venue.winyl.token);
-  const winylListing = (winylListings.content ?? winylListings)[0];
-  await call("POST", "/api/v1/bookings", lena.token, { listingId: winylListing.id, amount: 80000, message: "Mam dwie skrzynki disco, chętnie zagram!" });
+  if ((await call("GET", "/api/v1/bookings", marek.token)).content?.length) {
+    console.log("  already there");
+  } else {
+    // Hala Forma books Marek in two weeks after his counteroffer: his "next gig" after the demo Friday.
+    const forma = await call("POST", "/api/v1/bookings", venue.forma.token, {
+      venueId: venue.forma.id, artistSlug: marek.slug, startsAt: at(day.add(14), "22:00"), endsAt: at(day.add(15), "03:00"),
+      amount: 120000, message: "Cześć! Zagrasz u nas otwarcie nocy przed headlinerem?",
+    });
+    const formaCounter = await call("POST", `/api/v1/bookings/${forma.id}/counter`, marek.token, {
+      startsAt: at(day.add(14), "22:00"), endsAt: at(day.add(15), "03:00"), amount: 150000,
+      message: "Chętnie, przy pięciu godzinach wychodzi 1500 zł.",
+    });
+    await call("POST", `/api/v1/bookings/${forma.id}/accept`, venue.forma.token, { revision: formaCounter.revision });
+    // Bar Winyl asks Marek about Thursday: waits for him ("Czeka na mnie").
+    await call("POST", "/api/v1/bookings", venue.winyl.token, {
+      venueId: venue.winyl.id, artistSlug: marek.slug, startsAt: at(day.thu, "20:00"), endsAt: at(day.thu, "23:59"),
+      amount: 70000, message: "Spokojny czwartkowy set, deep house do koktajli?",
+    });
+    // Pod Gwiazdami already booked Ola Nova for next Saturday (a rule date becomes booked).
+    const olaBooking = await call("POST", "/api/v1/bookings", venue.gwiazdy.token, {
+      venueId: venue.gwiazdy.id, artistSlug: ola.slug, startsAt: at(day.add(8), "23:00"), endsAt: at(day.add(9), "04:00"),
+      amount: 200000, message: "Sobota w dużej sali, zamknięcie nocy.",
+    });
+    await call("POST", `/api/v1/bookings/${olaBooking.id}/accept`, ola.token, { revision: olaBooking.revision });
+    // Restauracja Pod Lipą asked Zofia Keys, she declined: something in the history.
+    const lipa = await call("POST", "/api/v1/bookings", venue.lipa.token, {
+      venueId: venue.lipa.id, artistSlug: zofia.slug, startsAt: at(nextWeekday(day.today, 3, 1), "19:00"), endsAt: at(nextWeekday(day.today, 3, 1), "22:00"),
+      amount: 80000, message: "Kolacja firmowa na 40 osób.",
+    });
+    await call("POST", `/api/v1/bookings/${lipa.id}/decline`, zofia.token, { reason: "Ten termin mam już zajęty prywatnie." });
+    // Lena applies to Bar Winyl's "Szukam artysty": waits for the venue.
+    const winylListings = await call("GET", `/api/v1/venues/${venue.winyl.id}/listings`, venue.winyl.token);
+    const winylListing = (winylListings.content ?? winylListings)[0];
+    await call("POST", "/api/v1/bookings", lena.token, { listingId: winylListing.id, amount: 80000, message: "Mam dwie skrzynki disco, chętnie zagram!" });
+  }
 
   step("Conversations");
-  await call("POST", "/api/v1/conversations", venue.forma.token, {
-    venueId: venue.forma.id, artistSlug: marek.slug, body: "Hej Marek, myślimy o stałej rezydencji raz w miesiącu. Pogadamy po weekendzie?",
-  });
-  const lenaChat = await call("POST", "/api/v1/conversations", venue.gwiazdy.token, {
-    venueId: venue.gwiazdy.id, artistSlug: lena.slug, body: "Cześć Lena, grasz też w niedziele w ciągu dnia? Myślimy o brunchu w ogródku.",
-  });
-  await call("POST", `/api/v1/conversations/${lenaChat.id}/messages`, lena.token, { body: "Cześć! Tak, brunch to mój ulubiony format. Podeślę propozycję setu." });
-  await call("POST", "/api/v1/conversations", tymon.token, {
-    venueSlug: venue.gwiazdy.slug, body: "Dzień dobry, gram hip-hop i R&B, czy macie wolne czwartki w małej sali?",
-  });
+  if ((await call("GET", "/api/v1/conversations", tymon.token)).content?.length) {
+    console.log("  already there");
+  } else {
+    await call("POST", "/api/v1/conversations", venue.forma.token, {
+      venueId: venue.forma.id, artistSlug: marek.slug, body: "Hej Marek, myślimy o stałej rezydencji raz w miesiącu. Pogadamy po weekendzie?",
+    });
+    const lenaChat = await call("POST", "/api/v1/conversations", venue.gwiazdy.token, {
+      venueId: venue.gwiazdy.id, artistSlug: lena.slug, body: "Cześć Lena, grasz też w niedziele w ciągu dnia? Myślimy o brunchu w ogródku.",
+    });
+    await call("POST", `/api/v1/conversations/${lenaChat.id}/messages`, lena.token, { body: "Cześć! Tak, brunch to mój ulubiony format. Podeślę propozycję setu." });
+    await call("POST", "/api/v1/conversations", tymon.token, {
+      venueSlug: venue.gwiazdy.slug, body: "Dzień dobry, gram hip-hop i R&B, czy macie wolne czwartki w małej sali?",
+    });
+  }
 
   console.log("\nDone. Sign in at http://localhost:3000 with password", JSON.stringify(PASSWORD));
   console.table([
@@ -285,21 +314,43 @@ async function main() {
 // ---------------------------------------------------------------------------------------------- API helpers
 
 async function call(method, path, token, body) {
-  const response = await fetch(API + path, {
-    method,
-    headers: {
-      Accept: "application/json",
-      "Accept-Language": "pl",
-      ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
+  const response = await request(method, path, token, body);
   const text = await response.text();
   if (!response.ok) {
-    fail(`${method} ${path} -> ${response.status}\n${text}`);
+    const hint = response.status === 503 && path.startsWith("/api/v1/locations")
+      ? "\nThe backend could not reach the Photon geocoder (photon.komoot.io in dev; it is slow or down at times). " +
+        "Run this again in a minute: it continues where it stopped."
+      : "";
+    fail(`${method} ${path} -> ${response.status}\n${text}${hint}`);
   }
   return text ? JSON.parse(text) : undefined;
+}
+
+/** GET that answers undefined for 404 (nothing there yet). */
+async function find(path, token) {
+  const response = await request("GET", path, token);
+  if (response.status === 404) return undefined;
+  if (!response.ok) fail(`GET ${path} -> ${response.status}\n${await response.text()}`);
+  return response.json();
+}
+
+/** Sends a request; a 503 (a dependency such as the geocoder is busy) is retried a few times. */
+async function request(method, path, token, body) {
+  for (let attempt = 1; ; attempt++) {
+    const response = await fetch(API + path, {
+      method,
+      headers: {
+        Accept: "application/json",
+        "Accept-Language": "pl",
+        ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+    if (response.status !== 503 || attempt === 6) return response;
+    console.log(`  ${method} ${path} -> 503, retrying (${attempt}/5)`);
+    await new Promise((resolve) => setTimeout(resolve, 3000 * attempt));
+  }
 }
 
 async function tryLogin(email) {
@@ -311,7 +362,10 @@ async function tryLogin(email) {
   return response.ok ? (await response.json()).accessToken : undefined;
 }
 
-async function createAccount(email, role) {
+/** Signs in, or registers, confirms the e-mail and signs in. */
+async function account(email, role) {
+  const existing = await tryLogin(email);
+  if (existing) return existing;
   await call("POST", "/api/v1/auth/register", undefined, {
     email, password: PASSWORD, role, locale: "pl", privacyNoticeAccepted: true, acceptTerms: true,
   });
