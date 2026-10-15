@@ -1502,7 +1502,7 @@
       "button": "Close listing",
       "title": "Close the listing?",
       "text": "The listing disappears publicly and its author sees the reason. It cannot be reopened.",
-      "confirm": "Close",
+      "confirm": "Close listing",
       "done": "Listing closed."
     },
     "listing": {

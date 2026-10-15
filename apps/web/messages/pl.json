@@ -1502,7 +1502,7 @@
       "button": "Zamknij ogłoszenie",
       "title": "Zamknąć ogłoszenie?",
       "text": "Ogłoszenie zniknie publicznie, a autor zobaczy powód. Nie da się go otworzyć ponownie.",
-      "confirm": "Zamknij",
+      "confirm": "Zamknij ogłoszenie",
       "done": "Zamknięto ogłoszenie."
     },
     "listing": {
