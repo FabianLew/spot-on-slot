@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
  * @param pendingRetention how long an unverified account is kept
  * @param emailChangeTokenTtl lifetime of the link that confirms a new e-mail address
  * @param deletionGrace how long an account waits for deletion (and can be restored) before it is purged
+ * @param adminInvitationTtl lifetime of the link that sets a new admin's password
  * @param cookieSecure whether the refresh cookie is {@code Secure} (off only for plain-http local development)
  */
 @Validated
@@ -33,5 +34,6 @@ public record IdentityProperties(
         @DefaultValue("P7D") Duration pendingRetention,
         @DefaultValue("PT24H") Duration emailChangeTokenTtl,
         @DefaultValue("P14D") Duration deletionGrace,
+        @DefaultValue("P3D") Duration adminInvitationTtl,
         @DefaultValue("true") boolean cookieSecure) {
 }

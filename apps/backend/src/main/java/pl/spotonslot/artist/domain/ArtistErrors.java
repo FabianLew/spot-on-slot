@@ -57,4 +57,11 @@ public final class ArtistErrors {
             super("ARTIST_PROFILE_CONFLICT");
         }
     }
+
+    /** An admin hid the profile; only an admin can let it be published again. */
+    public static class HiddenByModeration extends ConflictException {
+        public HiddenByModeration() {
+            super("ARTIST_HIDDEN_BY_MODERATION");
+        }
+    }
 }

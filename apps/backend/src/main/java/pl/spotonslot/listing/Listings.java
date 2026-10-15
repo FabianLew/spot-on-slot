@@ -46,4 +46,14 @@ public class Listings {
     public void markFilled(UUID listingId, UUID bookingId) {
         listings.markFilled(listingId, bookingId);
     }
+
+    /** Any listing, whatever its status, for moderation. */
+    public Optional<ListingModerationView> findForModeration(UUID listingId) {
+        return listings.findForModeration(listingId);
+    }
+
+    /** Closes an active listing for a breach of the rules; false when it had already ended. */
+    public boolean closeByModeration(UUID listingId, String reason) {
+        return listings.closeByModeration(listingId, reason);
+    }
 }

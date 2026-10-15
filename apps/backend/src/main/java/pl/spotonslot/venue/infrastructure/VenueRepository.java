@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -51,4 +52,7 @@ public interface VenueRepository extends JpaRepository<Venue, UUID> {
     @Query("SELECT DISTINCT v FROM Venue v LEFT JOIN v.photoMediaIds photo"
             + " WHERE v.avatarMediaId = :mediaId OR photo = :mediaId")
     List<Venue> findUsingMedia(@Param("mediaId") UUID mediaId);
+
+    @Query("SELECT v FROM Venue v WHERE lower(v.name) LIKE lower(concat('%', :query, '%')) ORDER BY v.name")
+    List<Venue> findByNameContaining(@Param("query") String query, Pageable pageable);
 }

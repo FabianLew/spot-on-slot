@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useOpenReportCount } from "@/components/admin/queries";
 import { useAwaitingCount } from "@/components/bookings/queries";
 import { useUnreadConversations } from "@/components/messages/queries";
 import { useSession } from "@/components/session/session-provider";
@@ -31,10 +32,20 @@ function useMessagesBadge(enabled: boolean): NavBadge | null {
   return count > 0 ? { count, label: t("badge", { count }) } : null;
 }
 
+/** Open reports, for admins. */
+function useReportsBadge(enabled: boolean): NavBadge | null {
+  const t = useTranslations("admin");
+  const { session } = useSession();
+  const admin = session.status === "authenticated" && session.user.role === "ADMIN";
+  const count = useOpenReportCount(enabled && admin).data?.reports ?? 0;
+  return count > 0 ? { count, label: t("reports.badge", { count }) } : null;
+}
+
 /** The counter of a navigation entry, or null when there is nothing to show. */
 export function useNavBadge(name: NavBadgeName | undefined): NavBadge | null {
   // Every hook always runs; each is disabled for entries without its badge.
   const bookings = useBookingsBadge(name === "bookings");
   const messages = useMessagesBadge(name === "messages");
-  return name === "bookings" ? bookings : name === "messages" ? messages : null;
+  const reports = useReportsBadge(name === "reports");
+  return name === "bookings" ? bookings : name === "messages" ? messages : name === "reports" ? reports : null;
 }

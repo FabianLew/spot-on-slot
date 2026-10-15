@@ -17,6 +17,7 @@ import {
 } from "@spot-on-slot/ui";
 import { addDays, dayDate, local, today } from "@/components/calendar/warsaw-time";
 import { ApiErrorState } from "@/components/errors/api-error-state";
+import { ReportDialog } from "@/components/moderation/report-dialog";
 import { api } from "@/lib/api";
 import { PartyPhoto } from "./party-photo";
 import {
@@ -195,6 +196,7 @@ function ChatHeader({ conversation, backHref }: { conversation: Conversation; ba
   const queryClient = useQueryClient();
   const href = otherHref(conversation);
   const [busy, setBusy] = useState(false);
+  const [reporting, setReporting] = useState(false);
 
   async function block(on: boolean) {
     if (on && !window.confirm(t("blockConfirm", { name: conversation.other.name }))) return;
@@ -235,22 +237,27 @@ function ChatHeader({ conversation, backHref }: { conversation: Conversation; ba
           </Link>
         )}
       </div>
-      {canBlock && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button type="button" variant="ghost" size="icon" aria-label={t("menu")} disabled={busy}>
-              <MoreVertical className="size-4" aria-hidden="true" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {conversation.blockedByMe ? (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button type="button" variant="ghost" size="icon" aria-label={t("menu")} disabled={busy}>
+            <MoreVertical className="size-4" aria-hidden="true" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {canBlock &&
+            (conversation.blockedByMe ? (
               <DropdownMenuItem onSelect={() => void block(false)}>{t("unblock")}</DropdownMenuItem>
             ) : (
               <DropdownMenuItem onSelect={() => void block(true)}>{t("block")}</DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
+            ))}
+          <DropdownMenuItem onSelect={() => setReporting(true)}>{t("report")}</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ReportDialog
+        target={{ kind: "CONVERSATION", id: conversation.id }}
+        open={reporting}
+        onClose={() => setReporting(false)}
+      />
     </div>
   );
 }

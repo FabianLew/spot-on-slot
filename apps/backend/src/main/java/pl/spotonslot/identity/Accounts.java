@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.spotonslot.identity.domain.UserAccount;
 import pl.spotonslot.identity.infrastructure.UserAccountRepository;
 
-/** The module's facade for other modules: e-mail, role and language of accounts by id, and who awaits deletion. */
+/** The module's facade for other modules: e-mail, role and language of accounts by id, and who is silenced (deleted or blocked). */
 @Service
 @RequiredArgsConstructor
 public class Accounts {
@@ -32,12 +32,12 @@ public class Accounts {
     }
 
     /**
-     * Those of the accounts waiting for deletion: nobody tells them anything any more (notifications, e-mails) until
-     * they restore the account.
+     * Those of the accounts waiting for deletion or blocked: nobody tells them anything any more (notifications,
+     * e-mails) until they are restored or unblocked.
      */
     @Transactional(readOnly = true)
-    public Set<UUID> deletionPending(Collection<UUID> ids) {
-        return ids.isEmpty() ? Set.of() : accounts.findDeletionPendingAmong(ids);
+    public Set<UUID> silenced(Collection<UUID> ids) {
+        return ids.isEmpty() ? Set.of() : accounts.findSilencedAmong(ids);
     }
 
     private static AccountInfo info(UserAccount account) {

@@ -15,9 +15,9 @@ type DialogName = "email" | "password" | "delete" | null;
 
 /**
  * "Ustawienia → Konto": e-mail, password, data export and, set apart at the end of the page, deleting the account.
- * `children` (the other settings panels) go between the two.
+ * `children` (the other settings panels) go between the two. Admin accounts (`deletable={false}`) have no delete panel.
  */
-export function AccountSettings({ children }: { children?: ReactNode }) {
+export function AccountSettings({ children, deletable = true }: { children?: ReactNode; deletable?: boolean }) {
   const t = useTranslations();
   const { session } = useSession();
   const [dialog, setDialog] = useState<DialogName>(null);
@@ -60,20 +60,22 @@ export function AccountSettings({ children }: { children?: ReactNode }) {
         </div>
       </Panel>
       {children}
-      <Panel
-        title={
-          <span className="flex items-center gap-2 text-danger">
-            <CircleAlert className="size-5 shrink-0" aria-hidden="true" />
-            {t("account.delete.section")}
-          </span>
-        }
-        className="border-danger"
-      >
-        <p className="text-sm">{t("account.delete.text")}</p>
-        <Button type="button" variant="destructive" className="self-start" onClick={() => setDialog("delete")}>
-          {t("account.delete.open")}
-        </Button>
-      </Panel>
+      {deletable && (
+        <Panel
+          title={
+            <span className="flex items-center gap-2 text-danger">
+              <CircleAlert className="size-5 shrink-0" aria-hidden="true" />
+              {t("account.delete.section")}
+            </span>
+          }
+          className="border-danger"
+        >
+          <p className="text-sm">{t("account.delete.text")}</p>
+          <Button type="button" variant="destructive" className="self-start" onClick={() => setDialog("delete")}>
+            {t("account.delete.open")}
+          </Button>
+        </Panel>
+      )}
       <EmailChangeDialog open={dialog === "email"} onClose={close} />
       <PasswordDialog open={dialog === "password"} onClose={close} />
       <DeleteAccountDialog open={dialog === "delete"} onClose={close} />

@@ -12,14 +12,14 @@ import { useSession } from "@/components/session/session-provider";
 import { isActive } from "./is-active";
 import { useNavBadge } from "./nav-badges";
 import { BadgeCount, NavLink } from "./nav-link";
-import { navItems } from "./nav-items";
+import { navItems, type NavItem } from "./nav-items";
 
-export function MoreSheet() {
+export function MoreSheet({ items = navItems }: { items?: readonly NavItem[] }) {
   const t = useTranslations();
   const { signOut } = useSession();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const moreItems = navItems.filter((item) => item.mobile === "more");
+  const moreItems = items.filter((item) => item.mobile === "more");
   // The trigger stands in for the sections inside the sheet, so it looks active on any of them.
   const active = moreItems.some((item) => isActive(pathname, item.href));
   // The sections' counters show on the trigger too, so a waiting booking is seen on phones.

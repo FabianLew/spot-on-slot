@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import { Logo } from "@/components/brand/logo";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { NavLink } from "./nav-link";
-import { navItems } from "./nav-items";
+import { navItems, type NavItem } from "./nav-items";
 import { UserMenu } from "./user-menu";
 
 /**
@@ -10,7 +10,7 @@ import { UserMenu } from "./user-menu";
  * scrolls on its own only on very short windows). The spacer keeps its width in the layout and paints the column down
  * to the end of long pages.
  */
-export function Sidebar() {
+export function Sidebar({ items = navItems, bell = true }: { items?: readonly NavItem[]; bell?: boolean }) {
   const t = useTranslations();
   return (
     <>
@@ -18,11 +18,11 @@ export function Sidebar() {
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-6 overflow-y-auto border-r-2 border-border bg-card p-4 md:flex">
         <div className="flex items-start justify-between gap-2">
           <Logo label={t("common.appName")} className="px-1 pt-2" />
-          <NotificationBell variant="panel" />
+          {bell && <NotificationBell variant="panel" />}
         </div>
         <div aria-hidden="true" className="pattern-checker h-3 text-primary" />
         <nav aria-label={t("nav.primary")} className="flex flex-1 flex-col gap-1">
-          {navItems.map((item) => (
+          {items.map((item) => (
             <NavLink key={item.href} item={item} variant="sidebar" />
           ))}
         </nav>

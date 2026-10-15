@@ -55,6 +55,13 @@ public class UserAccount extends BaseEntity {
     @Column(name = "deletion_requested_at")
     private Instant deletionRequestedAt;
 
+    /** When an admin blocked the account; set while {@link AccountStatus#BLOCKED}. */
+    @Column(name = "blocked_at")
+    private Instant blockedAt;
+
+    @Column(name = "block_reason", length = 500)
+    private String blockReason;
+
     public static UserAccount register(String email, String passwordHash, Role role, String locale, String termsVersion,
             Instant now) {
         var account = new UserAccount();
@@ -66,6 +73,22 @@ public class UserAccount extends BaseEntity {
         account.privacyNoticeAcceptedAt = now;
         account.termsAcceptedAt = now;
         account.termsVersion = termsVersion;
+        return account;
+    }
+
+    /**
+     * An admin account invited by another admin: it signs in once its owner sets a password through the link, which
+     * also verifies the address. {@code passwordHash} is of a random password nobody knows.
+     */
+    public static UserAccount invitedAdmin(String email, String passwordHash, String locale, String termsVersion,
+            Instant now) {
+        return register(email, passwordHash, Role.ADMIN, locale, termsVersion, now);
+    }
+
+    /** The first admin from the deployment's configuration, verified at once. */
+    public static UserAccount bootstrapAdmin(String email, String passwordHash, String termsVersion, Instant now) {
+        var account = register(email, passwordHash, Role.ADMIN, "pl", termsVersion, now);
+        account.verifyEmail(now);
         return account;
     }
 
@@ -111,6 +134,28 @@ public class UserAccount extends BaseEntity {
         status = AccountStatus.ACTIVE;
         deletionRequestedAt = null;
         return true;
+    }
+
+    /** Blocks the account; sessions are ended by the caller. An account waiting for deletion is never blocked. */
+    public void block(String reason, Instant now) {
+        status = AccountStatus.BLOCKED;
+        blockedAt = now;
+        blockReason = reason;
+    }
+
+    /** Lifts a block: back to active, or to waiting for verification if the address was never confirmed. */
+    public boolean unblock() {
+        if (status != AccountStatus.BLOCKED) {
+            return false;
+        }
+        status = emailVerifiedAt != null ? AccountStatus.ACTIVE : AccountStatus.PENDING_VERIFICATION;
+        blockedAt = null;
+        blockReason = null;
+        return true;
+    }
+
+    public boolean isBlocked() {
+        return status == AccountStatus.BLOCKED;
     }
 
     public boolean isDeletionPending() {

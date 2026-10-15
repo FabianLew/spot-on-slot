@@ -4,13 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
+import pl.spotonslot.identity.AccountBlocked;
 import pl.spotonslot.identity.AccountDeleted;
 import pl.spotonslot.identity.AccountDeletionRequested;
 import pl.spotonslot.venue.Venues;
 import pl.spotonslot.venue.VenuesDeletedWithAccount;
 
 /**
- * An account waiting for deletion withdraws, declines and cancels its open bookings (the other side is told as
+ * An account waiting for deletion or blocked withdraws, declines and cancels its open bookings (the other side is told as
  * usual); once purged, its bookings stay with the other side under "Usunięte konto", its messages erased.
  */
 @Slf4j
@@ -23,8 +24,16 @@ class BookingAccountListener {
 
     @ApplicationModuleListener
     void on(AccountDeletionRequested event) {
-        var closed = bookings.closeForDeletedAccount(event.userId(), venues.soleMemberVenues(event.userId()));
+        var closed = bookings.closeForAccount(event.userId(), venues.soleMemberVenues(event.userId()),
+                BookingService.ACCOUNT_DELETED_REASON);
         log.info("Closed {} bookings of an account waiting for deletion", closed);
+    }
+
+    @ApplicationModuleListener
+    void on(AccountBlocked event) {
+        var closed = bookings.closeForAccount(event.userId(), venues.soleMemberVenues(event.userId()),
+                BookingService.ACCOUNT_BLOCKED_REASON);
+        log.info("Closed {} bookings of a blocked account", closed);
     }
 
     @ApplicationModuleListener

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { MessageCta } from "@/components/messages/message-cta";
+import { ReportCta } from "@/components/moderation/report-cta";
 import { VenueProfileView } from "@/components/venue/venue-profile-view";
 import { findPublicVenue } from "@/lib/public-profiles";
 
@@ -40,7 +41,12 @@ export default async function Page({ params }: PageProps<"/v/[slug]">) {
     <VenueProfileView
       venue={venue}
       headingLevel={1}
-      action={<MessageCta target={{ kind: "venue", slug }} className="self-start" />}
+      action={
+        <div className="flex flex-wrap gap-2">
+          <MessageCta target={{ kind: "venue", slug }} />
+          <ReportCta target={{ kind: "VENUE", slug }} />
+        </div>
+      }
     />
   );
 }

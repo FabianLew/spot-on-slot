@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { CircleAlert } from "lucide-react";
 import { Button, Panel, PixelSquare, toast } from "@spot-on-slot/ui";
 import type { ArtistProfile, Venue } from "@/components/onboarding/profile-requests";
 
@@ -21,6 +22,8 @@ interface StatusBarProps {
   toggling: boolean;
   /** Without it the publish buttons are disabled with a note (only venue owners publish). */
   canToggle?: boolean;
+  /** Set while an admin keeps the profile hidden: it cannot be published until they restore it. */
+  moderation?: { reason: string } | null;
   /** More actions next to "Edit". */
   children?: ReactNode;
 }
@@ -36,6 +39,7 @@ export function StatusBar({
   onToggle,
   toggling,
   canToggle = true,
+  moderation,
   children,
 }: StatusBarProps) {
   const t = useTranslations();
@@ -56,6 +60,16 @@ export function StatusBar({
         <PixelSquare className={published ? "size-4 shrink-0 text-highlight" : "size-4 shrink-0 text-primary"} />
         {published ? publishedText : draftText}
       </p>
+      {moderation != null && (
+        <div role="alert" className="flex gap-3 border-2 border-danger p-3 text-sm">
+          <CircleAlert className="size-5 shrink-0 text-danger" aria-hidden="true" />
+          <div className="flex flex-col gap-1">
+            <p className="font-bold text-danger">{t("profileStatus.hidden")}</p>
+            <p>{t("profileStatus.hiddenReason", { reason: moderation.reason })}</p>
+            <p className="text-muted-foreground">{t("profileStatus.hiddenHelp")}</p>
+          </div>
+        </div>
+      )}
       {!published && missing.length > 0 && (
         <p className="text-sm">
           {t("profileStatus.missingTitle")} {missing.map((item) => t(`onboarding.missing.${item}`)).join(", ")}
@@ -85,7 +99,7 @@ export function StatusBar({
             type="button"
             variant="outline"
             onClick={() => onToggle(true)}
-            disabled={!canToggle || missing.length > 0 || toggling}
+            disabled={!canToggle || missing.length > 0 || toggling || moderation != null}
           >
             {t("profileStatus.publish")}
           </Button>

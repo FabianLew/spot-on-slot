@@ -39,6 +39,8 @@ public class SecurityConfig {
                         // The container's error dispatch renders the problem for an already-rejected request.
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(PUBLIC_PATHS).permitAll()
+                        // The admin panel (moderation module); its controllers check the role too.
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 // Bearer JWTs; the decoder and the role converter are beans of the identity module.
                 .oauth2ResourceServer(resource -> resource

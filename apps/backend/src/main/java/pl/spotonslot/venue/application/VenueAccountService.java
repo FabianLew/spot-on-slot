@@ -61,7 +61,10 @@ public class VenueAccountService {
         return sole;
     }
 
-    /** Takes the user's own venues off the public pages (deletion requested); a restore leaves them unpublished. */
+    /**
+     * Takes the user's own venues off the public pages (deletion requested, account blocked); a restore or unblock
+     * leaves them unpublished.
+     */
     @Transactional
     public void hideSoleVenues(UUID userId) {
         venues.findAllById(soleMemberVenues(userId)).forEach(venue -> venue.unpublish());
