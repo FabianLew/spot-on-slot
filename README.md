@@ -61,6 +61,14 @@ backend, run `docker compose down -v`, start the backend and seed again. Running
 where a failed run stopped (in dev, locations go through the public Photon geocoder, which is slow or down at times;
 the script retries it a few times) and skips what is already there.
 
+If Photon does not answer at all (timeouts in the backend log), use the offline stand-in, which knows Polish towns:
+
+```bash
+pnpm geocoder:local                                                    # terminal 1, http://localhost:2322
+LOCATION_GEOCODER_URL=http://localhost:2322 ./gradlew bootRun          # terminal 2, in apps/backend
+# PowerShell: $env:LOCATION_GEOCODER_URL="http://localhost:2322"; ./gradlew bootRun
+```
+
 ## Common tasks
 
 | Task | Command |

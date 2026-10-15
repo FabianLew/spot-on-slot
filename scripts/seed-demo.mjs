@@ -319,7 +319,8 @@ async function call(method, path, token, body) {
   if (!response.ok) {
     const hint = response.status === 503 && path.startsWith("/api/v1/locations")
       ? "\nThe backend could not reach the Photon geocoder (photon.komoot.io in dev; it is slow or down at times). " +
-        "Run this again in a minute: it continues where it stopped."
+        "Run this again in a minute: it continues where it stopped. If it keeps failing, run `pnpm geocoder:local` " +
+        "and restart the backend with LOCATION_GEOCODER_URL=http://localhost:2322 (an offline stand-in)."
       : "";
     fail(`${method} ${path} -> ${response.status}\n${text}${hint}`);
   }
