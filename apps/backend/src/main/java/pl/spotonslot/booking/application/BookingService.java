@@ -63,6 +63,8 @@ public class BookingService {
     static final Duration MAX_LENGTH = Duration.ofHours(24);
     /** The reason stored when an account's deletion cancels or declines its bookings. */
     public static final String ACCOUNT_DELETED_REASON = "Konto zostało usunięte";
+    /** The reason stored when blocking an account cancels or declines its bookings. */
+    public static final String ACCOUNT_BLOCKED_REASON = "Konto zostało zablokowane";
     /** The name a purged account's bookings show instead of its stage or venue name. */
     public static final String DELETED_NAME = "Usunięte konto";
     /** Stands in for an empty list in {@code IN (...)}. */
@@ -333,14 +335,14 @@ public class BookingService {
     // ---- accounts
 
     /**
-     * Ends what an account waiting for deletion has open, as the artist or as a venue only they are in
+     * Ends what an account waiting for deletion or blocked has open, as the artist or as a venue only they are in
      * ({@code venueIds}): pending proposals they made are withdrawn, those waiting for them declined, and accepted
-     * bookings that have not started are cancelled with {@link #ACCOUNT_DELETED_REASON} (their time is free again in
+     * bookings that have not started are cancelled with {@code reason} (their time is free again in
      * the artist's calendar). The steps are the person's own, so the usual notifications reach only the other side.
      * Returns how many bookings were closed.
      */
     @Transactional
-    public int closeForDeletedAccount(UUID userId, Set<UUID> venueIds) {
+    public int closeForAccount(UUID userId, Set<UUID> venueIds, String reason) {
         var now = now();
         var closed = 0;
         for (var id : bookings.findOpenOfArtistOrVenues(userId, venueIds.isEmpty() ? NO_VENUES : venueIds, now)) {
@@ -352,12 +354,12 @@ public class BookingService {
                 events.publishEvent(new BookingWithdrawn(booking.getId(), booking.getArtistId(),
                         booking.getVenueId(), booking.getStartsAt(), booking.getEndsAt(), party, userId));
             } else if (status == BookingStatus.PENDING) {
-                booking.decline(party, userId, ACCOUNT_DELETED_REASON, now);
+                booking.decline(party, userId, reason, now);
                 events.publishEvent(new BookingDeclined(booking.getId(), booking.getArtistId(),
                         booking.getVenueId(), booking.getStartsAt(), booking.getEndsAt(), party, userId));
             } else if (status == BookingStatus.ACCEPTED && booking.getStartsAt().isAfter(now)) {
                 availability.release(booking.getId());
-                booking.cancel(party, userId, ACCOUNT_DELETED_REASON, now);
+                booking.cancel(party, userId, reason, now);
                 events.publishEvent(new BookingCancelled(booking.getId(), booking.getArtistId(),
                         booking.getVenueId(), booking.getStartsAt(), booking.getEndsAt(), party, userId));
             } else {
@@ -383,10 +385,10 @@ public class BookingService {
     public void anonymizeArtist(UUID userId) {
         jdbc.update("UPDATE booking SET artist_stage_name = ?, updated_at = now(), version = version + 1"
                 + " WHERE artist_id = ?", DELETED_NAME, userId);
-        // The reason the deletion itself stored stays: it is what the other side needs to read.
+        // The reasons the deletion or a block stored stay: they are what the other side needs to read.
         jdbc.update("UPDATE booking_step SET message = NULL, message_deleted = true, updated_at = now(),"
-                + " version = version + 1 WHERE actor_id = ? AND message IS NOT NULL AND message <> ?", userId,
-                ACCOUNT_DELETED_REASON);
+                + " version = version + 1 WHERE actor_id = ? AND message IS NOT NULL AND message NOT IN (?, ?)",
+                userId, ACCOUNT_DELETED_REASON, ACCOUNT_BLOCKED_REASON);
     }
 
     /** After venues went with a purged account: their names in bookings become {@link #DELETED_NAME}. */

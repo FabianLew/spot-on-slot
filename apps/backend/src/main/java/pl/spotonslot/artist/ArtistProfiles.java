@@ -42,6 +42,42 @@ public class ArtistProfiles {
         return profiles.hasProfile(ownerId);
     }
 
+    /** Any profile by id, for moderation. */
+    public Optional<ArtistModerationView> findForModeration(UUID profileId) {
+        return profiles.find(profileId).map(ArtistProfiles::moderationView);
+    }
+
+    /** The user's profile, published or not, for moderation. */
+    public Optional<ArtistModerationView> findForModerationByOwner(UUID ownerId) {
+        return profiles.findByOwner(ownerId).map(ArtistProfiles::moderationView);
+    }
+
+    /** A published profile by its public address, as moderation sees it (what can be reported). */
+    public Optional<ArtistModerationView> findPublishedForModeration(String slug) {
+        return profiles.findPublishedBySlug(slug).map(ArtistProfiles::moderationView);
+    }
+
+    /** Owners whose stage name contains {@code query}, ignoring case. */
+    public List<UUID> ownersNamed(String query) {
+        return profiles.ownersNamed(query);
+    }
+
+    /** Unpublishes the profile and keeps the owner from publishing it; false when there is no such profile. */
+    public boolean hideByModeration(UUID profileId, String reason) {
+        return profiles.hideByModeration(profileId, reason);
+    }
+
+    /** Lets the owner publish the profile again; false when there is no such profile. */
+    public boolean restoreByModeration(UUID profileId) {
+        return profiles.restoreByModeration(profileId);
+    }
+
+    private static ArtistModerationView moderationView(ArtistProfile profile) {
+        return new ArtistModerationView(profile.getId(), profile.getOwnerId(), profile.getSlug(),
+                profile.getStageName(), profile.isPublished(), profile.getModerationHiddenAt(),
+                profile.getModerationReason());
+    }
+
     private static ArtistSummary summary(ArtistProfile profile) {
         return new ArtistSummary(profile.getOwnerId(), profile.getSlug(), profile.getStageName(),
                 profile.getTravelRadiusKm());

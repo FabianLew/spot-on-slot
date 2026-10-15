@@ -85,4 +85,11 @@ public final class VenueErrors {
             super("VENUE_CONFLICT");
         }
     }
+
+    /** An admin hid the venue; only an admin can let it be published again. */
+    public static class HiddenByModeration extends ConflictException {
+        public HiddenByModeration() {
+            super("VENUE_HIDDEN_BY_MODERATION");
+        }
+    }
 }

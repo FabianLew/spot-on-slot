@@ -67,7 +67,11 @@ class VenueMapper {
         return new VenueResponse(venue.getId(), venue.getSlug(), venue.getName(), venue.getType(),
                 venue.getDescription(), venue.getCapacity(), address(venue), genres(venue),
                 List.copyOf(venue.getTags()), links(venue), avatar(venue), photos(venue), venue.isPublished(),
-                venue.getPublishedAt(), venues.missingForPublication(venue), managed.role(), venue.getUpdatedAt());
+                venue.getPublishedAt(), venues.missingForPublication(venue),
+                venue.isHiddenByModeration()
+                        ? new VenueDtos.VenueModeration(venue.getModerationHiddenAt(), venue.getModerationReason())
+                        : null,
+                managed.role(), venue.getUpdatedAt());
     }
 
     PublicVenueResponse toPublicResponse(Venue venue) {

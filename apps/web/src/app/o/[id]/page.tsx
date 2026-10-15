@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { BookingCta } from "@/components/bookings/booking-cta";
+import { ReportCta } from "@/components/moderation/report-cta";
 import { ListingView } from "@/components/listings/listing-view";
 import { findPublicListing } from "@/lib/public-profiles";
 
@@ -25,7 +26,12 @@ export default async function Page({ params }: PageProps<"/o/[id]">) {
   return (
     <ListingView
       listing={listing}
-      action={<BookingCta target={{ kind: "listing", id: listing.id, listingKind: listing.kind }} className="self-start" />}
+      action={
+        <div className="flex flex-wrap gap-2">
+          <BookingCta target={{ kind: "listing", id: listing.id, listingKind: listing.kind }} />
+          <ReportCta target={{ kind: "LISTING", id: listing.id }} />
+        </div>
+      }
     />
   );
 }

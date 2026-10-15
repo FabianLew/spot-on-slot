@@ -36,7 +36,11 @@
     "more": "More",
     "primary": "Main navigation",
     "skipToContent": "Skip to content",
-    "menu": "Menu"
+    "menu": "Menu",
+    "adminReports": "Reports",
+    "adminUsers": "Users",
+    "adminHistory": "History",
+    "adminAdmins": "Admins"
   },
   "errors": {
     "title": "Something went wrong",
@@ -530,7 +534,10 @@
     "copied": "Link copied.",
     "copyFailed": "Could not copy. Link: {url}",
     "open": "Open public page",
-    "ownerOnly": "Only the venue owner can publish or unpublish."
+    "ownerOnly": "Only the venue owner can publish or unpublish.",
+    "hidden": "Hidden by moderation",
+    "hiddenReason": "Reason: {reason}",
+    "hiddenHelp": "You cannot publish the profile right now. If this is a mistake, reply to the e-mail from the Spot On Slot team."
   },
   "venueProfile": {
     "view": {
@@ -839,7 +846,8 @@
       "notFoundText": "The listing was closed, has expired, or the link is wrong.",
       "home": "Home page"
     },
-    "seeBooking": "See booking"
+    "seeBooking": "See booking",
+    "closedByModeration": "Closed by moderation. Reason: {reason}"
   },
   "search": {
     "title": "Search",
@@ -1165,7 +1173,8 @@
       "hint": "Up to 2000 characters. Contact details are best left for later.",
       "send": "Send",
       "failed": "The message could not be sent."
-    }
+    },
+    "report": "Report conversation"
   },
   "account": {
     "title": "Account",
@@ -1311,6 +1320,242 @@
       "findArtists": "Find artists",
       "inbox": "Messages",
       "profile": "Profile"
+    }
+  },
+  "report": {
+    "cta": "Report",
+    "title": {
+      "ARTIST": "Report profile",
+      "VENUE": "Report venue",
+      "LISTING": "Report listing",
+      "CONVERSATION": "Report conversation"
+    },
+    "hint": "We will look into it. The other side will not learn who reported.",
+    "reasonLabel": "Reason",
+    "reason": {
+      "SPAM": "Spam",
+      "FRAUD": "Fraud",
+      "OFFENSIVE": "Offensive content",
+      "IMPERSONATION": "Impersonation",
+      "MISLEADING": "False information",
+      "OTHER": "Other"
+    },
+    "reasonHint": {
+      "SPAM": "Ads, mass messages, unrelated content.",
+      "FRAUD": "An attempt to get money or data.",
+      "OFFENSIVE": "Insults, harassment, inappropriate content.",
+      "IMPERSONATION": "Someone pretends to be another artist, venue or person.",
+      "MISLEADING": "Fake details, photos or terms.",
+      "OTHER": "Describe what is wrong."
+    },
+    "descriptionLabel": "Description (optional)",
+    "descriptionRequiredLabel": "Description (required)",
+    "reasonRequired": "Choose a reason.",
+    "descriptionRequired": "Describe the problem for the reason \"Other\".",
+    "send": "Send report",
+    "sending": "Sending…",
+    "cancel": "Cancel",
+    "thanksTitle": "Thank you",
+    "thanks": "Thank you, we will look into it.",
+    "close": "Close"
+  },
+  "admin": {
+    "kind": {
+      "ARTIST": "Profile",
+      "VENUE": "Venue",
+      "LISTING": "Listing",
+      "CONVERSATION": "Conversation"
+    },
+    "state": {
+      "ACTIVE": "Active",
+      "PENDING_VERIFICATION": "Unconfirmed",
+      "BLOCKED": "Blocked",
+      "DELETION_PENDING": "Being deleted"
+    },
+    "role": {
+      "ARTIST": "Artist",
+      "VENUE": "Venue",
+      "BOOKER": "Booker",
+      "ADMIN": "Admin"
+    },
+    "reason": {
+      "SPAM": "Spam",
+      "FRAUD": "Fraud",
+      "OFFENSIVE": "Offensive content",
+      "IMPERSONATION": "Impersonation",
+      "MISLEADING": "False information",
+      "OTHER": "Other"
+    },
+    "reportStatus": {
+      "OPEN": "Open",
+      "RESOLVED": "Resolved",
+      "DISMISSED": "Dismissed"
+    },
+    "action": {
+      "BLOCK_ACCOUNT": "Account blocked",
+      "UNBLOCK_ACCOUNT": "Account unblocked",
+      "HIDE": "Hidden",
+      "RESTORE": "Hiding lifted",
+      "CLOSE_LISTING": "Listing closed",
+      "DISMISS_REPORTS": "Reports dismissed",
+      "ADD_ADMIN": "New admin"
+    },
+    "listingKind": {
+      "ARTIST_AVAILABLE": "I'm free",
+      "VENUE_SEEKING": "Looking for an artist"
+    },
+    "listingStatus": {
+      "ACTIVE": "Active",
+      "CLOSED": "Closed",
+      "EXPIRED": "Expired",
+      "FILLED": "Filled"
+    },
+    "loadMore": "Show more",
+    "loadingMore": "Loading…",
+    "reasonLabel": "Reason",
+    "cancel": "Cancel",
+    "deleted": "Deleted account",
+    "history": {
+      "title": "History",
+      "intro": "Every admin action, newest first. Entries cannot be changed.",
+      "empty": "No actions yet.",
+      "reason": "Reason: {reason}",
+      "by": "{admin} · {when}"
+    },
+    "reports": {
+      "title": "Reports",
+      "intro": "Open reports, the longest waiting first. Reports of the same thing are grouped.",
+      "filter": "Kind",
+      "all": "All",
+      "empty": "No open reports.",
+      "listLabel": "Report queue",
+      "count": "{count, plural, one {# report} other {# reports}}",
+      "waiting": "Waiting since {since} · latest {last}",
+      "badge": "{count, plural, one {# open report} other {# open reports}}",
+      "back": "Back to reports"
+    },
+    "target": {
+      "notFound": "There are no reports under this id.",
+      "summary": "Open: {open} · all: {total}",
+      "conversationNote": "Admins see only the copy of the last 20 messages saved with each report.",
+      "reports": "Reports",
+      "gone": "This item no longer exists.",
+      "reporter": "Reported by:",
+      "reporterDeleted": "Reporter: deleted account",
+      "resolution": "Note: {note}"
+    },
+    "subject": {
+      "hidden": "Hidden by moderation {when}",
+      "hiddenReason": "Reason: {reason}",
+      "published": "Published",
+      "draft": "Not published",
+      "artist": "Artist profile",
+      "artistProfile": "Artist profile",
+      "venue": "Venue",
+      "listing": "Listing",
+      "conversation": "Conversation",
+      "open": "Open public page",
+      "account": "Owner's account",
+      "team": "{count, plural, one {# person in the team} other {# people in the team}}"
+    },
+    "hide": {
+      "button": "Hide",
+      "title": "Hide \"{name}\"?",
+      "artist": "The profile disappears publicly; the owner sees the reason and cannot publish it again themselves.",
+      "venue": "The venue disappears publicly; its team sees the reason and cannot publish it again themselves.",
+      "confirm": "Hide",
+      "done": "Hidden."
+    },
+    "restore": {
+      "button": "Lift hiding",
+      "title": "Lift hiding of \"{name}\"?",
+      "text": "The owner can publish it again. It does not publish by itself.",
+      "confirm": "Lift hiding",
+      "done": "Hiding lifted."
+    },
+    "block": {
+      "button": "Block",
+      "title": "Block {email}?",
+      "text": "The account is signed out and cannot sign in again. The profile, venues where the person is the only member and their listings disappear, open bookings are closed and upcoming ones cancelled. The person gets an e-mail with the reason.",
+      "confirm": "Block",
+      "done": "Account blocked."
+    },
+    "unblock": {
+      "button": "Unblock",
+      "title": "Unblock {email}?",
+      "text": "The account can sign in again. The profile and venues stay unpublished and cancelled bookings do not come back.",
+      "confirm": "Unblock",
+      "done": "Account unblocked."
+    },
+    "owners": {
+      "title": "Accounts",
+      "none": "No accounts (deleted)."
+    },
+    "dismiss": {
+      "button": "Dismiss reports",
+      "title": "Dismiss the reports?",
+      "text": "{count, plural, one {You close # open report as no violation. The note stays in the history.} other {You close # open reports as no violation. The note stays in the history.}}",
+      "confirm": "Dismiss",
+      "done": "Reports dismissed."
+    },
+    "close": {
+      "button": "Close listing",
+      "title": "Close the listing?",
+      "text": "The listing disappears publicly and its author sees the reason. It cannot be reopened.",
+      "confirm": "Close listing",
+      "done": "Listing closed."
+    },
+    "listing": {
+      "author": "Author",
+      "when": "Time",
+      "city": "City",
+      "status": "State",
+      "closedReason": "Closed by moderation. Reason: {reason}"
+    },
+    "snapshot": {
+      "title": "{count, plural, one {Conversation copy (# message)} other {Conversation copy (# messages)}}",
+      "empty": "The conversation had no messages.",
+      "reporter": "Reporter",
+      "other": "Other side",
+      "deleted": "Message deleted"
+    },
+    "users": {
+      "title": "Users",
+      "query": "Search",
+      "queryHint": "E-mail, stage name or venue name",
+      "role": "Role",
+      "anyRole": "Any role",
+      "state": "State",
+      "anyState": "Any state",
+      "search": "Search",
+      "empty": "No accounts found.",
+      "found": "{count, plural, one {Found # account} other {Found # accounts}}",
+      "listLabel": "Accounts",
+      "openReports": "{count, plural, one {# open report} other {# open reports}}",
+      "joined": "Since {when}",
+      "lastSignIn": "Last seen {when}",
+      "back": "Back to users",
+      "notFound": "There is no such account.",
+      "detailTitle": "Account",
+      "joinedLabel": "Signed up",
+      "lastSignInLabel": "Last sign-in",
+      "never": "Never",
+      "reportsLabel": "Reports",
+      "reports": "{total} (open: {open})",
+      "blockedLabel": "Blocked",
+      "deletionLabel": "Deletion since",
+      "self": "This is your account: you cannot block it."
+    },
+    "admins": {
+      "title": "Admins",
+      "listTitle": "Admin accounts",
+      "add": "Add admin",
+      "neverSignedIn": "Has not signed in yet",
+      "addTitle": "Add admin",
+      "addText": "We create a separate admin account and send this address a link to set the password, valid for 3 days.",
+      "email": "E-mail",
+      "send": "Send invitation",
+      "added": "We sent a link to {email}."
     }
   }
 }

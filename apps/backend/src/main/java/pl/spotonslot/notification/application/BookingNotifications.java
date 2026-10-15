@@ -105,7 +105,7 @@ class BookingNotifications {
             recipients.remove(actorId);
         }
         // Accounts waiting for deletion hear nothing until restored.
-        recipients.removeAll(accounts.deletionPending(recipients));
+        recipients.removeAll(accounts.silenced(recipients));
         for (var recipient : recipients) {
             var artist = recipient.equals(artistId);
             var update = new BookingUpdate(bookingId, kind, artist ? BookingParty.ARTIST : BookingParty.VENUE, by,

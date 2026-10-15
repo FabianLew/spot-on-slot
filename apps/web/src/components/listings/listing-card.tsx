@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarCheck, Copy, CopyPlus, ExternalLink, Pencil, X } from "lucide-react";
+import { CalendarCheck, CircleAlert, Copy, CopyPlus, ExternalLink, Pencil, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button, Tag, toast } from "@spot-on-slot/ui";
@@ -82,6 +82,12 @@ export function ListingCard({
         )}
       </dl>
       {listing.description && <p className="line-clamp-3 text-sm break-words">{listing.description}</p>}
+      {listing.moderationReason != null && (
+        <p className="flex gap-2 border-2 border-danger p-2 text-xs">
+          <CircleAlert className="size-4 shrink-0 text-danger" aria-hidden="true" />
+          {t("listings.closedByModeration", { reason: listing.moderationReason })}
+        </p>
+      )}
       <div className="flex flex-wrap gap-2">
         {active ? (
           <>

@@ -1,6 +1,7 @@
 package pl.spotonslot.artist.application;
 
 import java.time.Clock;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -103,6 +105,9 @@ public class ArtistProfileService {
     @Transactional
     public ArtistProfile publish(UUID ownerId) {
         var profile = getForOwner(ownerId);
+        if (profile.isHiddenByModeration()) {
+            throw new ArtistErrors.HiddenByModeration();
+        }
         if (!missingForPublication(profile).isEmpty()) {
             throw new ArtistErrors.ProfileIncomplete();
         }
@@ -158,6 +163,42 @@ public class ArtistProfileService {
     @Transactional
     public void hide(UUID ownerId) {
         profiles.findByOwnerId(ownerId).ifPresent(ArtistProfile::unpublish);
+    }
+
+    /** Any profile by id, published or not (moderation). */
+    @Transactional(readOnly = true)
+    public Optional<ArtistProfile> find(UUID profileId) {
+        return profiles.findById(profileId);
+    }
+
+    /** Any profile of the owner, published or not (moderation). */
+    @Transactional(readOnly = true)
+    public Optional<ArtistProfile> findByOwner(UUID ownerId) {
+        return profiles.findByOwnerId(ownerId);
+    }
+
+    /** Owners whose stage name contains {@code query}, ignoring case (at most 100). */
+    @Transactional(readOnly = true)
+    public List<UUID> ownersNamed(String query) {
+        return profiles.findOwnersByStageName(query.trim(), PageRequest.of(0, 100));
+    }
+
+    /** An admin hides the profile; false when there is no such profile. */
+    @Transactional
+    public boolean hideByModeration(UUID profileId, String reason) {
+        return profiles.findById(profileId).map(profile -> {
+            profile.hideByModeration(reason, clock.instant().truncatedTo(ChronoUnit.MICROS));
+            return true;
+        }).orElse(false);
+    }
+
+    /** An admin lets the owner publish the profile again; false when there is no such profile. */
+    @Transactional
+    public boolean restoreByModeration(UUID profileId) {
+        return profiles.findById(profileId).map(profile -> {
+            profile.restoreByModeration();
+            return true;
+        }).orElse(false);
     }
 
     /** Deletes the profile of a purged account with everything in it. */

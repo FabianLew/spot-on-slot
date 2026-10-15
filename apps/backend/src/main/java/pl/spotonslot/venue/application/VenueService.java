@@ -1,6 +1,7 @@
 package pl.spotonslot.venue.application;
 
 import java.time.Clock;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -144,6 +146,9 @@ public class VenueService {
     public ManagedVenue publish(UUID userId, UUID venueId) {
         var member = access.owner(venueId, userId);
         var venue = loaded(find(venueId));
+        if (venue.isHiddenByModeration()) {
+            throw new VenueErrors.HiddenByModeration();
+        }
         if (!missingForPublication(venue).isEmpty()) {
             throw new VenueErrors.ProfileIncomplete();
         }
@@ -205,6 +210,36 @@ public class VenueService {
 
     public List<VenueMember> membersOf(Collection<UUID> venueIds) {
         return members.findByVenueIdIn(venueIds);
+    }
+
+    /** Any venue by id, published or not (moderation). */
+    @Transactional(readOnly = true)
+    public Optional<Venue> findAny(UUID venueId) {
+        return venues.findById(venueId);
+    }
+
+    /** Venues whose name contains {@code query}, ignoring case (at most 100). */
+    @Transactional(readOnly = true)
+    public List<Venue> named(String query) {
+        return venues.findByNameContaining(query.trim(), PageRequest.of(0, 100));
+    }
+
+    /** An admin hides the venue; false when there is no such venue. */
+    @Transactional
+    public boolean hideByModeration(UUID venueId, String reason) {
+        return venues.findById(venueId).map(venue -> {
+            venue.hideByModeration(reason, clock.instant().truncatedTo(ChronoUnit.MICROS));
+            return true;
+        }).orElse(false);
+    }
+
+    /** An admin lets the owners publish the venue again; false when there is no such venue. */
+    @Transactional
+    public boolean restoreByModeration(UUID venueId) {
+        return venues.findById(venueId).map(venue -> {
+            venue.restoreByModeration();
+            return true;
+        }).orElse(false);
     }
 
     /** Called when an image is deleted in the media module. */

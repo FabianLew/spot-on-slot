@@ -79,6 +79,13 @@ public class ArtistProfile extends BaseEntity {
     @Column(name = "published_at")
     private Instant publishedAt;
 
+    /** Set while an admin keeps the profile hidden: unpublished, and the owner cannot publish it. */
+    @Column(name = "moderation_hidden_at")
+    private Instant moderationHiddenAt;
+
+    @Column(name = "moderation_reason", length = 500)
+    private String moderationReason;
+
     @ElementCollection
     @CollectionTable(name = "artist_genre", joinColumns = @JoinColumn(name = "profile_id"))
     @Enumerated(EnumType.STRING)
@@ -148,6 +155,23 @@ public class ArtistProfile extends BaseEntity {
 
     public void unpublish() {
         publishedAt = null;
+    }
+
+    /** An admin hides the profile: it is unpublished until an admin restores it and the owner publishes it again. */
+    public void hideByModeration(String reason, Instant now) {
+        unpublish();
+        moderationHiddenAt = now;
+        moderationReason = reason;
+    }
+
+    /** Lets the owner publish again; the profile stays unpublished until they do. */
+    public void restoreByModeration() {
+        moderationHiddenAt = null;
+        moderationReason = null;
+    }
+
+    public boolean isHiddenByModeration() {
+        return moderationHiddenAt != null;
     }
 
     /** Drops a deleted image from the avatar and the gallery. */

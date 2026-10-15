@@ -73,7 +73,11 @@ class ArtistMapper {
                 profile.getFirstName(), profile.getLastName(), profile.getBio(), genres(profile),
                 List.copyOf(profile.getTags()), links(profile), rate(profile), profile.getTravelRadiusKm(),
                 skills(profile), avatar(profile), photos(profile), place(profile), profile.isPublished(),
-                profile.getPublishedAt(), profiles.missingForPublication(profile), profile.getUpdatedAt());
+                profile.getPublishedAt(), profiles.missingForPublication(profile),
+                profile.isHiddenByModeration()
+                        ? new ArtistDtos.ProfileModeration(profile.getModerationHiddenAt(), profile.getModerationReason())
+                        : null,
+                profile.getUpdatedAt());
     }
 
     PublicProfileResponse toPublicResponse(ArtistProfile profile) {

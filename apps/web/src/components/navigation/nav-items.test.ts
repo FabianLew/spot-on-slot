@@ -5,7 +5,7 @@ import en from "../../../messages/en.json";
 import pl from "../../../messages/pl.json";
 import { isActive } from "./is-active";
 import { navIcons } from "./nav-icons";
-import { navItems } from "./nav-items";
+import { adminNavItems, navItems } from "./nav-items";
 
 describe("navItems", () => {
   it("lists 8 sections with 4 phone tabs in order", () => {
@@ -35,6 +35,22 @@ describe("navItems", () => {
   it("has a page on disk for every href", () => {
     for (const item of navItems) {
       expect(existsSync(join(process.cwd(), "src/app/(app)", item.href, "page.tsx")), item.href).toBe(true);
+    }
+  });
+});
+
+describe("adminNavItems", () => {
+  it("has labels, icons and a page in the (admin) group for every entry", () => {
+    for (const item of adminNavItems) {
+      expect(pl.nav).toHaveProperty(item.labelKey);
+      expect(en.nav).toHaveProperty(item.labelKey);
+      expect(navIcons[item.icon], item.icon).toBeDefined();
+      expect(existsSync(join(process.cwd(), "src/app/(admin)", item.href, "page.tsx")), item.href).toBe(true);
+    }
+  });
+  it("keeps entries apart, so no admin section is active on another's page", () => {
+    for (const item of adminNavItems) {
+      expect(adminNavItems.filter((other) => isActive(item.href, other.href))).toEqual([item]);
     }
   });
 });

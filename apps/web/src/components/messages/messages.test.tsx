@@ -361,11 +361,14 @@ describe("MessagesScreen, a conversation", () => {
     expect(sent("DELETE", /\/block$/)).toHaveLength(1);
   });
 
-  it("has no block menu in a booking thread, only the booking link", async () => {
+  it("cannot block a booking thread, only report it, and links the booking", async () => {
     current = conversation({ kind: "BOOKING", bookingId: "b1" });
+    const user = userEvent.setup();
     renderUi(<MessagesScreen conversationId={C1} />);
     expect(await screen.findByRole("link", { name: "Zobacz booking" })).toHaveAttribute("href", "/bookings/b1");
-    expect(screen.queryByRole("button", { name: "Opcje rozmowy" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Opcje rozmowy" }));
+    expect(await screen.findByRole("menuitem", { name: "Zgłoś rozmowę" })).toBeInTheDocument();
+    expect(screen.queryByRole("menuitem", { name: "Zablokuj" })).not.toBeInTheDocument();
   });
 
   it("says when blocked by the other side, without unblocking", async () => {

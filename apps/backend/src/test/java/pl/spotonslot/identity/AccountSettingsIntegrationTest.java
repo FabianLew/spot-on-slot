@@ -250,11 +250,12 @@ class AccountSettingsIntegrationTest {
                 .andExpect(jsonPath("$.calendar.slots").isArray())
                 .andExpect(jsonPath("$.venues.venues").isArray())
                 .andExpect(jsonPath("$.notifications.preferences").exists())
+                .andExpect(jsonPath("$.reports").isArray())
                 .andReturn();
         var keys = json.readTree(result.getResponse().getContentAsString()).fieldNames();
         assertThat(keys).toIterable().containsExactly("exportedAt", "account", "artistProfile", "bookings",
-                "calendar", "conversations", "listings", "location", "media", "notifications", "venues",
-                "waitlist");
+                "calendar", "conversations", "listings", "location", "media", "notifications", "reports",
+                "venues", "waitlist");
 
         as(token, get("/api/v1/me/export"))
                 .andExpect(status().isTooManyRequests())

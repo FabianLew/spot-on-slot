@@ -76,7 +76,9 @@ final class ListingDtos {
             @Schema(requiredMode = REQUIRED) Instant createdAt,
             Instant closedAt,
             @Schema(description = "The booking that filled the listing (only filled listings, never public)")
-            UUID bookingId) {
+            UUID bookingId,
+            @Schema(description = "Why an admin closed the listing")
+            String moderationReason) {
 
         static ListingResponse of(ListingView view) {
             var listing = view.listing();
@@ -85,7 +87,8 @@ final class ListingDtos {
                     listing.getPriceFrom(), listing.getPriceTo(), listing.getCity(), listing.getTravelRadiusKm(),
                     view.artist() == null ? null : new ArtistRef(view.artist().slug(), view.artist().stageName()),
                     view.venue() == null ? null : new VenueRef(view.venue().slug(), view.venue().name()),
-                    listing.getCreatedAt(), listing.getClosedAt(), listing.getBookingId());
+                    listing.getCreatedAt(), listing.getClosedAt(), listing.getBookingId(),
+                    listing.getModerationReason());
         }
     }
 }
