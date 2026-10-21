@@ -24,6 +24,7 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD:?}
       MAIL_FROM: ${MAIL_FROM:-no-reply@spotonslot.com}
       MAIL_CONTACT: ${MAIL_CONTACT:-}
+      # Hetzner Object Storage, bucket in Helsinki (hel1); another location changes all three hel1 values.
       MEDIA_ENDPOINT: ${MEDIA_ENDPOINT:-https://hel1.your-objectstorage.com}
       MEDIA_REGION: ${MEDIA_REGION:-hel1}
       MEDIA_BUCKET: ${MEDIA_BUCKET:-spotonslot-media}
@@ -39,7 +40,8 @@ services:
       retries: 3
 
   postgres:
-    image: postgis/postgis:16-3.5
+    # Multi-arch build of the official PostGIS image (postgis/postgis has no arm64 variant), so x86 and ARM servers both work.
+    image: imresamu/postgis:16-3.5
     restart: unless-stopped
     environment:
       POSTGRES_DB: spotonslot

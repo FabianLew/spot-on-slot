@@ -25,7 +25,7 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
 
 ## 1. Serwer Hetzner + Coolify
 
-- Serwer x86 z **Ubuntu 24.04**, co najmniej **8 GB RAM** i 80 GB dysku, lokalizacja w UE (Falkenstein, Norymberga lub Helsinki). Backend (JVM), Postgres i Photon (wbudowany OpenSearch) razem nie zmieszczą się wygodnie w 4 GB.
+- Serwer x86 lub ARM (np. CAX) z **Ubuntu 24.04**, co najmniej **8 GB RAM** i 80 GB dysku, lokalizacja w UE (Falkenstein, Norymberga lub Helsinki). Backend (JVM), Postgres i Photon (wbudowany OpenSearch) razem nie zmieszczą się wygodnie w 4 GB.
 - Firewall w Hetzner Cloud: wejście tylko **22, 80, 443** (i 8000 do pierwszej konfiguracji Coolify, potem zamknij, gdy panel dostanie własną domenę, np. `coolify.spotonslot.com`).
 - Instalacja Coolify według oficjalnej instrukcji (`curl -fsSL https://cdn.coollabs.io/coolify/install.sh | sudo bash`), potem konto admina w panelu i włączone 2FA.
 - **Logi max 90 dni** (obiecane w polityce prywatności): Docker trzyma logi kontenerów w `/var/lib/docker/containers`. Sprawdź `/etc/docker/daemon.json`; jeśli nie ma tam rotacji, dodaj i zrestartuj Dockera:
@@ -71,7 +71,7 @@ Dowolny dostawca z SMTP na porcie 587 (np. Brevo, Postmark, Resend, Amazon SES).
 
 ## 4. Backend, baza i Photon w Coolify (docker compose)
 
-Cały serwerowy stos jest w jednym pliku `deploy/docker-compose.yml`: `backend` (z `apps/backend/Dockerfile`), `postgres` (`postgis/postgis:16-3.5`, ten sam obraz co lokalnie) i `photon` (z `deploy/photon`). Baza i Photon nie mają domen ani portów na zewnątrz; backend łączy się z nimi po nazwach usług.
+Cały serwerowy stos jest w jednym pliku `deploy/docker-compose.yml`: `backend` (z `apps/backend/Dockerfile`), `postgres` (`imresamu/postgis:16-3.5`, wieloarchitekturowa wersja oficjalnego obrazu PostGIS, działa na x86 i ARM) i `photon` (z `deploy/photon`). Baza i Photon nie mają domen ani portów na zewnątrz; backend łączy się z nimi po nazwach usług.
 
 **New Resource → Application → GitHub** (najlepiej przez Coolify GitHub App, wtedy push do `main` sam wdraża):
 
