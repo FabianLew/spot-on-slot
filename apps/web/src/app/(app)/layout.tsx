@@ -22,7 +22,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <main
                 id="main"
                 tabIndex={-1}
-                className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 pb-24 md:px-8 md:py-10 md:pb-10 focus:outline-none"
+                className={
+                  "mx-auto w-full max-w-5xl flex-1 px-4 py-6 pb-24 md:px-8 md:py-10 md:pb-10 focus:outline-none " +
+                  // Screens marked data-layout="full" (the search map) take the whole width and a slimmer frame.
+                  "has-[[data-layout=full]]:max-w-none has-[[data-layout=full]]:px-2 has-[[data-layout=full]]:pt-2 md:has-[[data-layout=full]]:p-4"
+                }
               >
                 {children}
               </main>

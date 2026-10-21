@@ -362,13 +362,28 @@ describe("SearchScreen", () => {
     expect(window.localStorage.getItem("sos.search.autoArea")).toBe("0");
   });
 
-  it("switches between the list and the map on phones", async () => {
+  it("starts phones on the map and switches to the list", async () => {
     const user = userEvent.setup();
     renderScreen();
     await screen.findByRole("list", { name: "Wyniki" });
-    const mapButton = screen.getByRole("button", { name: "Mapa" });
+    const listButton = screen.getByRole("button", { name: "Lista" });
+    expect(screen.getByRole("button", { name: "Mapa" })).toHaveAttribute("aria-pressed", "true");
+    await user.click(listButton);
+    expect(listButton).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("keeps the filters folded, counts the active ones and opens them on the list", async () => {
+    const user = userEvent.setup();
+    url.query = "tab=artists&genre=TECHNO&genre=HOUSE&budget=800";
+    renderScreen();
+    await screen.findByRole("list", { name: "Wyniki" });
+    const toggle = screen.getByRole("button", { name: /^Filtry/ });
+    expect(toggle).toHaveTextContent("3");
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(document.getElementById("search-filters")).toHaveClass("hidden");
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(document.getElementById("search-filters")).not.toHaveClass("hidden");
     expect(screen.getByRole("button", { name: "Lista" })).toHaveAttribute("aria-pressed", "true");
-    await user.click(mapButton);
-    expect(mapButton).toHaveAttribute("aria-pressed", "true");
   });
 });

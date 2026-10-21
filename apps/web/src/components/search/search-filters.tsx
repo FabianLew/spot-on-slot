@@ -20,9 +20,8 @@ export function SearchFilters({
   const timed = state.tab !== "venues";
 
   return (
-    <div className="grid gap-5 md:grid-cols-2">
+    <div className="flex flex-col gap-5">
       <ChoiceChips
-        className="md:col-span-2"
         legend={t("search.filters.genres")}
         options={GENRES.map((genre) => ({ value: genre, label: t(`genres.${genre}`) }))}
         value={state.genres}
@@ -31,7 +30,6 @@ export function SearchFilters({
 
       {state.tab === "venues" && (
         <ChoiceChips
-          className="md:col-span-2"
           legend={t("search.filters.types")}
           options={VENUE_TYPES.map((type) => ({ value: type, label: t(`venueTypes.${type}`) }))}
           value={state.types}
@@ -40,7 +38,7 @@ export function SearchFilters({
       )}
 
       {state.tab === "listings" && (
-        <fieldset className="flex flex-col gap-2 md:col-span-2">
+        <fieldset className="flex flex-col gap-2">
           <legend className="mb-2 text-sm font-bold uppercase">{t("search.filters.kind")}</legend>
           <div className="flex flex-wrap gap-2">
             {([undefined, ...KINDS] as (ListingKind | undefined)[]).map((kind) => (
@@ -64,8 +62,8 @@ export function SearchFilters({
       {timed && (
         <fieldset className="flex flex-col gap-2">
           <legend className="mb-2 text-sm font-bold uppercase">{t("search.filters.when")}</legend>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-[1fr_auto_auto]">
-            <div className="col-span-2 flex flex-col gap-1 sm:col-span-1">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="col-span-2 flex flex-col gap-1">
               <Label htmlFor="search-date">{t("search.filters.date")}</Label>
               <Input
                 id="search-date"
