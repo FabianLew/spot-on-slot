@@ -2,10 +2,11 @@
 # and the Photon geocoder. Only the backend gets a domain; the database and Photon stay on the stack's internal network.
 # Coolify lists every ${VAR} below in the resource's Environment Variables; SERVICE_PASSWORD_* values it generates itself.
 # Step by step: docs/deployment.md.
+# Build contexts are relative to the repository root: Coolify runs compose with the repo root as the project directory.
 services:
   backend:
     build:
-      context: ../apps/backend
+      context: ./apps/backend
     restart: unless-stopped
     depends_on:
       postgres:
@@ -59,7 +60,7 @@ services:
 
   photon:
     build:
-      context: ./photon
+      context: ./deploy/photon
     restart: unless-stopped
     environment:
       # Poland JSON dump (.jsonl.zst) for Photon 1.0 from https://download1.graphhopper.com/public/ (see docs/deployment.md).
