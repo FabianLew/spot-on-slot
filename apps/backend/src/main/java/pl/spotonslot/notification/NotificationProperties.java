@@ -31,7 +31,7 @@ public record NotificationProperties(@Valid @NotNull Mail mail, @Valid @NotNull 
         }
     }
 
-    /** @param baseUrl landing origin without a trailing slash, e.g. {@code https://spotonslot.pl} */
+    /** @param baseUrl landing origin without a trailing slash, e.g. {@code https://spotonslot.com} */
     public record Landing(@NotBlank @Pattern(regexp = "https?://\\S+") String baseUrl) {
 
         public Landing {
@@ -41,7 +41,7 @@ public record NotificationProperties(@Valid @NotNull Mail mail, @Valid @NotNull 
         }
     }
 
-    /** @param baseUrl web app origin without a trailing slash, e.g. {@code https://app.spotonslot.pl} */
+    /** @param baseUrl web app origin without a trailing slash, e.g. {@code https://app.spotonslot.com} */
     public record Web(@NotBlank @Pattern(regexp = "https?://\\S+") String baseUrl) {
 
         public Web {
