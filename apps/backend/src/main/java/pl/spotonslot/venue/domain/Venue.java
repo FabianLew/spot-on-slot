@@ -68,6 +68,13 @@ public class Venue extends BaseEntity {
     @Column(name = "published_at")
     private Instant publishedAt;
 
+    /** Set while an admin keeps the venue hidden: unpublished, and the team cannot publish it. */
+    @Column(name = "moderation_hidden_at")
+    private Instant moderationHiddenAt;
+
+    @Column(name = "moderation_reason", length = 500)
+    private String moderationReason;
+
     @ElementCollection
     @CollectionTable(name = "venue_genre", joinColumns = @JoinColumn(name = "venue_id"))
     @Enumerated(EnumType.STRING)
@@ -149,6 +156,23 @@ public class Venue extends BaseEntity {
 
     public void unpublish() {
         publishedAt = null;
+    }
+
+    /** An admin hides the venue: it is unpublished until an admin restores it and an owner publishes it again. */
+    public void hideByModeration(String reason, Instant now) {
+        unpublish();
+        moderationHiddenAt = now;
+        moderationReason = reason;
+    }
+
+    /** Lets the owners publish again; the venue stays unpublished until they do. */
+    public void restoreByModeration() {
+        moderationHiddenAt = null;
+        moderationReason = null;
+    }
+
+    public boolean isHiddenByModeration() {
+        return moderationHiddenAt != null;
     }
 
     /** Drops a deleted image from the main photo and the gallery. */

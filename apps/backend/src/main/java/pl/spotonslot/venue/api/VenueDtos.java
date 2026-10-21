@@ -92,8 +92,15 @@ final class VenueDtos {
             @Schema(requiredMode = REQUIRED) boolean published,
             Instant publishedAt,
             @Schema(requiredMode = REQUIRED) List<Requirement> missingForPublication,
+            VenueModeration moderation,
             @Schema(requiredMode = REQUIRED) VenueRole role,
             @Schema(requiredMode = REQUIRED) Instant updatedAt) {
+    }
+
+    /** Set while an admin keeps the venue hidden; publishing is refused until an admin restores it. */
+    record VenueModeration(
+            @Schema(requiredMode = REQUIRED) Instant hiddenAt,
+            @Schema(requiredMode = REQUIRED) String reason) {
     }
 
     /** What anyone with the link sees: the public business data, no team. */

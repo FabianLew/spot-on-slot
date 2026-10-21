@@ -11,8 +11,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
 import pl.spotonslot.identity.AccountAlreadyExists;
+import pl.spotonslot.identity.AccountBlocked;
 import pl.spotonslot.identity.AccountDeleted;
 import pl.spotonslot.identity.AccountDeletionRequested;
+import pl.spotonslot.identity.AdminInvited;
 import pl.spotonslot.identity.EmailChangeRequested;
 import pl.spotonslot.identity.EmailVerificationRequested;
 import pl.spotonslot.identity.PasswordChanged;
@@ -22,7 +24,7 @@ import pl.spotonslot.notification.infrastructure.MailSender;
 
 /**
  * Account e-mails (verification link, "you already have an account", password reset and change, address change,
- * deletion). They ignore notification settings. Each runs after the identity transaction commits; a failed send
+ * deletion, block, admin invitation). They ignore notification settings. Each runs after the identity transaction commits; a failed send
  * leaves the event publication incomplete, so Modulith republishes it on restart.
  */
 @Slf4j
@@ -81,6 +83,18 @@ class AccountMailer {
         if (event.email() != null) {
             send("deleted", event.email(), event.locale(), null, contact());
         }
+    }
+
+    @ApplicationModuleListener
+    void on(AccountBlocked event) {
+        send("blocked", event.email(), event.locale(), null, event.reason(), contact());
+    }
+
+    /** The invited admin sets a password through the reset page, which also confirms the address. */
+    @ApplicationModuleListener
+    void on(AdminInvited event) {
+        send("adminInvited", event.email(), event.locale(), web("/reset-password?token=" + event.token()),
+                contact());
     }
 
     private String web(String path) {

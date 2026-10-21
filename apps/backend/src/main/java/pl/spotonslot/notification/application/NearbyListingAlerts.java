@@ -77,7 +77,7 @@ class NearbyListingAlerts {
         var alerts = listing.kind() == ListingKind.VENUE_SEEKING ? forArtists(listing) : forVenueTeams(listing);
         var told = notifications.findRecipientsOfListing(listing.id());
         // Accounts waiting for deletion hear nothing until restored.
-        var leaving = accounts.deletionPending(alerts.keySet());
+        var leaving = accounts.silenced(alerts.keySet());
         var fresh = alerts.entrySet().stream()
                 .filter(alert -> !told.contains(alert.getKey()) && !leaving.contains(alert.getKey())).toList();
         for (var alert : fresh) {

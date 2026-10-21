@@ -36,7 +36,11 @@
     "more": "Więcej",
     "primary": "Nawigacja główna",
     "skipToContent": "Przejdź do treści",
-    "menu": "Menu"
+    "menu": "Menu",
+    "adminReports": "Zgłoszenia",
+    "adminUsers": "Użytkownicy",
+    "adminHistory": "Historia",
+    "adminAdmins": "Admini"
   },
   "errors": {
     "title": "Coś poszło nie tak",
@@ -530,7 +534,10 @@
     "copied": "Link skopiowany.",
     "copyFailed": "Nie udało się skopiować. Link: {url}",
     "open": "Otwórz stronę publiczną",
-    "ownerOnly": "Publikację włącza i wycofuje tylko właściciel lokalu."
+    "ownerOnly": "Publikację włącza i wycofuje tylko właściciel lokalu.",
+    "hidden": "Ukryte przez moderację",
+    "hiddenReason": "Powód: {reason}",
+    "hiddenHelp": "Nie możesz teraz opublikować profilu. Jeśli to pomyłka, odpowiedz na e-mail od zespołu Spot On Slot."
   },
   "venueProfile": {
     "view": {
@@ -839,7 +846,8 @@
       "notFoundText": "Ogłoszenie zostało zamknięte, wygasło albo link jest błędny.",
       "home": "Strona główna"
     },
-    "seeBooking": "Zobacz booking"
+    "seeBooking": "Zobacz booking",
+    "closedByModeration": "Zamknięte przez moderację. Powód: {reason}"
   },
   "search": {
     "title": "Szukaj",
@@ -1165,7 +1173,8 @@
       "hint": "Do 2000 znaków. Dane kontaktowe najlepiej zostaw na później.",
       "send": "Wyślij",
       "failed": "Nie udało się wysłać wiadomości."
-    }
+    },
+    "report": "Zgłoś rozmowę"
   },
   "account": {
     "title": "Konto",
@@ -1311,6 +1320,242 @@
       "findArtists": "Szukaj artystów",
       "inbox": "Wiadomości",
       "profile": "Profil"
+    }
+  },
+  "report": {
+    "cta": "Zgłoś",
+    "title": {
+      "ARTIST": "Zgłoś profil",
+      "VENUE": "Zgłoś lokal",
+      "LISTING": "Zgłoś ogłoszenie",
+      "CONVERSATION": "Zgłoś rozmowę"
+    },
+    "hint": "Sprawdzimy to. Druga strona nie dowie się, kto zgłosił.",
+    "reasonLabel": "Powód",
+    "reason": {
+      "SPAM": "Spam",
+      "FRAUD": "Oszustwo",
+      "OFFENSIVE": "Obraźliwe treści",
+      "IMPERSONATION": "Podszywanie się",
+      "MISLEADING": "Nieprawdziwe informacje",
+      "OTHER": "Inne"
+    },
+    "reasonHint": {
+      "SPAM": "Reklamy, masowe wiadomości, treści bez związku.",
+      "FRAUD": "Próba wyłudzenia pieniędzy lub danych.",
+      "OFFENSIVE": "Obelgi, nękanie, treści nieodpowiednie.",
+      "IMPERSONATION": "Ktoś udaje innego artystę, lokal lub osobę.",
+      "MISLEADING": "Fałszywe dane, zdjęcia lub warunki.",
+      "OTHER": "Opisz, co jest nie tak."
+    },
+    "descriptionLabel": "Opis (opcjonalnie)",
+    "descriptionRequiredLabel": "Opis (wymagany)",
+    "reasonRequired": "Wybierz powód.",
+    "descriptionRequired": "Przy powodzie „Inne” opisz problem.",
+    "send": "Wyślij zgłoszenie",
+    "sending": "Wysyłanie…",
+    "cancel": "Anuluj",
+    "thanksTitle": "Dziękujemy",
+    "thanks": "Dziękujemy, sprawdzimy to.",
+    "close": "Zamknij"
+  },
+  "admin": {
+    "kind": {
+      "ARTIST": "Profil",
+      "VENUE": "Lokal",
+      "LISTING": "Ogłoszenie",
+      "CONVERSATION": "Rozmowa"
+    },
+    "state": {
+      "ACTIVE": "Aktywne",
+      "PENDING_VERIFICATION": "Niepotwierdzone",
+      "BLOCKED": "Zablokowane",
+      "DELETION_PENDING": "W trakcie usuwania"
+    },
+    "role": {
+      "ARTIST": "Artysta",
+      "VENUE": "Lokal",
+      "BOOKER": "Booker",
+      "ADMIN": "Admin"
+    },
+    "reason": {
+      "SPAM": "Spam",
+      "FRAUD": "Oszustwo",
+      "OFFENSIVE": "Obraźliwe treści",
+      "IMPERSONATION": "Podszywanie się",
+      "MISLEADING": "Nieprawdziwe informacje",
+      "OTHER": "Inne"
+    },
+    "reportStatus": {
+      "OPEN": "Otwarte",
+      "RESOLVED": "Rozpatrzone",
+      "DISMISSED": "Odrzucone"
+    },
+    "action": {
+      "BLOCK_ACCOUNT": "Blokada konta",
+      "UNBLOCK_ACCOUNT": "Odblokowanie konta",
+      "HIDE": "Ukrycie",
+      "RESTORE": "Cofnięcie ukrycia",
+      "CLOSE_LISTING": "Zamknięcie ogłoszenia",
+      "DISMISS_REPORTS": "Odrzucenie zgłoszeń",
+      "ADD_ADMIN": "Nowy admin"
+    },
+    "listingKind": {
+      "ARTIST_AVAILABLE": "Jestem wolny",
+      "VENUE_SEEKING": "Szukam artysty"
+    },
+    "listingStatus": {
+      "ACTIVE": "Aktywne",
+      "CLOSED": "Zamknięte",
+      "EXPIRED": "Wygasłe",
+      "FILLED": "Obsadzone"
+    },
+    "loadMore": "Pokaż więcej",
+    "loadingMore": "Wczytywanie…",
+    "reasonLabel": "Powód",
+    "cancel": "Anuluj",
+    "deleted": "Usunięte konto",
+    "history": {
+      "title": "Historia",
+      "intro": "Wszystkie działania adminów, najnowsze na górze. Wpisów nie da się zmienić.",
+      "empty": "Nie ma jeszcze żadnych działań.",
+      "reason": "Powód: {reason}",
+      "by": "{admin} · {when}"
+    },
+    "reports": {
+      "title": "Zgłoszenia",
+      "intro": "Otwarte zgłoszenia, najdłużej czekające na górze. Zgłoszenia tej samej rzeczy są razem.",
+      "filter": "Rodzaj",
+      "all": "Wszystkie",
+      "empty": "Brak otwartych zgłoszeń.",
+      "listLabel": "Kolejka zgłoszeń",
+      "count": "{count, plural, one {# zgłoszenie} few {# zgłoszenia} many {# zgłoszeń} other {# zgłoszenia}}",
+      "waiting": "Czeka od {since} · ostatnie {last}",
+      "badge": "{count, plural, one {# otwarte zgłoszenie} few {# otwarte zgłoszenia} many {# otwartych zgłoszeń} other {# otwarte zgłoszenia}}",
+      "back": "Wróć do zgłoszeń"
+    },
+    "target": {
+      "notFound": "Nie ma zgłoszeń o takim identyfikatorze.",
+      "summary": "Otwarte: {open} · wszystkie: {total}",
+      "conversationNote": "Admin widzi tylko kopię ostatnich 20 wiadomości zapisaną przy każdym zgłoszeniu.",
+      "reports": "Zgłoszenia",
+      "gone": "Ta rzecz już nie istnieje.",
+      "reporter": "Zgłosił(a):",
+      "reporterDeleted": "Zgłaszający: Usunięte konto",
+      "resolution": "Notatka: {note}"
+    },
+    "subject": {
+      "hidden": "Ukryte przez moderację {when}",
+      "hiddenReason": "Powód: {reason}",
+      "published": "Opublikowane",
+      "draft": "Nieopublikowane",
+      "artist": "Profil artysty",
+      "artistProfile": "Profil artysty",
+      "venue": "Lokal",
+      "listing": "Ogłoszenie",
+      "conversation": "Rozmowa",
+      "open": "Otwórz stronę publiczną",
+      "account": "Konto właściciela",
+      "team": "{count, plural, one {# osoba w zespole} few {# osoby w zespole} many {# osób w zespole} other {# osoby w zespole}}"
+    },
+    "hide": {
+      "button": "Ukryj",
+      "title": "Ukryć „{name}”?",
+      "artist": "Profil zniknie publicznie, a właściciel zobaczy powód i nie opublikuje go sam ponownie.",
+      "venue": "Lokal zniknie publicznie, a zespół zobaczy powód i nie opublikuje go sam ponownie.",
+      "confirm": "Ukryj",
+      "done": "Ukryto."
+    },
+    "restore": {
+      "button": "Cofnij ukrycie",
+      "title": "Cofnąć ukrycie „{name}”?",
+      "text": "Właściciel znowu będzie mógł opublikować profil. Sam się nie opublikuje.",
+      "confirm": "Cofnij ukrycie",
+      "done": "Cofnięto ukrycie."
+    },
+    "block": {
+      "button": "Zablokuj",
+      "title": "Zablokować {email}?",
+      "text": "Konto zostanie wylogowane i nie zaloguje się ponownie. Profil, lokale, w których ta osoba jest sama, i jej ogłoszenia znikną, otwarte bookingi zostaną zamknięte, a nadchodzące anulowane. Osoba dostanie e-mail z powodem.",
+      "confirm": "Zablokuj",
+      "done": "Zablokowano konto."
+    },
+    "unblock": {
+      "button": "Odblokuj",
+      "title": "Odblokować {email}?",
+      "text": "Konto znowu się zaloguje. Profil i lokale zostaną nieopublikowane, a anulowane bookingi nie wrócą.",
+      "confirm": "Odblokuj",
+      "done": "Odblokowano konto."
+    },
+    "owners": {
+      "title": "Konta",
+      "none": "Brak kont (usunięte)."
+    },
+    "dismiss": {
+      "button": "Odrzuć zgłoszenia",
+      "title": "Odrzucić zgłoszenia?",
+      "text": "{count, plural, one {Zamkniesz # otwarte zgłoszenie jako bez naruszenia. Notatka zostanie w historii.} few {Zamkniesz # otwarte zgłoszenia jako bez naruszenia. Notatka zostanie w historii.} many {Zamkniesz # otwartych zgłoszeń jako bez naruszenia. Notatka zostanie w historii.} other {Zamkniesz # otwarte zgłoszenia jako bez naruszenia. Notatka zostanie w historii.}}",
+      "confirm": "Odrzuć",
+      "done": "Odrzucono zgłoszenia."
+    },
+    "close": {
+      "button": "Zamknij ogłoszenie",
+      "title": "Zamknąć ogłoszenie?",
+      "text": "Ogłoszenie zniknie publicznie, a autor zobaczy powód. Nie da się go otworzyć ponownie.",
+      "confirm": "Zamknij ogłoszenie",
+      "done": "Zamknięto ogłoszenie."
+    },
+    "listing": {
+      "author": "Autor",
+      "when": "Termin",
+      "city": "Miasto",
+      "status": "Stan",
+      "closedReason": "Zamknięte przez moderację. Powód: {reason}"
+    },
+    "snapshot": {
+      "title": "{count, plural, one {Kopia rozmowy (# wiadomość)} few {Kopia rozmowy (# wiadomości)} many {Kopia rozmowy (# wiadomości)} other {Kopia rozmowy (# wiadomości)}}",
+      "empty": "Rozmowa nie miała wiadomości.",
+      "reporter": "Zgłaszający",
+      "other": "Druga strona",
+      "deleted": "Wiadomość usunięta"
+    },
+    "users": {
+      "title": "Użytkownicy",
+      "query": "Szukaj",
+      "queryHint": "E-mail, pseudonim lub nazwa lokalu",
+      "role": "Rola",
+      "anyRole": "Każda rola",
+      "state": "Stan",
+      "anyState": "Każdy stan",
+      "search": "Szukaj",
+      "empty": "Nie znaleziono kont.",
+      "found": "{count, plural, one {Znaleziono # konto} few {Znaleziono # konta} many {Znaleziono # kont} other {Znaleziono # konta}}",
+      "listLabel": "Konta",
+      "openReports": "{count, plural, one {# otwarte zgłoszenie} few {# otwarte zgłoszenia} many {# otwartych zgłoszeń} other {# otwarte zgłoszenia}}",
+      "joined": "Od {when}",
+      "lastSignIn": "Ostatnio {when}",
+      "back": "Wróć do użytkowników",
+      "notFound": "Nie ma takiego konta.",
+      "detailTitle": "Konto",
+      "joinedLabel": "Rejestracja",
+      "lastSignInLabel": "Ostatnie logowanie",
+      "never": "Nigdy",
+      "reportsLabel": "Zgłoszenia",
+      "reports": "{total} (otwarte: {open})",
+      "blockedLabel": "Zablokowane",
+      "deletionLabel": "Usuwanie od",
+      "self": "To Twoje konto: nie możesz go zablokować."
+    },
+    "admins": {
+      "title": "Admini",
+      "listTitle": "Konta adminów",
+      "add": "Dodaj admina",
+      "neverSignedIn": "Jeszcze się nie zalogował(a)",
+      "addTitle": "Dodaj admina",
+      "addText": "Założymy osobne konto admina i wyślemy na ten adres link do ustawienia hasła, ważny 3 dni.",
+      "email": "E-mail",
+      "send": "Wyślij zaproszenie",
+      "added": "Wysłaliśmy link na {email}."
     }
   }
 }

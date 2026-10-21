@@ -26,6 +26,7 @@ import pl.spotonslot.availability.Availability;
 import pl.spotonslot.listing.ActiveListing;
 import pl.spotonslot.listing.ListingCard;
 import pl.spotonslot.listing.ListingKind;
+import pl.spotonslot.listing.ListingModerationView;
 import pl.spotonslot.listing.ListingPublished;
 import pl.spotonslot.listing.ListingSearch;
 import pl.spotonslot.listing.NearbyListing;
@@ -251,6 +252,35 @@ public class ListingService {
                 .stream().filter(listing -> listing.isActiveAt(now)).toList();
         active.forEach(listing -> listing.close(now));
         return active.size();
+    }
+
+    // ---- moderation
+
+    /** Any listing, whatever its status, for the admin panel. */
+    @Transactional(readOnly = true)
+    public Optional<ListingModerationView> findForModeration(UUID listingId) {
+        var now = now();
+        return listings.findById(listingId).map(listing -> new ListingModerationView(listing.getId(),
+                listing.getKind(), listing.statusAt(now).name(), listing.getAuthorId(), listing.getArtistId(),
+                listing.getVenueId(), listing.getStartsAt(), listing.getEndsAt(), genres(listing),
+                listing.getDescription(), listing.getPriceFrom(), listing.getPriceTo(), listing.getCity(),
+                listing.getClosedAt(), listing.getModerationReason()));
+    }
+
+    /**
+     * Closes a listing for a breach of the rules; one that has already ended keeps its status (and gets no reason).
+     * Returns whether it was closed now.
+     *
+     * @throws ListingErrors.ListingNotFound for an unknown id
+     */
+    @Transactional
+    public boolean closeByModeration(UUID listingId, String reason) {
+        var listing = listings.findById(listingId).orElseThrow(ListingErrors.ListingNotFound::new);
+        if (!listing.isActiveAt(now())) {
+            return false;
+        }
+        listing.closeByModeration(reason, now());
+        return true;
     }
 
     /** Every listing the person posted or that is theirs as the artist, newest first, for their data export. */

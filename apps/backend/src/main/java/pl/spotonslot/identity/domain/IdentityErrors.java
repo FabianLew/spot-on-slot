@@ -1,11 +1,13 @@
 package pl.spotonslot.identity.domain;
 
 import org.springframework.http.HttpStatus;
+import pl.spotonslot.shared.error.BusinessRuleException;
 import pl.spotonslot.shared.error.ConflictException;
 import pl.spotonslot.shared.error.DomainException;
 import pl.spotonslot.shared.error.ForbiddenException;
 import pl.spotonslot.shared.error.InvalidFieldException;
 import pl.spotonslot.shared.error.InvalidRequestException;
+import pl.spotonslot.shared.error.NotFoundException;
 import pl.spotonslot.shared.error.TooManyRequestsException;
 
 /** Identity failures with their problem codes. */
@@ -100,6 +102,41 @@ public final class IdentityErrors {
     public static class LastVenueOwner extends ConflictException {
         public LastVenueOwner(String names) {
             super("ACCOUNT_LAST_VENUE_OWNER", names);
+        }
+    }
+
+    /** An admin action names an account that does not exist. */
+    public static class AdminAccountNotFound extends NotFoundException {
+        public AdminAccountNotFound() {
+            super("ADMIN_ACCOUNT_NOT_FOUND");
+        }
+    }
+
+    /** Admins cannot block themselves. */
+    public static class CannotBlockSelf extends BusinessRuleException {
+        public CannotBlockSelf() {
+            super("ADMIN_CANNOT_BLOCK_SELF");
+        }
+    }
+
+    /** The last active admin cannot be blocked: nobody could unblock anyone afterwards. */
+    public static class LastAdmin extends BusinessRuleException {
+        public LastAdmin() {
+            super("ADMIN_LAST_ADMIN");
+        }
+    }
+
+    /** An account waiting for deletion is already hidden and will be purged; it is not blocked. */
+    public static class BlockDeletionPending extends BusinessRuleException {
+        public BlockDeletionPending() {
+            super("ADMIN_ACCOUNT_DELETION_PENDING");
+        }
+    }
+
+    /** A new admin needs an address without an account (artist and venue accounts do not become admins). */
+    public static class AdminEmailTaken extends ConflictException {
+        public AdminEmailTaken() {
+            super("ADMIN_EMAIL_TAKEN");
         }
     }
 }

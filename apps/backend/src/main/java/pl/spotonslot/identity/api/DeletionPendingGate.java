@@ -16,7 +16,10 @@ import pl.spotonslot.identity.domain.IdentityErrors;
 import pl.spotonslot.identity.infrastructure.UserAccountRepository;
 
 /**
- * An account waiting for deletion can sign in (to restore it) but use nothing else: every API call with its token
+ * A blocked account uses nothing: every API call with a token issued before the block answers 403
+ * {@code IDENTITY_ACCOUNT_BLOCKED} (signing in and refreshing are refused by the session service).
+ *
+ * <p>An account waiting for deletion can sign in (to restore it) but use nothing else: every API call with its token
  * answers 403 {@code ACCOUNT_DELETION_PENDING}, except {@code GET /api/v1/me}, {@code POST /api/v1/me/deletion/cancel}
  * and the public and auth endpoints (refresh, logout). The status is read per request (one primary-key lookup), so
  * a restore works at once and tokens issued before the request stop working too.
@@ -42,16 +45,18 @@ class DeletionPendingGate implements WebMvcConfigurer, HandlerInterceptor {
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticationToken token)) {
             return true;
         }
-        if (HttpMethod.GET.matches(request.getMethod()) && ME.equals(request.getRequestURI())) {
-            return true;
-        }
         UUID userId;
         try {
             userId = UUID.fromString(token.getToken().getSubject());
         } catch (IllegalArgumentException | NullPointerException e) {
             return true;
         }
-        if (accounts.existsByIdAndStatus(userId, AccountStatus.DELETION_PENDING)) {
+        var status = accounts.findStatusById(userId).orElse(null);
+        if (status == AccountStatus.BLOCKED) {
+            throw new IdentityErrors.AccountBlocked();
+        }
+        if (status == AccountStatus.DELETION_PENDING
+                && !(HttpMethod.GET.matches(request.getMethod()) && ME.equals(request.getRequestURI()))) {
             throw new IdentityErrors.DeletionPending();
         }
         return true;

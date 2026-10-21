@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +28,8 @@ public interface ArtistProfileRepository extends JpaRepository<ArtistProfile, UU
     @Query("SELECT DISTINCT p FROM ArtistProfile p LEFT JOIN p.photoMediaIds photo"
             + " WHERE p.avatarMediaId = :mediaId OR photo = :mediaId")
     List<ArtistProfile> findUsingMedia(@Param("mediaId") UUID mediaId);
+
+    @Query("SELECT p.ownerId FROM ArtistProfile p WHERE lower(p.stageName) LIKE lower(concat('%', :query, '%'))"
+            + " ORDER BY p.stageName")
+    List<UUID> findOwnersByStageName(@Param("query") String query, Pageable pageable);
 }

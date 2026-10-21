@@ -70,6 +70,51 @@ public class Venues {
         return venues.findPublishedBySlug(slug).flatMap(venue -> findPublished(venue.getId()));
     }
 
+    /** Any venue by id with its team, for moderation. */
+    @Transactional(readOnly = true)
+    public Optional<VenueModerationView> findForModeration(UUID venueId) {
+        return venues.findAny(venueId).map(this::moderationView);
+    }
+
+    /** A published venue by its public address, as moderation sees it (what can be reported). */
+    @Transactional(readOnly = true)
+    public Optional<VenueModerationView> findPublishedForModeration(String slug) {
+        return venues.findPublishedBySlug(slug).map(this::moderationView);
+    }
+
+    /** Venues whose name contains {@code query}, ignoring case, for moderation. */
+    @Transactional(readOnly = true)
+    public List<VenueModerationView> namedForModeration(String query) {
+        return venues.named(query).stream().map(this::moderationView).toList();
+    }
+
+    /** The venues of a person's teams, for moderation, oldest membership first. */
+    @Transactional(readOnly = true)
+    public List<VenueModerationView> managedForModeration(UUID userId) {
+        return venues.membershipsOf(userId).stream()
+                .flatMap(member -> venues.findAny(member.getVenueId()).stream())
+                .map(this::moderationView)
+                .toList();
+    }
+
+    /** Unpublishes the venue and keeps its team from publishing it; false when there is no such venue. */
+    public boolean hideByModeration(UUID venueId, String reason) {
+        return venues.hideByModeration(venueId, reason);
+    }
+
+    /** Lets the owners publish the venue again; false when there is no such venue. */
+    public boolean restoreByModeration(UUID venueId) {
+        return venues.restoreByModeration(venueId);
+    }
+
+    private VenueModerationView moderationView(Venue venue) {
+        var team = new LinkedHashSet<UUID>();
+        venues.membersOf(List.of(venue.getId())).forEach(member -> team.add(member.getUserId()));
+        return new VenueModerationView(venue.getId(), venue.getSlug(), venue.getName(),
+                venue.address().map(address -> address.city()).orElse(null), venue.isPublished(),
+                venue.getModerationHiddenAt(), venue.getModerationReason(), team);
+    }
+
     /** Cards of those of the venues that are published, in no particular order. */
     public List<VenueCard> findPublishedCards(Collection<UUID> venueIds) {
         return venues.findPublished(venueIds).stream().flatMap(venue -> card(venue).stream()).toList();

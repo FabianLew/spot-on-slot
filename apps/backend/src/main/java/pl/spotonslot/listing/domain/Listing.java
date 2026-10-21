@@ -77,6 +77,10 @@ public class Listing extends BaseEntity {
     @Column(name = "closed_at")
     private Instant closedAt;
 
+    /** Why an admin closed the listing (shown to its author). */
+    @Column(name = "moderation_reason", length = 500)
+    private String moderationReason;
+
     /** The booking that filled the listing. */
     @Column(name = "booking_id")
     private UUID bookingId;
@@ -136,6 +140,12 @@ public class Listing extends BaseEntity {
     }
 
     public void close(Instant now) {
+        end(ListingStatus.CLOSED, now);
+    }
+
+    /** Closed by an admin; the author cannot reopen it, as with any closed listing. */
+    public void closeByModeration(String reason, Instant now) {
+        this.moderationReason = reason;
         end(ListingStatus.CLOSED, now);
     }
 

@@ -1,6 +1,8 @@
 package pl.spotonslot.identity.infrastructure;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +28,8 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     @Query("update RefreshToken t set t.revokedAt = :now, t.updatedAt = :now, t.version = t.version + 1 "
             + "where t.userId = :userId and t.familyId <> :keepFamily and t.revokedAt is null")
     int revokeAllForUserExcept(UUID userId, UUID keepFamily, Instant now);
+
+    /** Per account, when its latest session token was issued (a login or a refresh): rows of (userId, instant). */
+    @Query("select t.userId, max(t.createdAt) from RefreshToken t where t.userId in :userIds group by t.userId")
+    List<Object[]> findLastIssuedAmong(Collection<UUID> userIds);
 }

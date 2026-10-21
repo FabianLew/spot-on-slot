@@ -93,6 +93,7 @@ export function MyVenues({ venueId }: { venueId?: string }) {
         onToggle={(publish) => toggle.mutate({ id: venue.id, publish })}
         toggling={toggle.isPending}
         canToggle={owner}
+        moderation={venue.moderation}
       >
         <Button asChild variant="outline">
           <Link href={`/profile/venues/${venue.id}/team`}>{t("venueProfile.mine.team")}</Link>

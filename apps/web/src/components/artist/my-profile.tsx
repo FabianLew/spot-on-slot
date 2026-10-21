@@ -82,6 +82,7 @@ function ArtistSection() {
         edit={{ href: "/profile/edit", label: t("artistProfile.mine.edit") }}
         onToggle={(publish) => toggle.mutate(publish)}
         toggling={toggle.isPending}
+        moderation={data.moderation}
       />
       <ArtistProfileView profile={data} freeTime={freeTime.data} />
     </>

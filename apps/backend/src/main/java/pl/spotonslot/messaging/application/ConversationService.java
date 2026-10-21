@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import pl.spotonslot.booking.Bookings;
 import pl.spotonslot.media.MediaImage;
 import pl.spotonslot.media.MediaLibrary;
 import pl.spotonslot.messaging.ConversationKind;
+import pl.spotonslot.messaging.ConversationReport;
 import pl.spotonslot.messaging.ConversationSide;
 import pl.spotonslot.messaging.domain.Conversation;
 import pl.spotonslot.messaging.domain.ConversationMessage;
@@ -226,6 +228,31 @@ public class ConversationService {
         var mine = myVenues(userId);
         var rows = messages.countUnread(userId, mine.isEmpty() ? NONE : mine);
         return new UnreadCount(rows.size(), rows.stream().mapToLong(MessageRepository.UnreadRow::getUnread).sum());
+    }
+
+    // ---- for moderation
+
+    /**
+     * A copy of the conversation for a report by one of its people: the other side and its newest {@code size}
+     * messages, oldest first.
+     *
+     * @throws MessagingErrors.ConversationNotFound when the user is not in the conversation
+     */
+    @Transactional(readOnly = true)
+    public ConversationReport reportOf(UUID userId, UUID conversationId, int size) {
+        var access = access(userId, conversationId);
+        var conversation = access.conversation();
+        Set<UUID> other = access.side() == ConversationSide.ARTIST
+                ? venues.teamsOf(Set.of(conversation.getVenueId())).getOrDefault(conversation.getVenueId(), Set.of())
+                : Set.of(conversation.getArtistId());
+        var newest = new ArrayList<>(messages.findNewest(conversationId, Limit.of(size)));
+        Collections.reverse(newest);
+        var copy = newest.stream().map(message -> new ConversationReport.Message(message.getSenderSide(),
+                message.getSenderSide() == access.side(), message.getBody(), message.isDeleted(),
+                message.getCreatedAt())).toList();
+        return new ConversationReport(conversationId, conversation.getKind(), access.side(), Set.copyOf(other),
+                access.side() == ConversationSide.ARTIST ? conversation.getVenueName() : conversation.getArtistName(),
+                copy);
     }
 
     // ---- for the booking module

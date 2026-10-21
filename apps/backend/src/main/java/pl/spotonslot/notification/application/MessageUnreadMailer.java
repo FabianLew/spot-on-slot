@@ -33,7 +33,7 @@ class MessageUnreadMailer {
     @ApplicationModuleListener
     void on(MessageUnread event) {
         if (!notifications.wantsMessageEmails(event.recipientId())
-                || !accounts.deletionPending(Set.of(event.recipientId())).isEmpty()) {
+                || !accounts.silenced(Set.of(event.recipientId())).isEmpty()) {
             return;
         }
         var account = accounts.find(event.recipientId()).orElse(null);

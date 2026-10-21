@@ -108,7 +108,14 @@ final class ArtistDtos {
             @Schema(requiredMode = REQUIRED) boolean published,
             Instant publishedAt,
             @Schema(requiredMode = REQUIRED) List<Requirement> missingForPublication,
+            ProfileModeration moderation,
             @Schema(requiredMode = REQUIRED) Instant updatedAt) {
+    }
+
+    /** Set while an admin keeps the profile hidden; publishing is refused until an admin restores it. */
+    record ProfileModeration(
+            @Schema(requiredMode = REQUIRED) Instant hiddenAt,
+            @Schema(requiredMode = REQUIRED) String reason) {
     }
 
     /** What anyone with the link sees: no real name, no coordinates. */
