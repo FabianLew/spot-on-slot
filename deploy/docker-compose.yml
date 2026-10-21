@@ -60,7 +60,7 @@ services:
       context: ./photon
     restart: unless-stopped
     environment:
-      # Poland dump for Photon 1.0 from https://download1.graphhopper.com/public/ (see docs/deployment.md).
+      # Poland JSON dump (.jsonl.zst) for Photon 1.0 from https://download1.graphhopper.com/public/ (see docs/deployment.md).
       PHOTON_DUMP_URL: ${PHOTON_DUMP_URL:?}
       JAVA_OPTS: ${PHOTON_JAVA_OPTS:--Xmx2g}
     volumes:

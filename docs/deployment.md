@@ -76,11 +76,11 @@ Cały serwerowy stos jest w jednym pliku `deploy/docker-compose.yml`: `backend` 
   | `MAIL_HOST`, `MAIL_USERNAME`, `MAIL_PASSWORD` | dane SMTP (port domyślnie 587) |
   | `MEDIA_ENDPOINT` | `https://<account-id>.r2.cloudflarestorage.com` |
   | `MEDIA_ACCESS_KEY`, `MEDIA_SECRET_KEY` | klucze tokenu R2 |
-  | `PHOTON_DUMP_URL` | zrzut bazy Photona dla Polski **zgodny z wersją 1.0** ze strony <https://download1.graphhopper.com/public/> (plik `.tar.bz2` dla Polski w katalogu wersji 1.0) |
+  | `PHOTON_DUMP_URL` | zrzut JSON dla Polski w wersji 1.0: `https://download1.graphhopper.com/public/europe/poland/photon-dump-poland-1.0-latest.jsonl.zst` (ok. 850 MB; gotowej bazy `.tar.bz2` dla samej Polski nie ma, planeta ma 63 GB) |
 
   Reszta ma domyślne wartości dla `spotonslot.com` (adresy, `MAIL_FROM=no-reply@spotonslot.com`, bucket `spotonslot-media`, geokoder `http://photon:2322`); nadpisz je tylko, gdy coś się zmieni. Opcjonalnie `MAIL_CONTACT` (kontakt w mailach o koncie) i `PHOTON_JAVA_OPTS` (domyślnie `-Xmx2g`). Zmiennym z sekretami odznacz "Available at Buildtime".
 
-Pierwszy start Photona pobiera i rozpakowuje zrzut (to trwa; kolejne starty biorą dane z wolumenu `photon-data`, a aktualizacja danych to wyczyszczenie wolumenu i restart). Do tego czasu wyszukiwanie miejscowości zwraca błąd 503, reszta aplikacji działa. Na sam test można ustawić `LOCATION_GEOCODER_URL=https://photon.komoot.io` (tylko na chwilę, to publiczny serwer z limitem „fair use”), ale `PHOTON_DUMP_URL` i tak trzeba podać.
+Pierwszy start Photona pobiera zrzut i importuje go do własnej bazy (to trwa, rzędu kwadransa do godziny; kolejne starty biorą dane z wolumenu `photon-data`, a aktualizacja danych to wyczyszczenie wolumenu i restart). Do tego czasu wyszukiwanie miejscowości zwraca błąd 503, reszta aplikacji działa. Na sam test można ustawić `LOCATION_GEOCODER_URL=https://photon.komoot.io` (tylko na chwilę, to publiczny serwer z limitem „fair use”), ale `PHOTON_DUMP_URL` i tak trzeba podać.
 
 Flyway wykonuje migracje przy starcie backendu, więc pierwszy deploy zakłada pustą bazę. Skryptu `pnpm seed:demo` nie uruchamiaj na produkcji (tworzy konta demo ze wspólnym hasłem).
 
