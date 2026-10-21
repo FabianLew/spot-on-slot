@@ -2,14 +2,14 @@
 
 Frontendy (`apps/web`, `apps/landing`) stoją na **Vercel**, backend, baza i geokoder na serwerze **Hetzner** zarządzanym przez **Coolify**. Pliki trzyma **Cloudflare R2**, e-maile wysyła zewnętrzny dostawca **SMTP**.
 
-`spotonslot.pl` poniżej oznacza docelową domenę; podmień ją wszędzie, jeśli będzie inna.
+Docelowa domena: `spotonslot.com`.
 
 | Adres | Co | Gdzie |
 |---|---|---|
-| `https://spotonslot.pl` (+ `www`) | landing | Vercel, projekt `apps/landing` |
-| `https://app.spotonslot.pl` | aplikacja | Vercel, projekt `apps/web` |
-| `https://api.spotonslot.pl` | backend (REST + WebSocket `/ws`) | Coolify na Hetzner |
-| `https://media.spotonslot.pl` | zdjęcia | Cloudflare R2 (publiczna domena bucketu) |
+| `https://spotonslot.com` (+ `www`) | landing | Vercel, projekt `apps/landing` |
+| `https://app.spotonslot.com` | aplikacja | Vercel, projekt `apps/web` |
+| `https://api.spotonslot.com` | backend (REST + WebSocket `/ws`) | Coolify na Hetzner |
+| `https://media.spotonslot.com` | zdjęcia | Cloudflare R2 (publiczna domena bucketu) |
 | (brak) | PostgreSQL 16 + PostGIS, Photon | Coolify, tylko sieć wewnętrzna |
 
 Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświeżania sesji (`sos_refresh`, `SameSite=Lax`) przeglądarka wysyła tylko w obrębie jednej witryny. Na adresach `*.vercel.app` (np. preview deploymenty) logowanie zadziała do wygaśnięcia access tokenu (15 min), a CORS ich nie wpuści, więc preview służą tylko do oglądania stron publicznych.
@@ -28,7 +28,7 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
 ## 1. Serwer Hetzner + Coolify
 
 - Serwer x86 z **Ubuntu 24.04**, co najmniej **8 GB RAM** i 80 GB dysku, lokalizacja w UE (Falkenstein, Norymberga lub Helsinki). Backend (JVM), Postgres i Photon (wbudowany OpenSearch) razem nie zmieszczą się wygodnie w 4 GB.
-- Firewall w Hetzner Cloud: wejście tylko **22, 80, 443** (i 8000 do pierwszej konfiguracji Coolify, potem zamknij, gdy panel dostanie własną domenę, np. `coolify.spotonslot.pl`).
+- Firewall w Hetzner Cloud: wejście tylko **22, 80, 443** (i 8000 do pierwszej konfiguracji Coolify, potem zamknij, gdy panel dostanie własną domenę, np. `coolify.spotonslot.com`).
 - Instalacja Coolify według oficjalnej instrukcji (`curl -fsSL https://cdn.coollabs.io/coolify/install.sh | sudo bash`), potem konto admina w panelu i włączone 2FA.
 - **Logi max 90 dni** (obiecane w polityce prywatności): Docker trzyma logi kontenerów w `/var/lib/docker/containers`. Sprawdź `/etc/docker/daemon.json`; jeśli nie ma tam rotacji, dodaj i zrestartuj Dockera:
 
@@ -42,13 +42,13 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
 ## 2. Cloudflare R2
 
 1. Utwórz bucket `spotonslot-media` (lokalizacja: Europa / EU jurisdiction).
-2. **Settings → Custom Domains**: podłącz `media.spotonslot.pl` (domena musi być w Cloudflare DNS). Domeny `r2.dev` nie używaj na produkcji (limitowana).
+2. **Settings → Custom Domains**: podłącz `media.spotonslot.com` (domena musi być w Cloudflare DNS). Domeny `r2.dev` nie używaj na produkcji (limitowana).
 3. **Settings → CORS Policy**, żeby przeglądarka mogła wgrywać zdjęcia bezpośrednio do bucketu:
 
    ```json
    [
      {
-       "AllowedOrigins": ["https://app.spotonslot.pl"],
+       "AllowedOrigins": ["https://app.spotonslot.com"],
        "AllowedMethods": ["PUT"],
        "AllowedHeaders": ["*"],
        "MaxAgeSeconds": 3600
@@ -62,7 +62,7 @@ Ten sam R2 (osobny bucket, np. `spotonslot-backups`, z osobnym tokenem) nadaje s
 
 ## 3. SMTP
 
-Dowolny dostawca z SMTP na porcie 587 (np. Brevo, Postmark, Resend, Amazon SES). Zweryfikuj domenę nadawcy (`MAIL_FROM`, np. `no-reply@spotonslot.pl`) i dodaj rekordy **SPF i DKIM** (oraz DMARC) w DNS, inaczej maile z linkami aktywacyjnymi wpadną do spamu.
+Dowolny dostawca z SMTP na porcie 587 (np. Brevo, Postmark, Resend, Amazon SES). Zweryfikuj domenę nadawcy (`MAIL_FROM`, np. `no-reply@spotonslot.com`) i dodaj rekordy **SPF i DKIM** (oraz DMARC) w DNS, inaczej maile z linkami aktywacyjnymi wpadną do spamu.
 
 ## 4. PostgreSQL w Coolify
 
@@ -93,7 +93,7 @@ Na start (test, zamknięta beta) można pominąć ten krok i ustawić w backendz
 
 - Build Pack **Dockerfile**, Base Directory `/apps/backend`, Dockerfile `/Dockerfile`
 - Watch Paths `apps/backend/**` (zmiany frontu nie przebudowują backendu)
-- Domena `https://api.spotonslot.pl`, port **8080**. Proxy Coolify (Traefik) przepuszcza WebSocket (`/ws`) bez dodatkowej konfiguracji.
+- Domena `https://api.spotonslot.com`, port **8080**. Proxy Coolify (Traefik) przepuszcza WebSocket (`/ws`) bez dodatkowej konfiguracji.
 - Healthcheck: obraz ma własny (`/actuator/health`); możesz go też ustawić w Coolify na ścieżkę `/actuator/health`, port 8080.
 - Limit pamięci w *Resource Limits* (np. 2 GB): JVM bierze 75% limitu kontenera.
 - **Environment Variables → Developer view**: wklej `deploy/backend.env.example` i podmień `<...>`. Zmiennym z sekretami odznacz "Available at Buildtime" (build ich nie potrzebuje). `JWT_SECRET` wygeneruj u siebie: `openssl rand -base64 48`.
@@ -111,7 +111,7 @@ Dwa projekty z tego samego repo (**Add New → Project → Import** `FabianLew/s
 | Root Directory | `apps/web` | `apps/landing` |
 | Framework | Next.js | Next.js |
 | Node.js Version | 22.x | 22.x |
-| Domena | `app.spotonslot.pl` | `spotonslot.pl` + `www.spotonslot.pl` (przekierowanie na główną) |
+| Domena | `app.spotonslot.com` | `spotonslot.com` + `www.spotonslot.com` (przekierowanie na główną) |
 
 Install i build Vercel wykryje sam (pnpm z `pnpm-lock.yaml`, skrypt `build` aplikacji). Opcja "Include files outside of the Root Directory" musi zostać włączona (domyślnie jest), bo aplikacje biorą pakiety z `packages/*`. Gdyby instalacja użyła złej wersji pnpm, dodaj zmienną `ENABLE_EXPERIMENTAL_COREPACK=1` (wersja z `packageManager` w `package.json`).
 
@@ -121,8 +121,8 @@ Opcjonalnie, żeby commity tylko w backendzie nie budowały frontów: *Settings 
 
 | Zmienna | Wartość |
 |---|---|
-| `NEXT_PUBLIC_API_URL` | `https://api.spotonslot.pl` |
-| `NEXT_PUBLIC_LANDING_URL` | `https://spotonslot.pl` |
+| `NEXT_PUBLIC_API_URL` | `https://api.spotonslot.com` |
+| `NEXT_PUBLIC_LANDING_URL` | `https://spotonslot.com` |
 | `API_URL` | pomiń (na Vercel serwer i tak idzie publicznym adresem) |
 | `NEXT_PUBLIC_MAP_STYLE_URL` | pomiń, chyba że zmieniasz styl mapy (domyślnie OpenFreeMap) |
 
@@ -130,8 +130,8 @@ Opcjonalnie, żeby commity tylko w backendzie nie budowały frontów: *Settings 
 
 | Zmienna | Wartość |
 |---|---|
-| `NEXT_PUBLIC_API_URL` | `https://api.spotonslot.pl` |
-| `NEXT_PUBLIC_SITE_URL` | `https://spotonslot.pl` |
+| `NEXT_PUBLIC_API_URL` | `https://api.spotonslot.com` |
+| `NEXT_PUBLIC_SITE_URL` | `https://spotonslot.com` |
 | `NEXT_PUBLIC_PRIVACY_CONTROLLER` | administrator danych (firma / imię i nazwisko, adres) |
 | `NEXT_PUBLIC_PRIVACY_EMAIL` | e-mail kontaktowy administratora |
 | `LANDING_ENV` | **zostaw puste** do czasu przeglądu regulaminu i polityki przez prawnika (do tego czasu strony prawne pokazują notkę "projekt") |
@@ -143,7 +143,7 @@ Zmienne `NEXT_PUBLIC_*` wchodzą do builda: po ich zmianie zrób redeploy.
 
 | Rekord | Cel |
 |---|---|
-| `spotonslot.pl` (A) i `www` (CNAME) | według instrukcji Vercel dla domeny |
+| `spotonslot.com` (A) i `www` (CNAME) | według instrukcji Vercel dla domeny |
 | `app` (CNAME) | według instrukcji Vercel |
 | `api` (A) | IP serwera Hetzner |
 | `coolify` (A, opcjonalnie) | IP serwera Hetzner |
@@ -154,10 +154,10 @@ Jeśli DNS jest w Cloudflare: rekordy `api`, `coolify` i te dla Vercel ustaw jak
 
 ## 9. Sprawdzenie po wdrożeniu
 
-1. `https://api.spotonslot.pl/actuator/health` zwraca `{"status":"UP"}`.
+1. `https://api.spotonslot.com/actuator/health` zwraca `{"status":"UP"}`.
 2. Landing: zapis na listę oczekujących, mail potwierdzający dochodzi, link otwiera landing.
-3. Aplikacja: rejestracja, mail aktywacyjny z linkiem do `app.spotonslot.pl`, logowanie, odświeżenie strony nie wylogowuje (ciasteczko działa).
-4. Profil artysty: wgranie zdjęcia (R2 + CORS), zdjęcie ładuje się z `media.spotonslot.pl`, wyszukanie miejscowości (geokoder), mapa w wyszukiwarce.
+3. Aplikacja: rejestracja, mail aktywacyjny z linkiem do `app.spotonslot.com`, logowanie, odświeżenie strony nie wylogowuje (ciasteczko działa).
+4. Profil artysty: wgranie zdjęcia (R2 + CORS), zdjęcie ładuje się z `media.spotonslot.com`, wyszukanie miejscowości (geokoder), mapa w wyszukiwarce.
 5. Dwa konta (artysta i lokal): wiadomość dochodzi na żywo bez odświeżania (WebSocket przez proxy).
 6. Publiczny profil `/a/<slug>` otwiera się bez logowania.
 

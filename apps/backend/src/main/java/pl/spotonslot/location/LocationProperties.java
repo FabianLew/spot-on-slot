@@ -21,7 +21,7 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("spotonslot.location")
 public record LocationProperties(
         @NotBlank String geocoderUrl,
-        @DefaultValue("SpotOnSlot (https://spotonslot.pl)") String userAgent,
+        @DefaultValue("SpotOnSlot (https://spotonslot.com)") String userAgent,
         @DefaultValue("PT2S") Duration connectTimeout,
         @DefaultValue("PT4S") Duration readTimeout,
         @DefaultValue("5") @Min(1) @Max(10) int suggestionLimit,
