@@ -29,3 +29,7 @@ apps/backend/build/
 
 # logs
 *.log
+
+# seed-testers: real e-mails and generated passwords
+scripts/testers.json
+scripts/testers.state.json

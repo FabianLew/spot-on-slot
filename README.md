@@ -69,6 +69,15 @@ LOCATION_GEOCODER_URL=http://localhost:2322 ./gradlew bootRun          # termina
 # PowerShell: $env:LOCATION_GEOCODER_URL="http://localhost:2322"; ./gradlew bootRun
 ```
 
+## Test accounts on production
+
+`pnpm seed:testers` gives every tester (up to 4, listed in `scripts/testers.json`, made from
+`scripts/testers.example.json`) one artist and one venue account on a deployed backend, with published profiles,
+photos, calendars and listings. The accounts use the testers' real addresses (`name+artysta@…`, `name+klub@…` by
+default), so the first run registers them and stops until every address is verified: by the link in the e-mail, or
+with the SQL the script prints, run on the server. The second run fills everything in and prints the generated
+passwords (kept in the gitignored `scripts/testers.state.json`). Running it again skips what is already there.
+
 ## Common tasks
 
 | Task | Command |

@@ -90,7 +90,7 @@ Cały serwerowy stos jest w jednym pliku `deploy/docker-compose.yml`: `backend` 
 
 Pierwszy start Photona pobiera zrzut i importuje go do własnej bazy (to trwa, rzędu kwadransa do godziny; kolejne starty biorą dane z wolumenu `photon-data`, a aktualizacja danych to wyczyszczenie wolumenu i restart). Do tego czasu wyszukiwanie miejscowości zwraca błąd 503, reszta aplikacji działa. Na sam test można ustawić `LOCATION_GEOCODER_URL=https://photon.komoot.io` (tylko na chwilę, to publiczny serwer z limitem „fair use”), ale `PHOTON_DUMP_URL` i tak trzeba podać.
 
-Flyway wykonuje migracje przy starcie backendu, więc pierwszy deploy zakłada pustą bazę. Skryptu `pnpm seed:demo` nie uruchamiaj na produkcji (tworzy konta demo ze wspólnym hasłem).
+Flyway wykonuje migracje przy starcie backendu, więc pierwszy deploy zakłada pustą bazę. Skryptu `pnpm seed:demo` nie uruchamiaj na produkcji (tworzy konta demo ze wspólnym hasłem). Konta dla testerów zakłada `pnpm seed:testers` (README, "Test accounts on production"): każda osoba dostaje konto artysty i lokalu z uzupełnionym profilem, na swój prawdziwy adres i z osobnym hasłem.
 
 Po scaleniu panelu moderacji (B13) dojdą `ADMIN_EMAIL` i `ADMIN_PASSWORD` dla pierwszego administratora (trzeba je wtedy dopisać do `deploy/docker-compose.yml`).
 

@@ -1,0 +1,10 @@
+{
+  "apiUrl": "https://api.spotonslot.com",
+  "webUrl": "https://app.spotonslot.com",
+  "testers": [
+    { "name": "Fabian Lewandowski", "email": "fabian@example.com" },
+    { "name": "Anna Kowalska", "email": "anna@example.com" },
+    { "name": "Maria Nowak", "artistEmail": "maria.artysta@example.com", "venueEmail": "maria.klub@example.com" },
+    { "name": "Ewa Zielińska", "email": "ewa@example.com" }
+  ]
+}
