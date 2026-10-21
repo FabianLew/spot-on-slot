@@ -7,7 +7,7 @@ WORKDIR /workspace
 
 COPY gradlew gradlew.bat ./
 COPY gradle ./gradle
-COPY settings.gradle build.gradle gradle.properties ./
+COPY settings.gradle build.gradle gradle.properties lombok.config ./
 
 RUN chmod +x ./gradlew && ./gradlew --no-daemon dependencies > /dev/null 2>&1 || true
 
