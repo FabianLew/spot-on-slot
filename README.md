@@ -61,6 +61,17 @@ backend, run `docker compose down -v`, start the backend and seed again. Running
 where a failed run stopped (in dev, locations go through the public Photon geocoder, which is slow or down at times;
 the script retries it a few times) and skips what is already there.
 
+Test accounts on a deployed instance (production included), one ARTIST and one VENUE account per tester on plus
+addresses of their own inboxes (`ania+artysta@gmail.com`, `ania+klub@gmail.com`), with published profiles,
+calendars and listings; bookings and conversations are left for the testers:
+
+```bash
+TESTERS="ty@gmail.com,ania@gmail.com" SEED_PASSWORD="..." API_URL=https://api.spotonslot.com pnpm seed:testers
+```
+
+The first run registers the accounts and prints how to activate them (each tester's link, or one SQL statement in
+the Coolify postgres terminal); the second run fills the profiles.
+
 If Photon does not answer at all (timeouts in the backend log), use the offline stand-in, which knows Polish towns:
 
 ```bash

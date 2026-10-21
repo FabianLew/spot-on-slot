@@ -9,7 +9,7 @@ Docelowa domena: `spotonslot.com`.
 | `https://spotonslot.com` (+ `www`) | landing | Vercel, projekt `apps/landing` |
 | `https://app.spotonslot.com` | aplikacja | Vercel, projekt `apps/web` |
 | `https://api.spotonslot.com` | backend (REST + WebSocket `/ws`) | Coolify na Hetzner |
-| `https://spotonslot-media.hel1.your-objectstorage.com` | zdjęcia | Hetzner Object Storage (publiczny bucket; Hetzner nie podpina własnych domen) |
+| `https://spotonslot-media.fsn1.your-objectstorage.com` | zdjęcia | Hetzner Object Storage (publiczny bucket; Hetzner nie podpina własnych domen) |
 | (brak) | PostgreSQL 16 + PostGIS, Photon | Coolify, tylko sieć wewnętrzna |
 
 Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświeżania sesji (`sos_refresh`, `SameSite=Lax`) przeglądarka wysyła tylko w obrębie jednej witryny. Na adresach `*.vercel.app` (np. preview deploymenty) logowanie zadziała do wygaśnięcia access tokenu (15 min), a CORS ich nie wpuści, więc preview służą tylko do oglądania stron publicznych.
@@ -25,7 +25,7 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
 
 ## 1. Serwer Hetzner + Coolify
 
-- Serwer x86 z **Ubuntu 24.04**, co najmniej **8 GB RAM** i 80 GB dysku, lokalizacja w UE (Falkenstein, Norymberga lub Helsinki). Backend (JVM), Postgres i Photon (wbudowany OpenSearch) razem nie zmieszczą się wygodnie w 4 GB.
+- Serwer x86 lub ARM (np. CAX) z **Ubuntu 24.04**, co najmniej **8 GB RAM** i 80 GB dysku, lokalizacja w UE (Falkenstein, Norymberga lub Helsinki). Backend (JVM), Postgres i Photon (wbudowany OpenSearch) razem nie zmieszczą się wygodnie w 4 GB.
 - Firewall w Hetzner Cloud: wejście tylko **22, 80, 443** (i 8000 do pierwszej konfiguracji Coolify, potem zamknij, gdy panel dostanie własną domenę, np. `coolify.spotonslot.com`).
 - Instalacja Coolify według oficjalnej instrukcji (`curl -fsSL https://cdn.coollabs.io/coolify/install.sh | sudo bash`), potem konto admina w panelu i włączone 2FA.
 - **Logi max 90 dni** (obiecane w polityce prywatności): Docker trzyma logi kontenerów w `/var/lib/docker/containers`. Sprawdź `/etc/docker/daemon.json`; jeśli nie ma tam rotacji, dodaj i zrestartuj Dockera:
@@ -39,11 +39,11 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
 
 ## 2. Hetzner Object Storage
 
-Lokalizacja bucketu taka sama jak serwera; poniżej Helsinki (`hel1`). Przy innej (`fsn1`, `nbg1`) podmień `hel1` w `MEDIA_ENDPOINT`, `MEDIA_REGION` i `MEDIA_PUBLIC_BASE_URL`.
+Lokalizacja bucketu taka sama jak serwera; poniżej Falkenstein (`fsn1`). Przy innej (`nbg1`, `hel1`) podmień `fsn1` w `MEDIA_ENDPOINT`, `MEDIA_REGION` i `MEDIA_PUBLIC_BASE_URL`.
 
-1. Hetzner Console → projekt → **Object Storage → Create Bucket**: nazwa `spotonslot-media`, lokalizacja `hel1`, widoczność **publiczna** (zdjęcia są publiczne; oryginały backend kasuje po przetworzeniu).
+1. Hetzner Console → projekt → **Object Storage → Create Bucket**: nazwa `spotonslot-media`, lokalizacja `fsn1`, widoczność **publiczna** (zdjęcia są publiczne; oryginały backend kasuje po przetworzeniu).
 2. **Object Storage → Manage credentials → Generate credentials**: *Access key* → `MEDIA_ACCESS_KEY`, *Secret key* → `MEDIA_SECRET_KEY` (secret widać tylko raz).
-3. **CORS**, żeby przeglądarka mogła wgrywać zdjęcia bezpośrednio do bucketu. Hetzner ustawia go tylko przez API S3, np. AWS CLI na swoim komputerze (`winget install Amazon.AWSCLI`), z kluczami z kroku 2 (`aws configure`, region `hel1`). Plik `cors.json`:
+3. **CORS**, żeby przeglądarka mogła wgrywać zdjęcia bezpośrednio do bucketu. Hetzner ustawia go tylko przez API S3, np. AWS CLI na swoim komputerze (`winget install Amazon.AWSCLI`), z kluczami z kroku 2 (`aws configure`, region `fsn1`). Plik `cors.json`:
 
    ```json
    {
@@ -59,11 +59,11 @@ Lokalizacja bucketu taka sama jak serwera; poniżej Helsinki (`hel1`). Przy inne
    ```
 
    ```sh
-   aws s3api put-bucket-cors --endpoint-url https://hel1.your-objectstorage.com --bucket spotonslot-media --cors-configuration file://cors.json
-   aws s3api get-bucket-cors --endpoint-url https://hel1.your-objectstorage.com --bucket spotonslot-media
+   aws s3api put-bucket-cors --endpoint-url https://fsn1.your-objectstorage.com --bucket spotonslot-media --cors-configuration file://cors.json
+   aws s3api get-bucket-cors --endpoint-url https://fsn1.your-objectstorage.com --bucket spotonslot-media
    ```
 
-Domyślne wartości w `deploy/docker-compose.yml` wskazują już na ten bucket (`MEDIA_ENDPOINT=https://hel1.your-objectstorage.com`, `MEDIA_REGION=hel1`, `MEDIA_PUBLIC_BASE_URL=https://spotonslot-media.hel1.your-objectstorage.com`); w Coolify wpisujesz tylko klucze.
+Domyślne wartości w `deploy/docker-compose.yml` wskazują już na ten bucket (`MEDIA_ENDPOINT=https://fsn1.your-objectstorage.com`, `MEDIA_REGION=fsn1`, `MEDIA_PUBLIC_BASE_URL=https://spotonslot-media.fsn1.your-objectstorage.com`); w Coolify wpisujesz tylko klucze.
 
 ## 3. SMTP
 
@@ -71,7 +71,7 @@ Dowolny dostawca z SMTP na porcie 587 (np. Brevo, Postmark, Resend, Amazon SES).
 
 ## 4. Backend, baza i Photon w Coolify (docker compose)
 
-Cały serwerowy stos jest w jednym pliku `deploy/docker-compose.yml`: `backend` (z `apps/backend/Dockerfile`), `postgres` (`postgis/postgis:16-3.5`, ten sam obraz co lokalnie) i `photon` (z `deploy/photon`). Baza i Photon nie mają domen ani portów na zewnątrz; backend łączy się z nimi po nazwach usług.
+Cały serwerowy stos jest w jednym pliku `deploy/docker-compose.yml`: `backend` (z `apps/backend/Dockerfile`), `postgres` (`imresamu/postgis:16-3.5`, wieloarchitekturowa wersja oficjalnego obrazu PostGIS, działa na x86 i ARM) i `photon` (z `deploy/photon`). Baza i Photon nie mają domen ani portów na zewnątrz; backend łączy się z nimi po nazwach usług.
 
 **New Resource → Application → GitHub** (najlepiej przez Coolify GitHub App, wtedy push do `main` sam wdraża):
 
@@ -90,7 +90,7 @@ Cały serwerowy stos jest w jednym pliku `deploy/docker-compose.yml`: `backend` 
 
 Pierwszy start Photona pobiera zrzut i importuje go do własnej bazy (to trwa, rzędu kwadransa do godziny; kolejne starty biorą dane z wolumenu `photon-data`, a aktualizacja danych to wyczyszczenie wolumenu i restart). Do tego czasu wyszukiwanie miejscowości zwraca błąd 503, reszta aplikacji działa. Na sam test można ustawić `LOCATION_GEOCODER_URL=https://photon.komoot.io` (tylko na chwilę, to publiczny serwer z limitem „fair use”), ale `PHOTON_DUMP_URL` i tak trzeba podać.
 
-Flyway wykonuje migracje przy starcie backendu, więc pierwszy deploy zakłada pustą bazę. Skryptu `pnpm seed:demo` nie uruchamiaj na produkcji (tworzy konta demo ze wspólnym hasłem).
+Flyway wykonuje migracje przy starcie backendu, więc pierwszy deploy zakłada pustą bazę. Skryptu `pnpm seed:demo` nie uruchamiaj na produkcji (tworzy konta demo ze wspólnym hasłem). Konta testowe dla zespołu zakłada `pnpm seed:testers` (konto artysty i klubu na adresy testerów z dopiskiem `+artysta`/`+klub`, opis w README).
 
 Po scaleniu panelu moderacji (B13) dojdą `ADMIN_EMAIL` i `ADMIN_PASSWORD` dla pierwszego administratora (trzeba je wtedy dopisać do `deploy/docker-compose.yml`).
 
@@ -165,7 +165,7 @@ Usuń domyślne rekordy parkingowe Namecheap dla `@` i `www` (*URL Redirect*, *C
 1. `https://api.spotonslot.com/actuator/health` zwraca `{"status":"UP"}`.
 2. Landing: zapis na listę oczekujących, mail potwierdzający dochodzi, link otwiera landing.
 3. Aplikacja: rejestracja, mail aktywacyjny z linkiem do `app.spotonslot.com`, logowanie, odświeżenie strony nie wylogowuje (ciasteczko działa).
-4. Profil artysty: wgranie zdjęcia (Object Storage + CORS), zdjęcie ładuje się z `spotonslot-media.hel1.your-objectstorage.com`, wyszukanie miejscowości (geokoder), mapa w wyszukiwarce.
+4. Profil artysty: wgranie zdjęcia (Object Storage + CORS), zdjęcie ładuje się z `spotonslot-media.fsn1.your-objectstorage.com`, wyszukanie miejscowości (geokoder), mapa w wyszukiwarce.
 5. Dwa konta (artysta i lokal): wiadomość dochodzi na żywo bez odświeżania (WebSocket przez proxy).
 6. Publiczny profil `/a/<slug>` otwiera się bez logowania.
 

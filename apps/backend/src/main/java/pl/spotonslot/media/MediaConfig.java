@@ -7,14 +7,17 @@ import org.springframework.context.annotation.Configuration;
 import pl.spotonslot.media.application.ImageProcessor;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.checksums.RequestChecksumCalculation;
+import software.amazon.awssdk.core.checksums.ResponseChecksumValidation;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 /**
- * S3 clients for any S3-compatible store: Cloudflare R2 in prod, S3Mock locally. Path-style addressing works
- * with both and needs no wildcard DNS for the bucket.
+ * S3 clients for any S3-compatible store: Hetzner Object Storage in prod, S3Mock locally. Path-style addressing
+ * works with both and needs no wildcard DNS for the bucket. Checksums only where the API requires them, since
+ * S3-compatible stores do not all accept the SDK's default flexible checksums.
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MediaProperties.class)
@@ -27,6 +30,8 @@ class MediaConfig {
                 .region(Region.of(properties.region()))
                 .credentialsProvider(credentials(properties))
                 .forcePathStyle(true)
+                .requestChecksumCalculation(RequestChecksumCalculation.WHEN_REQUIRED)
+                .responseChecksumValidation(ResponseChecksumValidation.WHEN_REQUIRED)
                 .build();
     }
 

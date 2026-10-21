@@ -25,12 +25,13 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD:?}
       MAIL_FROM: ${MAIL_FROM:-no-reply@spotonslot.com}
       MAIL_CONTACT: ${MAIL_CONTACT:-}
-      MEDIA_ENDPOINT: ${MEDIA_ENDPOINT:-https://hel1.your-objectstorage.com}
-      MEDIA_REGION: ${MEDIA_REGION:-hel1}
+      # Hetzner Object Storage, bucket in Falkenstein (fsn1); another location changes all three fsn1 values.
+      MEDIA_ENDPOINT: ${MEDIA_ENDPOINT:-https://fsn1.your-objectstorage.com}
+      MEDIA_REGION: ${MEDIA_REGION:-fsn1}
       MEDIA_BUCKET: ${MEDIA_BUCKET:-spotonslot-media}
       MEDIA_ACCESS_KEY: ${MEDIA_ACCESS_KEY:?}
       MEDIA_SECRET_KEY: ${MEDIA_SECRET_KEY:?}
-      MEDIA_PUBLIC_BASE_URL: ${MEDIA_PUBLIC_BASE_URL:-https://spotonslot-media.hel1.your-objectstorage.com}
+      MEDIA_PUBLIC_BASE_URL: ${MEDIA_PUBLIC_BASE_URL:-https://spotonslot-media.fsn1.your-objectstorage.com}
       LOCATION_GEOCODER_URL: ${LOCATION_GEOCODER_URL:-http://photon:2322}
     healthcheck:
       test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://127.0.0.1:8080/actuator/health || exit 1"]
@@ -40,7 +41,8 @@ services:
       retries: 3
 
   postgres:
-    image: postgis/postgis:16-3.5
+    # Multi-arch build of the official PostGIS image (postgis/postgis has no arm64 variant), so x86 and ARM servers both work.
+    image: imresamu/postgis:16-3.5
     restart: unless-stopped
     environment:
       POSTGRES_DB: spotonslot
