@@ -1,6 +1,6 @@
 # Wdrożenie produkcyjne
 
-Frontendy (`apps/web`, `apps/landing`) stoją na **Vercel**, backend, baza i geokoder na serwerze **Hetzner** zarządzanym przez **Coolify**. Pliki trzyma **Cloudflare R2**, e-maile wysyła zewnętrzny dostawca **SMTP**.
+Frontendy (`apps/web`, `apps/landing`) stoją na **Vercel**, backend, baza i geokoder na serwerze **Hetzner** zarządzanym przez **Coolify**. Zdjęcia trzyma **Hetzner Object Storage** (S3), e-maile wysyła zewnętrzny dostawca **SMTP**, a DNS domeny zostaje w **Namecheap** (Fabian, 2026-10-21: bez Cloudflare).
 
 Docelowa domena: `spotonslot.com`.
 
@@ -9,7 +9,7 @@ Docelowa domena: `spotonslot.com`.
 | `https://spotonslot.com` (+ `www`) | landing | Vercel, projekt `apps/landing` |
 | `https://app.spotonslot.com` | aplikacja | Vercel, projekt `apps/web` |
 | `https://api.spotonslot.com` | backend (REST + WebSocket `/ws`) | Coolify na Hetzner |
-| `https://media.spotonslot.com` | zdjęcia | Cloudflare R2 (publiczna domena bucketu) |
+| `https://spotonslot-media.hel1.your-objectstorage.com` | zdjęcia | Hetzner Object Storage (publiczny bucket; Hetzner nie podpina własnych domen) |
 | (brak) | PostgreSQL 16 + PostGIS, Photon | Coolify, tylko sieć wewnętrzna |
 
 Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświeżania sesji (`sos_refresh`, `SameSite=Lax`) przeglądarka wysyła tylko w obrębie jednej witryny. Na adresach `*.vercel.app` (np. preview deploymenty) logowanie zadziała do wygaśnięcia access tokenu (15 min), a CORS ich nie wpuści, więc preview służą tylko do oglądania stron publicznych.
@@ -17,7 +17,7 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
 ## Kolejność
 
 1. Serwer Hetzner + Coolify
-2. Cloudflare R2 (bucket, domena, CORS, klucze)
+2. Hetzner Object Storage (bucket, klucze, CORS)
 3. Dostawca SMTP (domena nadawcy, SPF/DKIM)
 4. Backend, baza i Photon w Coolify (jeden docker compose)
 5. Vercel: web i landing
@@ -37,28 +37,37 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
   Rotacja po rozmiarze przy tym ruchu trzyma logi znacznie krócej niż 90 dni; nie wysyłaj ich do zewnętrznych usług bez aktualizacji polityki.
 - Hetzner na nowych kontach blokuje wychodzące porty **25 i 465**, dlatego backend wysyła pocztę przez **587 + STARTTLS** (ustawione w `application-prod.yml`).
 
-## 2. Cloudflare R2
+## 2. Hetzner Object Storage
 
-1. Utwórz bucket `spotonslot-media` (lokalizacja: Europa / EU jurisdiction).
-2. **Settings → Custom Domains**: podłącz `media.spotonslot.com` (domena musi być w Cloudflare DNS). Domeny `r2.dev` nie używaj na produkcji (limitowana).
-3. **Settings → CORS Policy**, żeby przeglądarka mogła wgrywać zdjęcia bezpośrednio do bucketu:
+Lokalizacja bucketu taka sama jak serwera; poniżej Helsinki (`hel1`). Przy innej (`fsn1`, `nbg1`) podmień `hel1` w `MEDIA_ENDPOINT`, `MEDIA_REGION` i `MEDIA_PUBLIC_BASE_URL`.
+
+1. Hetzner Console → projekt → **Object Storage → Create Bucket**: nazwa `spotonslot-media`, lokalizacja `hel1`, widoczność **publiczna** (zdjęcia są publiczne; oryginały backend kasuje po przetworzeniu).
+2. **Object Storage → Manage credentials → Generate credentials**: *Access key* → `MEDIA_ACCESS_KEY`, *Secret key* → `MEDIA_SECRET_KEY` (secret widać tylko raz).
+3. **CORS**, żeby przeglądarka mogła wgrywać zdjęcia bezpośrednio do bucketu. Hetzner ustawia go tylko przez API S3, np. AWS CLI na swoim komputerze (`winget install Amazon.AWSCLI`), z kluczami z kroku 2 (`aws configure`, region `hel1`). Plik `cors.json`:
 
    ```json
-   [
-     {
-       "AllowedOrigins": ["https://app.spotonslot.com"],
-       "AllowedMethods": ["PUT"],
-       "AllowedHeaders": ["*"],
-       "MaxAgeSeconds": 3600
-     }
-   ]
+   {
+     "CORSRules": [
+       {
+         "AllowedOrigins": ["https://app.spotonslot.com"],
+         "AllowedMethods": ["PUT"],
+         "AllowedHeaders": ["*"],
+         "MaxAgeSeconds": 3600
+       }
+     ]
+   }
    ```
 
-4. **R2 → Manage API tokens**: token typu *Object Read & Write* ograniczony do tego bucketu. Access Key ID i Secret trafiają do `MEDIA_ACCESS_KEY` / `MEDIA_SECRET_KEY`, endpoint `https://<account-id>.r2.cloudflarestorage.com` do `MEDIA_ENDPOINT`.
+   ```sh
+   aws s3api put-bucket-cors --endpoint-url https://hel1.your-objectstorage.com --bucket spotonslot-media --cors-configuration file://cors.json
+   aws s3api get-bucket-cors --endpoint-url https://hel1.your-objectstorage.com --bucket spotonslot-media
+   ```
+
+Domyślne wartości w `deploy/docker-compose.yml` wskazują już na ten bucket (`MEDIA_ENDPOINT=https://hel1.your-objectstorage.com`, `MEDIA_REGION=hel1`, `MEDIA_PUBLIC_BASE_URL=https://spotonslot-media.hel1.your-objectstorage.com`); w Coolify wpisujesz tylko klucze.
 
 ## 3. SMTP
 
-Dowolny dostawca z SMTP na porcie 587 (np. Brevo, Postmark, Resend, Amazon SES). Zweryfikuj domenę nadawcy (`MAIL_FROM`, np. `no-reply@spotonslot.com`) i dodaj rekordy **SPF i DKIM** (oraz DMARC) w DNS, inaczej maile z linkami aktywacyjnymi wpadną do spamu.
+Dowolny dostawca z SMTP na porcie 587 (np. Brevo, Postmark, Resend, Amazon SES). Zweryfikuj domenę nadawcy (`MAIL_FROM`, np. `no-reply@spotonslot.com`) i dodaj rekordy **SPF i DKIM** (oraz DMARC) w DNS w Namecheap, inaczej maile z linkami aktywacyjnymi wpadną do spamu.
 
 ## 4. Backend, baza i Photon w Coolify (docker compose)
 
@@ -74,8 +83,7 @@ Cały serwerowy stos jest w jednym pliku `deploy/docker-compose.yml`: `backend` 
   | Zmienna | Wartość |
   |---|---|
   | `MAIL_HOST`, `MAIL_USERNAME`, `MAIL_PASSWORD` | dane SMTP (port domyślnie 587) |
-  | `MEDIA_ENDPOINT` | `https://<account-id>.r2.cloudflarestorage.com` |
-  | `MEDIA_ACCESS_KEY`, `MEDIA_SECRET_KEY` | klucze tokenu R2 |
+  | `MEDIA_ACCESS_KEY`, `MEDIA_SECRET_KEY` | klucze Hetzner Object Storage |
   | `PHOTON_DUMP_URL` | zrzut JSON dla Polski w wersji 1.0: `https://download1.graphhopper.com/public/europe/poland/photon-dump-poland-1.0-latest.jsonl.zst` (ok. 850 MB; gotowej bazy `.tar.bz2` dla samej Polski nie ma, planeta ma 63 GB) |
 
   Reszta ma domyślne wartości dla `spotonslot.com` (adresy, `MAIL_FROM=no-reply@spotonslot.com`, bucket `spotonslot-media`, geokoder `http://photon:2322`); nadpisz je tylko, gdy coś się zmieni. Opcjonalnie `MAIL_CONTACT` (kontakt w mailach o koncie) i `PHOTON_JAVA_OPTS` (domyślnie `-Xmx2g`). Zmiennym z sekretami odznacz "Available at Buildtime".
@@ -88,7 +96,7 @@ Po scaleniu panelu moderacji (B13) dojdą `ADMIN_EMAIL` i `ADMIN_PASSWORD` dla p
 
 ### Kopie bazy
 
-Baza z docker compose nie jest osobnym zasobem Coolify, więc jego zakładka *Backups* może jej nie obejmować (zależy od wersji Coolify; jeśli ją widzisz przy usłudze `postgres`, ustaw tam codzienny harmonogram i S3 Storage z R2). W przeciwnym razie:
+Baza z docker compose nie jest osobnym zasobem Coolify, więc jego zakładka *Backups* może jej nie obejmować (zależy od wersji Coolify; jeśli ją widzisz przy usłudze `postgres`, ustaw tam codzienny harmonogram i S3 Storage z Hetzner Object Storage (osobny bucket, np. `spotonslot-backups`)). W przeciwnym razie:
 
 - **Scheduled Tasks** zasobu: codziennie (`0 3 * * *`), kontener `postgres`, polecenie
 
@@ -138,25 +146,26 @@ Opcjonalnie, żeby commity tylko w backendzie nie budowały frontów: *Settings 
 
 Zmienne `NEXT_PUBLIC_*` wchodzą do builda: po ich zmianie zrób redeploy.
 
-## 6. DNS
+## 6. DNS (Namecheap)
+
+Namecheap → **Domain List → Manage → Advanced DNS**. Hosting współdzielony z Namecheap nie jest potrzebny; liczy się tylko domena.
 
 | Rekord | Cel |
 |---|---|
-| `spotonslot.com` (A) i `www` (CNAME) | według instrukcji Vercel dla domeny |
-| `app` (CNAME) | według instrukcji Vercel |
+| `@` (A) i `www` (CNAME) | wartości, które pokaże Vercel po dodaniu domeny do projektu landing |
+| `app` (CNAME) | wartość, którą pokaże Vercel po dodaniu domeny do projektu web |
 | `api` (A) | IP serwera Hetzner |
 | `coolify` (A, opcjonalnie) | IP serwera Hetzner |
-| `media` | ustawia Cloudflare przy podpięciu domeny do R2 |
-| SPF / DKIM / DMARC | według dostawcy SMTP |
+| SPF / DKIM / DMARC (TXT, CNAME) | według dostawcy SMTP |
 
-Jeśli DNS jest w Cloudflare: rekordy `api`, `coolify` i te dla Vercel ustaw jako **DNS only** (szara chmurka). Certyfikaty wystawiają wtedy Coolify (Let's Encrypt) i Vercel bez kombinacji.
+Usuń domyślne rekordy parkingowe Namecheap dla `@` i `www` (*URL Redirect*, *CNAME parkingpage*), inaczej będą kolidować z Vercel. Certyfikaty wystawiają Coolify (Let's Encrypt) i Vercel, gdy rekordy już wskazują właściwe adresy.
 
 ## 7. Sprawdzenie po wdrożeniu
 
 1. `https://api.spotonslot.com/actuator/health` zwraca `{"status":"UP"}`.
 2. Landing: zapis na listę oczekujących, mail potwierdzający dochodzi, link otwiera landing.
 3. Aplikacja: rejestracja, mail aktywacyjny z linkiem do `app.spotonslot.com`, logowanie, odświeżenie strony nie wylogowuje (ciasteczko działa).
-4. Profil artysty: wgranie zdjęcia (R2 + CORS), zdjęcie ładuje się z `media.spotonslot.com`, wyszukanie miejscowości (geokoder), mapa w wyszukiwarce.
+4. Profil artysty: wgranie zdjęcia (Object Storage + CORS), zdjęcie ładuje się z `spotonslot-media.hel1.your-objectstorage.com`, wyszukanie miejscowości (geokoder), mapa w wyszukiwarce.
 5. Dwa konta (artysta i lokal): wiadomość dochodzi na żywo bez odświeżania (WebSocket przez proxy).
 6. Publiczny profil `/a/<slug>` otwiera się bez logowania.
 

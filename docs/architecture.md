@@ -16,7 +16,7 @@ Zaakceptowana 2026-10-04
 | Pomost przed mobile | Web client jako PWA (instalacja na telefonie, web push) |
 | Realtime | WebSocket (STOMP) w monolicie, do czatu i statusów bookingu |
 | Powiadomienia | e-mail (Resend/Postmark), push przez Expo Push / FCM+APNs |
-| Pliki | S3-kompatybilny storage (Cloudflare R2) |
+| Pliki | S3-kompatybilny storage (Hetzner Object Storage; wcześniej planowany Cloudflare R2) |
 | Hosting MVP | Backend, Postgres i Photon: VPS Hetzner z Coolify; frontendy na Vercel (instrukcja: `docs/deployment.md`) |
 | Jakość | JUnit 5, Testcontainers, Spring Modulith tests, Playwright (e2e web), Sentry |
 
@@ -94,7 +94,7 @@ Pakiet bazowy np. `pl.spotonslot` (do ustalenia).
 | `messaging` | rozmowy między stronami (powiązane z bookingiem lub ogólne), WebSocket |
 | `notification` | in-app, e-mail, push; preferencje użytkownika; reaguje na zdarzenia innych modułów |
 | `waitlist` | publiczny zapis na listę oczekujących z podwójnym opt-in (potwierdzenie e-mailem), czyszczenie niepotwierdzonych zapisów |
-| `media` | upload zdjęć/plików do R2, presigned URL |
+| `media` | upload zdjęć/plików do magazynu S3, presigned URL |
 | `shared` | wyjątki, paginacja, bezpieczeństwo, audyt |
 
 Później: `review` (oceny po wydarzeniu), `payment` (Stripe Connect / Przelewy24, prowizja platformy), `subscription` (plany premium), `event` (rozszerzenie na całą branżę eventową), `admin`.
@@ -129,7 +129,7 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 
 - Lokalnie: `docker compose` (Postgres+PostGIS, S3Mock jako magazyn plików zamiast MinIO, który nie publikuje już darmowych obrazów, Mailpit). Backend wysyła e-maile przez SMTP: w dev do Mailpit (`localhost:1025`, UI `localhost:8025`), na produkcji do skonfigurowanego serwera SMTP.
 - CI: GitHub Actions — build + testy backendu (Testcontainers), lint/typecheck/test frontów przez Turborepo, generowanie klienta API, Playwright e2e na PR.
-- MVP prod (decyzja Fabiana, 2026-10-15): backend, PostgreSQL + PostGIS i Photon jako jeden docker compose (`deploy/docker-compose.yml`) na Hetzner zarządzanym przez Coolify, frontendy na Vercel, R2 na pliki, później Sentry na błędy. Krok po kroku: `docs/deployment.md`.
+- MVP prod (decyzja Fabiana, 2026-10-15): backend, PostgreSQL + PostGIS i Photon jako jeden docker compose (`deploy/docker-compose.yml`) na Hetzner zarządzanym przez Coolify, frontendy na Vercel, Hetzner Object Storage na pliki, DNS w Namecheap, później Sentry na błędy. Krok po kroku: `docs/deployment.md`.
 - Mobile (faza 2): EAS Build + EAS Submit do sklepów, EAS Update do poprawek OTA.
 
 ### Zmienne środowiskowe backendu (prod)
@@ -145,9 +145,9 @@ Wartości domyślne dla dev są w `application.yml`; w profilu `prod` (`applicat
 | `LANDING_BASE_URL` | publiczny adres landingu (linki potwierdzające) |
 | `WEB_BASE_URL` | publiczny adres aplikacji webowej (linki aktywacji konta i resetu hasła) |
 | `JWT_SECRET` | sekret podpisu access tokenów (HS256, min. 32 bajty) |
-| `MEDIA_ENDPOINT`, `MEDIA_BUCKET` | adres API S3 magazynu (Cloudflare R2) i bucket na zdjęcia |
+| `MEDIA_ENDPOINT`, `MEDIA_BUCKET` | adres API S3 magazynu (Hetzner Object Storage) i bucket na zdjęcia |
 | `MEDIA_ACCESS_KEY`, `MEDIA_SECRET_KEY` | klucze dostępu do magazynu |
-| `MEDIA_PUBLIC_BASE_URL` | publiczny adres, pod którym są serwowane rozmiary zdjęć (domena R2) |
+| `MEDIA_PUBLIC_BASE_URL` | publiczny adres, pod którym są serwowane rozmiary zdjęć (publiczny adres bucketu) |
 | `MEDIA_PRESIGN_ENDPOINT`, `MEDIA_REGION` | opcjonalnie: inny adres w linkach do wgrywania, region podpisu (domyślnie `auto`) |
 | `LOCATION_GEOCODER_URL` | adres instancji Photon (własnej lub płatnej); publiczna `photon.komoot.io` tylko w dev |
 
