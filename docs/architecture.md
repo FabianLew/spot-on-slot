@@ -129,7 +129,7 @@ Każdy moduł ma ten sam wewnętrzny układ: `api` (kontrolery, DTO), `applicati
 
 - Lokalnie: `docker compose` (Postgres+PostGIS, S3Mock jako magazyn plików zamiast MinIO, który nie publikuje już darmowych obrazów, Mailpit). Backend wysyła e-maile przez SMTP: w dev do Mailpit (`localhost:1025`, UI `localhost:8025`), na produkcji do skonfigurowanego serwera SMTP.
 - CI: GitHub Actions — build + testy backendu (Testcontainers), lint/typecheck/test frontów przez Turborepo, generowanie klienta API, Playwright e2e na PR.
-- MVP prod (decyzja Fabiana, 2026-10-15): backend, PostgreSQL + PostGIS i Photon w kontenerach na Hetzner zarządzanym przez Coolify, frontendy na Vercel, R2 na pliki, później Sentry na błędy. Krok po kroku: `docs/deployment.md`, zmienne backendu: `deploy/backend.env.example`.
+- MVP prod (decyzja Fabiana, 2026-10-15): backend, PostgreSQL + PostGIS i Photon jako jeden docker compose (`deploy/docker-compose.yml`) na Hetzner zarządzanym przez Coolify, frontendy na Vercel, R2 na pliki, później Sentry na błędy. Krok po kroku: `docs/deployment.md`.
 - Mobile (faza 2): EAS Build + EAS Submit do sklepów, EAS Update do poprawek OTA.
 
 ### Zmienne środowiskowe backendu (prod)
