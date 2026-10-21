@@ -19,11 +19,9 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
 1. Serwer Hetzner + Coolify
 2. Cloudflare R2 (bucket, domena, CORS, klucze)
 3. Dostawca SMTP (domena nadawcy, SPF/DKIM)
-4. PostgreSQL w Coolify
-5. Photon w Coolify (można odłożyć, patrz niżej)
-6. Backend w Coolify
-7. Vercel: web i landing
-8. DNS i sprawdzenie
+4. Backend, baza i Photon w Coolify (jeden docker compose)
+5. Vercel: web i landing
+6. DNS i sprawdzenie
 
 ## 1. Serwer Hetzner + Coolify
 
@@ -58,51 +56,52 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
 
 4. **R2 → Manage API tokens**: token typu *Object Read & Write* ograniczony do tego bucketu. Access Key ID i Secret trafiają do `MEDIA_ACCESS_KEY` / `MEDIA_SECRET_KEY`, endpoint `https://<account-id>.r2.cloudflarestorage.com` do `MEDIA_ENDPOINT`.
 
-Ten sam R2 (osobny bucket, np. `spotonslot-backups`, z osobnym tokenem) nadaje się na kopie bazy z Coolify.
-
 ## 3. SMTP
 
 Dowolny dostawca z SMTP na porcie 587 (np. Brevo, Postmark, Resend, Amazon SES). Zweryfikuj domenę nadawcy (`MAIL_FROM`, np. `no-reply@spotonslot.com`) i dodaj rekordy **SPF i DKIM** (oraz DMARC) w DNS, inaczej maile z linkami aktywacyjnymi wpadną do spamu.
 
-## 4. PostgreSQL w Coolify
+## 4. Backend, baza i Photon w Coolify (docker compose)
 
-**New Resource → Database → PostgreSQL**, potem przed pierwszym startem w konfiguracji:
-
-- **Image**: `postgis/postgis:16-3.5` (ten sam obraz co lokalnie; zwykły Postgres nie ma PostGIS i migracja `V1` się nie wykona)
-- nazwa bazy `spotonslot`, użytkownik `spotonslot`, hasło wygenerowane przez Coolify
-- **bez** "Make it publicly available"
-- **Backups**: harmonogram codzienny + S3 Storage (bucket backupów z R2, dodany w *Settings → S3 Storages*). Raz sprawdź odtworzenie kopii.
-
-Z karty bazy weź wewnętrzny host (nazwa kontenera) do `DB_URL` backendu: `jdbc:postgresql://<host>:5432/spotonslot`.
-
-## 5. Photon (geokoder)
-
-Publiczne `photon.komoot.io` jest tylko do developmentu. Własny Photon ma obraz w `deploy/photon`:
-
-- **New Resource → Application → GitHub** (repo `FabianLew/spot-on-slot`, gałąź `main`), Build Pack **Dockerfile**, Base Directory `/deploy/photon`, Watch Paths `deploy/photon/**`.
-- Bez domeny (tylko sieć wewnętrzna), port 2322.
-- **Persistent Storage**: wolumen zamontowany w `/photon/data` (baza przetrwa redeploy).
-- Zmienne: `PHOTON_DUMP_URL` = zrzut bazy dla Polski **zgodny z wersją Photona 1.0** ze strony <https://download1.graphhopper.com/public/> (wybierz plik `.tar.bz2` dla Polski w katalogu wersji 1.0); opcjonalnie `JAVA_OPTS` (domyślnie `-Xmx2g`).
-- Pierwszy start pobiera i rozpakowuje zrzut, co trwa; healthcheck ma na to godzinę. Kolejne starty używają danych z wolumenu. Aktualizacja danych: usuń zawartość wolumenu i zrestartuj.
-
-Na start (test, zamknięta beta) można pominąć ten krok i ustawić w backendzie `LOCATION_GEOCODER_URL=https://photon.komoot.io`; przy publicznym starcie przełącz na własny Photon.
-
-## 6. Backend w Coolify
+Cały serwerowy stos jest w jednym pliku `deploy/docker-compose.yml`: `backend` (z `apps/backend/Dockerfile`), `postgres` (`postgis/postgis:16-3.5`, ten sam obraz co lokalnie) i `photon` (z `deploy/photon`). Baza i Photon nie mają domen ani portów na zewnątrz; backend łączy się z nimi po nazwach usług.
 
 **New Resource → Application → GitHub** (najlepiej przez Coolify GitHub App, wtedy push do `main` sam wdraża):
 
-- Build Pack **Dockerfile**, Base Directory `/apps/backend`, Dockerfile `/Dockerfile`
-- Watch Paths `apps/backend/**` (zmiany frontu nie przebudowują backendu)
-- Domena `https://api.spotonslot.com`, port **8080**. Proxy Coolify (Traefik) przepuszcza WebSocket (`/ws`) bez dodatkowej konfiguracji.
-- Healthcheck: obraz ma własny (`/actuator/health`); możesz go też ustawić w Coolify na ścieżkę `/actuator/health`, port 8080.
-- Limit pamięci w *Resource Limits* (np. 2 GB): JVM bierze 75% limitu kontenera.
-- **Environment Variables → Developer view**: wklej `deploy/backend.env.example` i podmień `<...>`. Zmiennym z sekretami odznacz "Available at Buildtime" (build ich nie potrzebuje). `JWT_SECRET` wygeneruj u siebie: `openssl rand -base64 48`.
+- Build Pack **Docker Compose**, Base Directory `/`, Docker Compose Location `/deploy/docker-compose.yml`
+- Watch Paths `apps/backend/**` i `deploy/**` (zmiany frontu nie przebudowują stosu)
+- Domena tylko przy usłudze **backend**: `https://api.spotonslot.com:8080` (`:8080` mówi proxy, na który port kontenera kierować; adres publiczny zostaje bez portu). Proxy Coolify (Traefik) przepuszcza WebSocket (`/ws`) bez dodatkowej konfiguracji.
+- **Environment Variables**: Coolify pokaże zmienne z pliku. Hasło bazy (`SERVICE_PASSWORD_POSTGRES`) i klucz JWT (`SERVICE_PASSWORD_64_JWT`) wygeneruje sam, nie wpisuj ich. Uzupełnij wymagane:
 
-Flyway wykonuje migracje przy starcie, więc pierwszy deploy zakłada pustą bazę. Skryptu `pnpm seed:demo` nie uruchamiaj na produkcji (tworzy konta demo ze wspólnym hasłem).
+  | Zmienna | Wartość |
+  |---|---|
+  | `MAIL_HOST`, `MAIL_USERNAME`, `MAIL_PASSWORD` | dane SMTP (port domyślnie 587) |
+  | `MEDIA_ENDPOINT` | `https://<account-id>.r2.cloudflarestorage.com` |
+  | `MEDIA_ACCESS_KEY`, `MEDIA_SECRET_KEY` | klucze tokenu R2 |
+  | `PHOTON_DUMP_URL` | zrzut bazy Photona dla Polski **zgodny z wersją 1.0** ze strony <https://download1.graphhopper.com/public/> (plik `.tar.bz2` dla Polski w katalogu wersji 1.0) |
 
-Po scaleniu panelu moderacji (B13) dojdą `ADMIN_EMAIL` i `ADMIN_PASSWORD` dla pierwszego administratora.
+  Reszta ma domyślne wartości dla `spotonslot.com` (adresy, `MAIL_FROM=no-reply@spotonslot.com`, bucket `spotonslot-media`, geokoder `http://photon:2322`); nadpisz je tylko, gdy coś się zmieni. Opcjonalnie `MAIL_CONTACT` (kontakt w mailach o koncie) i `PHOTON_JAVA_OPTS` (domyślnie `-Xmx2g`). Zmiennym z sekretami odznacz "Available at Buildtime".
 
-## 7. Vercel
+Pierwszy start Photona pobiera i rozpakowuje zrzut (to trwa; kolejne starty biorą dane z wolumenu `photon-data`, a aktualizacja danych to wyczyszczenie wolumenu i restart). Do tego czasu wyszukiwanie miejscowości zwraca błąd 503, reszta aplikacji działa. Na sam test można ustawić `LOCATION_GEOCODER_URL=https://photon.komoot.io` (tylko na chwilę, to publiczny serwer z limitem „fair use”), ale `PHOTON_DUMP_URL` i tak trzeba podać.
+
+Flyway wykonuje migracje przy starcie backendu, więc pierwszy deploy zakłada pustą bazę. Skryptu `pnpm seed:demo` nie uruchamiaj na produkcji (tworzy konta demo ze wspólnym hasłem).
+
+Po scaleniu panelu moderacji (B13) dojdą `ADMIN_EMAIL` i `ADMIN_PASSWORD` dla pierwszego administratora (trzeba je wtedy dopisać do `deploy/docker-compose.yml`).
+
+### Kopie bazy
+
+Baza z docker compose nie jest osobnym zasobem Coolify, więc jego zakładka *Backups* może jej nie obejmować (zależy od wersji Coolify; jeśli ją widzisz przy usłudze `postgres`, ustaw tam codzienny harmonogram i S3 Storage z R2). W przeciwnym razie:
+
+- **Scheduled Tasks** zasobu: codziennie (`0 3 * * *`), kontener `postgres`, polecenie
+
+  ```sh
+  sh -c 'pg_dump -U spotonslot -Fc spotonslot > /backups/spotonslot-$(date +%F).dump && find /backups -name "*.dump" -mtime +14 -delete'
+  ```
+
+  (zrzuty z 14 dni w wolumenie `postgres-backups`).
+- **Backups serwera w Hetzner Cloud** (płatna opcja, codzienne kopie całego dysku), żeby kopie były też poza samym serwerem.
+
+Raz sprawdź odtworzenie: `pg_restore -U spotonslot -d <pusta_baza> /backups/<plik>.dump`.
+
+## 5. Vercel
 
 Dwa projekty z tego samego repo (**Add New → Project → Import** `FabianLew/spot-on-slot`):
 
@@ -139,7 +138,7 @@ Opcjonalnie, żeby commity tylko w backendzie nie budowały frontów: *Settings 
 
 Zmienne `NEXT_PUBLIC_*` wchodzą do builda: po ich zmianie zrób redeploy.
 
-## 8. DNS
+## 6. DNS
 
 | Rekord | Cel |
 |---|---|
@@ -152,7 +151,7 @@ Zmienne `NEXT_PUBLIC_*` wchodzą do builda: po ich zmianie zrób redeploy.
 
 Jeśli DNS jest w Cloudflare: rekordy `api`, `coolify` i te dla Vercel ustaw jako **DNS only** (szara chmurka). Certyfikaty wystawiają wtedy Coolify (Let's Encrypt) i Vercel bez kombinacji.
 
-## 9. Sprawdzenie po wdrożeniu
+## 7. Sprawdzenie po wdrożeniu
 
 1. `https://api.spotonslot.com/actuator/health` zwraca `{"status":"UP"}`.
 2. Landing: zapis na listę oczekujących, mail potwierdzający dochodzi, link otwiera landing.
