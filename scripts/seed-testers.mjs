@@ -6,13 +6,17 @@
  *
  *   cp scripts/testers.example.json scripts/testers.json   # fill in apiUrl and the testers' e-mails
  *   pnpm seed:testers
+ * or without a file (PowerShell):
+ *   $env:API_URL="https://api.spotonslot.com"; $env:TESTERS="ty@gmail.com,ania@gmail.com"; pnpm seed:testers
  *
  * Accounts are real: their addresses get the verification e-mail. The first run registers them and stops; once every
  * address is verified (each tester clicks the link, or the SQL the script prints is run on the server), the second
  * run fills the profiles. Passwords are generated on the first run and kept in scripts/testers.state.json
  * (gitignored) for later runs; the script prints them at the end. Running it again skips what is already there.
  *
- * Options: --config <file> (default scripts/testers.json).
+ * Options: --config <file> (default scripts/testers.json). Env: API_URL and TESTERS (comma-separated e-mails) instead
+ * of the file, WEB_URL (shown at the end), SEED_PASSWORD (one password for all new accounts, at least 10 characters;
+ * otherwise each gets its own).
  */
 import { randomInt } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -23,6 +27,9 @@ import { at, call, configure, fail, find, login, rule, shift, slot, step, upload
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CONFIG = argument("--config") ?? join(HERE, "testers.json");
 const STATE = join(HERE, "testers.state.json");
+const SHARED_PASSWORD = process.env.SEED_PASSWORD;
+
+configure({ name: "seed-testers" });
 
 // ---------------------------------------------------------------------------------------------- data (Kraków)
 
@@ -110,7 +117,7 @@ async function main() {
   step("Accounts");
   const waiting = [];
   for (const acc of accounts) {
-    acc.password = state.passwords[acc.email] ??= password();
+    acc.password = state.passwords[acc.email] ??= SHARED_PASSWORD ?? password();
     saveState(state);
     const signedIn = await login(acc.email, acc.password);
     if (signedIn.token) {
@@ -243,20 +250,37 @@ async function main() {
 // ---------------------------------------------------------------------------------------------- helpers
 
 function readConfig() {
-  if (!existsSync(CONFIG)) {
-    fail(`No ${CONFIG}. Copy scripts/testers.example.json to scripts/testers.json and fill it in.`);
+  if (SHARED_PASSWORD !== undefined && SHARED_PASSWORD.length < 10) {
+    fail("SEED_PASSWORD must have at least 10 characters (the backend's rule for passwords).");
   }
-  const config = JSON.parse(readFileSync(CONFIG, "utf8"));
-  if (!/^https?:\/\//.test(config.apiUrl ?? "")) fail(`${CONFIG}: apiUrl must be the backend address, e.g. https://api.spotonslot.com`);
+  const fromEnv = !argument("--config") && process.env.TESTERS;
+  if (!fromEnv && !existsSync(CONFIG)) {
+    fail(`No ${CONFIG}. Copy scripts/testers.example.json to scripts/testers.json and fill it in, ` +
+      "or set API_URL and TESTERS (comma-separated e-mails).");
+  }
+  const config = fromEnv
+    ? {
+      apiUrl: process.env.API_URL, webUrl: process.env.WEB_URL,
+      testers: process.env.TESTERS.split(/[,;\s]+/).filter(Boolean).map((email) => ({ name: nameOf(email), email })),
+    }
+    : JSON.parse(readFileSync(CONFIG, "utf8"));
+  const source = fromEnv ? "API_URL/TESTERS" : CONFIG;
+  if (!/^https?:\/\//.test(config.apiUrl ?? "")) fail(`${source}: apiUrl must be the backend address, e.g. https://api.spotonslot.com`);
   const testers = config.testers ?? [];
-  if (!testers.length || testers.length > ARTISTS.length) fail(`${CONFIG}: list 1 to ${ARTISTS.length} testers`);
+  if (!testers.length || testers.length > ARTISTS.length) fail(`${source}: list 1 to ${ARTISTS.length} testers`);
   for (const t of testers) {
-    if (!t.name) fail(`${CONFIG}: every tester needs a name`);
-    if (!t.email && !(t.artistEmail && t.venueEmail)) fail(`${CONFIG}: ${t.name} needs email (or both artistEmail and venueEmail)`);
+    if (!t.name) fail(`${source}: every tester needs a name`);
+    if (!t.email && !(t.artistEmail && t.venueEmail)) fail(`${source}: ${t.name} needs email (or both artistEmail and venueEmail)`);
   }
   const emails = testers.flatMap((t) => [t.artistEmail ?? plus(t.email, "artysta"), t.venueEmail ?? plus(t.email, "klub")]);
-  if (new Set(emails.map((e) => e.toLowerCase())).size !== emails.length) fail(`${CONFIG}: every account needs its own e-mail address`);
+  if (new Set(emails.map((e) => e.toLowerCase())).size !== emails.length) fail(`${source}: every account needs its own e-mail address`);
   return config;
+}
+
+/** jan.kowalski@gmail.com = "Jan Kowalski": the artist's real name when only an e-mail is given. */
+function nameOf(email) {
+  return email.split("@")[0].split(/[._+-]+/).filter(Boolean)
+    .map((part) => part[0].toUpperCase() + part.slice(1)).join(" ") || email;
 }
 
 /** jan@gmail.com + "klub" = jan+klub@gmail.com: one inbox, two accounts (Gmail, Outlook and most providers deliver these). */

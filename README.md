@@ -77,6 +77,8 @@ photos, calendars and listings. The accounts use the testers' real addresses (`n
 default), so the first run registers them and stops until every address is verified: by the link in the e-mail, or
 with the SQL the script prints, run on the server. The second run fills everything in and prints the generated
 passwords (kept in the gitignored `scripts/testers.state.json`). Running it again skips what is already there.
+Instead of the file: `API_URL` + `TESTERS` (comma-separated e-mails), optionally `SEED_PASSWORD` (one password for
+every new account, at least 10 characters).
 
 ## Common tasks
 
