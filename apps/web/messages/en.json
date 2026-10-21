@@ -36,7 +36,8 @@
     "more": "More",
     "primary": "Main navigation",
     "skipToContent": "Skip to content",
-    "menu": "Menu"
+    "menu": "Menu",
+    "ownProfile": "Your profile"
   },
   "errors": {
     "title": "Something went wrong",

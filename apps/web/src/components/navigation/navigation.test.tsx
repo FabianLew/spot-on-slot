@@ -77,6 +77,28 @@ describe("Sidebar", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows the own main photo beside the wordmark, linking to the profile", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: Request | string) => {
+        const url = typeof input === "string" ? input : input.url;
+        return url.includes("/api/v1/artists/me")
+          ? Response.json({ avatar: { small: "https://cdn.example/a-320.webp" } })
+          : Response.json({ count: 0 });
+      }),
+    );
+    renderIntl(<Sidebar />);
+    const link = await screen.findByRole("link", { name: "Twój profil" });
+    expect(link).toHaveAttribute("href", "/profile");
+    expect(link.querySelector("img")).toHaveAttribute("src", "https://cdn.example/a-320.webp");
+  });
+
+  it("keeps the plain brand square without a photo", async () => {
+    renderIntl(<Sidebar />);
+    await screen.findByRole("button", { name: "Powiadomienia: 3 nieprzeczytane" });
+    expect(screen.queryByRole("link", { name: "Twój profil" })).toBeNull();
+  });
+
   it("shows the signed-in e-mail and signs out from the user menu", async () => {
     renderIntl(<Sidebar />);
     const user = userEvent.setup();

@@ -2,14 +2,14 @@
 
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import {
   Button,
   Checkbox,
   Label,
   LocationPicker,
-  PageHeader,
   Panel,
+  PixelPin,
   Select,
   SelectContent,
   SelectItem,
@@ -106,76 +106,102 @@ export function SearchScreen() {
     : (state.center?.label ?? (state.center ? t("search.place.picked") : own.place?.label));
 
   const [selectedId, setSelectedId] = useState<string>();
-  const [view, setView] = useState<"list" | "map">("list");
+  // The map is the centre of the screen; phones start on it too.
+  const [view, setView] = useState<"list" | "map">("map");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const active = activeFilters(state);
 
   return (
-    <section className="flex flex-col gap-4">
-      <PageHeader title={t("search.title")} />
+    <section
+      data-layout="full"
+      className="flex h-[calc(100dvh-10rem)] min-h-[30rem] flex-col gap-2 md:h-[calc(100dvh-2rem)] md:gap-3"
+    >
+      <h1 className="sr-only">{t("search.title")}</h1>
 
-      <div role="group" aria-label={t("search.tabsLabel")} className="flex flex-wrap gap-2">
-        {TABS.map((tab) => (
-          <Button
-            key={tab}
-            type="button"
-            variant={state.tab === tab ? "default" : "outline"}
-            aria-pressed={state.tab === tab}
-            onClick={() => {
-              setSelectedId(undefined);
-              update({ tab });
-            }}
-          >
-            {t(`search.tabs.${tab}`)}
-          </Button>
-        ))}
-      </div>
-
-      <PlaceBar
-        label={placeLabel}
-        missing={center == null && !own.pending}
-        radiusKm={state.radiusKm}
-        onPlace={(place) => update({ center: { ...place, area: false } })}
-        onRadius={(radiusKm) => update({ radiusKm })}
-      />
-
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="md:hidden"
-            aria-expanded={filtersOpen}
-            aria-controls="search-filters"
-            onClick={() => setFiltersOpen((open) => !open)}
-          >
-            {t("search.filters.open")}
-          </Button>
-          <Panel id="search-filters" className={cn(filtersOpen ? "block" : "hidden", "md:block")}>
-            <SearchFilters key={state.tab} state={state} onChange={update} />
-          </Panel>
+      <div className="flex flex-col gap-2 border-2 border-border bg-card p-2 lg:flex-row lg:items-center">
+        <div role="group" aria-label={t("search.tabsLabel")} className="flex gap-1.5">
+          {TABS.map((tab) => (
+            <Button
+              key={tab}
+              type="button"
+              size="sm"
+              className="flex-1 lg:flex-none"
+              variant={state.tab === tab ? "default" : "outline"}
+              aria-pressed={state.tab === tab}
+              onClick={() => {
+                setSelectedId(undefined);
+                update({ tab });
+              }}
+            >
+              {t(`search.tabs.${tab}`)}
+            </Button>
+          ))}
         </div>
-
-        {center ? (
-          <Results
-            state={state}
-            center={center}
-            view={view}
-            onView={setView}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-            onArea={(area) =>
-              update({
-                center: { lat: round(area.center.lat), lng: round(area.center.lng), area: true },
-                radiusKm: viewRadiusKm(area),
-              })
-            }
-          />
-        ) : (
-          // Without a place the bar above asks for one.
-          <Panel aria-busy={own.pending ? "true" : undefined} className="min-h-40" />
-        )}
+        <PlaceBar
+          label={placeLabel}
+          missing={center == null && !own.pending}
+          radiusKm={state.radiusKm}
+          onPlace={(place) => update({ center: { ...place, area: false } })}
+          onRadius={(radiusKm) => update({ radiusKm })}
+          filters={
+            <Button
+              type="button"
+              size="sm"
+              variant={filtersOpen ? "default" : "outline"}
+              aria-expanded={filtersOpen}
+              aria-controls="search-filters"
+              onClick={() => {
+                setFiltersOpen((open) => !open);
+                setView("list");
+              }}
+            >
+              {t("search.filters.open")}
+              {active > 0 && (
+                <span className="ml-1 bg-highlight px-1.5 text-[0.65rem] text-foreground">{active}</span>
+              )}
+            </Button>
+          }
+        />
       </div>
+
+      {center ? (
+        <Results
+          state={state}
+          center={center}
+          view={view}
+          onView={setView}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          filters={
+            <Panel id="search-filters" className={cn(filtersOpen ? "block" : "hidden", "shrink-0")}>
+              <SearchFilters key={state.tab} state={state} onChange={update} />
+            </Panel>
+          }
+          onArea={(area) =>
+            update({
+              center: { lat: round(area.center.lat), lng: round(area.center.lng), area: true },
+              radiusKm: viewRadiusKm(area),
+            })
+          }
+        />
+      ) : (
+        // Without a place the bar above asks for one.
+        <Panel aria-busy={own.pending ? "true" : undefined} className="min-h-40 flex-1" />
+      )}
     </section>
+  );
+}
+
+/** How many filters narrow the current tab, for the badge on "Filtry". */
+function activeFilters(state: SearchState): number {
+  const timed = state.tab !== "venues";
+  return (
+    state.genres.length +
+    (state.tab === "venues" ? state.types.length : 0) +
+    (state.tab === "listings" && state.kind ? 1 : 0) +
+    (timed && (state.date || state.from || state.to) ? 1 : 0) +
+    (timed && state.budget != null ? 1 : 0) +
+    (state.tab === "artists" && state.willTravel ? 1 : 0)
   );
 }
 
@@ -185,12 +211,14 @@ function PlaceBar({
   radiusKm,
   onPlace,
   onRadius,
+  filters,
 }: {
   label?: string;
   missing: boolean;
   radiusKm: number;
   onPlace: (place: { lat: number; lng: number; label: string }) => void;
   onRadius: (radiusKm: number) => void;
+  filters: ReactNode;
 }) {
   const t = useTranslations();
   const places = usePlaceSearch();
@@ -236,29 +264,24 @@ function PlaceBar({
   }
 
   return (
-    <Panel className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <span className="text-xs font-bold uppercase text-muted-foreground">{t("search.place.label")}</span>
-          <span className="flex flex-wrap items-center gap-2">
-            <span className="font-bold uppercase break-words">{label ?? t("search.place.none")}</span>
-            {!missing && (
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                aria-expanded={open}
-                onClick={() => setEditing((on) => !on)}
-              >
-                {editing ? t("search.place.cancel") : t("search.place.change")}
-              </Button>
-            )}
-          </span>
+    <div className="flex min-w-0 flex-1 flex-col gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:flex-1">
+          <PixelPin aria-hidden="true" className="size-5 shrink-0 text-primary" />
+          <span className="sr-only">{t("search.place.label")}</span>
+          <span className="truncate text-sm font-bold uppercase">{label ?? t("search.place.none")}</span>
+          {!missing && (
+            <Button type="button" size="sm" variant="ghost" aria-expanded={open} onClick={() => setEditing((on) => !on)}>
+              {editing ? t("search.place.cancel") : t("search.place.change")}
+            </Button>
+          )}
         </div>
-        <div className="flex min-w-32 flex-col gap-1">
-          <Label htmlFor="search-radius">{t("search.radius")}</Label>
+        <div className="flex flex-1 items-center gap-2 sm:flex-none">
+          <Label htmlFor="search-radius" className="m-0 text-xs">
+            {t("search.radius")}
+          </Label>
           <Select value={String(radiusKm)} onValueChange={(value) => onRadius(Number(value))}>
-            <SelectTrigger id="search-radius" className="w-full">
+            <SelectTrigger id="search-radius" className="h-9 w-28 whitespace-nowrap">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -269,6 +292,7 @@ function PlaceBar({
               ))}
             </SelectContent>
           </Select>
+          {filters}
         </div>
       </div>
       {missing && <p className="text-sm">{t("search.needPlace")}</p>}
@@ -292,7 +316,7 @@ function PlaceBar({
           error={error ?? (places.error ? problemMessage(t, places.error) : undefined)}
         />
       )}
-    </Panel>
+    </div>
   );
 }
 
@@ -304,6 +328,7 @@ function Results({
   selectedId,
   onSelect,
   onArea,
+  filters,
 }: {
   state: SearchState;
   center: { lat: number; lng: number };
@@ -312,6 +337,7 @@ function Results({
   selectedId?: string;
   onSelect: (id: string | undefined) => void;
   onArea: (view: MapView) => void;
+  filters: ReactNode;
 }) {
   const t = useTranslations();
   const list = useSearchList(state, center);
@@ -395,33 +421,38 @@ function Results({
   );
 
   return (
-    <div className="flex min-w-0 flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm font-bold uppercase" aria-live="polite">
-          {list.isSuccess ? t("search.count", { count: total }) : " "}
-        </p>
-        <div role="group" aria-label={t("search.view.label")} className="flex gap-2 md:hidden">
-          {(["list", "map"] as const).map((option) => (
-            <Button
-              key={option}
-              type="button"
-              size="sm"
-              variant={view === option ? "default" : "outline"}
-              aria-pressed={view === option}
-              onClick={() => onView(option)}
-            >
-              {t(`search.view.${option}`)}
-            </Button>
-          ))}
-        </div>
+    <div className="flex min-h-0 flex-1 flex-col gap-2">
+      <div role="group" aria-label={t("search.view.label")} className="flex gap-1.5 md:hidden">
+        {(["map", "list"] as const).map((option) => (
+          <Button
+            key={option}
+            type="button"
+            size="sm"
+            className="flex-1"
+            variant={view === option ? "default" : "outline"}
+            aria-pressed={view === option}
+            onClick={() => onView(option)}
+          >
+            {t(`search.view.${option}`)}
+          </Button>
+        ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className={cn("min-w-0 flex-col gap-3", view === "map" ? "hidden md:flex" : "flex")}>
+      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-3 md:grid-cols-[minmax(18rem,24rem)_1fr] xl:grid-cols-[26rem_1fr]">
+        <div
+          className={cn(
+            "min-h-0 min-w-0 flex-col gap-3 overflow-y-auto overscroll-contain md:pr-1",
+            view === "map" ? "hidden md:flex" : "flex",
+          )}
+        >
+          {filters}
+          <p className="text-sm font-bold uppercase" aria-live="polite">
+            {list.isSuccess ? t("search.count", { count: total }) : "\u00a0"}
+          </p>
           {list.isError ? (
             <ApiErrorState error={list.error} onRetry={() => list.refetch()} />
           ) : list.isPending ? (
-            <Panel aria-busy="true" className="h-40" />
+            <Panel aria-busy="true" className="h-40 shrink-0" />
           ) : hits.length === 0 ? (
             <Panel>
               <p className="text-sm">{t("search.empty")}</p>
@@ -440,6 +471,7 @@ function Results({
                 <Button
                   type="button"
                   variant="outline"
+                  className="shrink-0"
                   disabled={list.isFetchingNextPage}
                   onClick={() => list.fetchNextPage()}
                 >
@@ -450,9 +482,22 @@ function Results({
           )}
         </div>
 
-        <div className={cn("min-w-0 flex-col gap-2", view === "list" ? "hidden md:flex" : "flex")}>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
+        <div
+          className={cn(
+            "relative min-h-0 min-w-0 border-2 border-border",
+            view === "list" ? "hidden md:block" : "block",
+          )}
+        >
+          <SearchMap
+            pins={mapPins}
+            focus={focus}
+            selectedId={selectedId}
+            onSelect={select}
+            onSettle={onSettle}
+            labels={labels}
+          />
+          <div className="pointer-events-none absolute left-2 right-12 top-2 flex flex-wrap items-start gap-2">
+            <div className="pointer-events-auto flex items-center gap-2 border-2 border-border bg-card px-2 py-1.5 shadow-[3px_3px_0_0_var(--color-foreground)]">
               <Checkbox
                 id="search-auto-area"
                 checked={autoArea}
@@ -470,6 +515,7 @@ function Results({
               <Button
                 type="button"
                 size="sm"
+                className="pointer-events-auto shadow-[3px_3px_0_0_var(--color-foreground)]"
                 onClick={() => {
                   baseline.current = pendingArea;
                   setPendingArea(undefined);
@@ -479,16 +525,6 @@ function Results({
                 {t("search.searchArea")}
               </Button>
             )}
-          </div>
-          <div className="h-[60vh] min-h-80 border-2 border-border md:sticky md:top-4 lg:h-[70vh]">
-            <SearchMap
-              pins={mapPins}
-              focus={focus}
-              selectedId={selectedId}
-              onSelect={select}
-              onSettle={onSettle}
-              labels={labels}
-            />
           </div>
         </div>
       </div>
