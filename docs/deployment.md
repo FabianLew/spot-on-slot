@@ -9,7 +9,7 @@ Docelowa domena: `spotonslot.com`.
 | `https://spotonslot.com` (+ `www`) | landing | Vercel, projekt `apps/landing` |
 | `https://app.spotonslot.com` | aplikacja | Vercel, projekt `apps/web` |
 | `https://api.spotonslot.com` | backend (REST + WebSocket `/ws`) | Coolify na Hetzner |
-| `https://spotonslot-media.hel1.your-objectstorage.com` | zdjęcia | Hetzner Object Storage (publiczny bucket; Hetzner nie podpina własnych domen) |
+| `https://spotonslot-media.fsn1.your-objectstorage.com` | zdjęcia | Hetzner Object Storage (publiczny bucket; Hetzner nie podpina własnych domen) |
 | (brak) | PostgreSQL 16 + PostGIS, Photon | Coolify, tylko sieć wewnętrzna |
 
 Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświeżania sesji (`sos_refresh`, `SameSite=Lax`) przeglądarka wysyła tylko w obrębie jednej witryny. Na adresach `*.vercel.app` (np. preview deploymenty) logowanie zadziała do wygaśnięcia access tokenu (15 min), a CORS ich nie wpuści, więc preview służą tylko do oglądania stron publicznych.
@@ -39,11 +39,11 @@ Aplikacja i API muszą być **subdomenami tej samej domeny**: ciasteczko odświe
 
 ## 2. Hetzner Object Storage
 
-Lokalizacja bucketu taka sama jak serwera; poniżej Helsinki (`hel1`). Przy innej (`fsn1`, `nbg1`) podmień `hel1` w `MEDIA_ENDPOINT`, `MEDIA_REGION` i `MEDIA_PUBLIC_BASE_URL`.
+Lokalizacja bucketu taka sama jak serwera; poniżej Falkenstein (`fsn1`). Przy innej (`nbg1`, `hel1`) podmień `fsn1` w `MEDIA_ENDPOINT`, `MEDIA_REGION` i `MEDIA_PUBLIC_BASE_URL`.
 
-1. Hetzner Console → projekt → **Object Storage → Create Bucket**: nazwa `spotonslot-media`, lokalizacja `hel1`, widoczność **publiczna** (zdjęcia są publiczne; oryginały backend kasuje po przetworzeniu).
+1. Hetzner Console → projekt → **Object Storage → Create Bucket**: nazwa `spotonslot-media`, lokalizacja `fsn1`, widoczność **publiczna** (zdjęcia są publiczne; oryginały backend kasuje po przetworzeniu).
 2. **Object Storage → Manage credentials → Generate credentials**: *Access key* → `MEDIA_ACCESS_KEY`, *Secret key* → `MEDIA_SECRET_KEY` (secret widać tylko raz).
-3. **CORS**, żeby przeglądarka mogła wgrywać zdjęcia bezpośrednio do bucketu. Hetzner ustawia go tylko przez API S3, np. AWS CLI na swoim komputerze (`winget install Amazon.AWSCLI`), z kluczami z kroku 2 (`aws configure`, region `hel1`). Plik `cors.json`:
+3. **CORS**, żeby przeglądarka mogła wgrywać zdjęcia bezpośrednio do bucketu. Hetzner ustawia go tylko przez API S3, np. AWS CLI na swoim komputerze (`winget install Amazon.AWSCLI`), z kluczami z kroku 2 (`aws configure`, region `fsn1`). Plik `cors.json`:
 
    ```json
    {
@@ -59,11 +59,11 @@ Lokalizacja bucketu taka sama jak serwera; poniżej Helsinki (`hel1`). Przy inne
    ```
 
    ```sh
-   aws s3api put-bucket-cors --endpoint-url https://hel1.your-objectstorage.com --bucket spotonslot-media --cors-configuration file://cors.json
-   aws s3api get-bucket-cors --endpoint-url https://hel1.your-objectstorage.com --bucket spotonslot-media
+   aws s3api put-bucket-cors --endpoint-url https://fsn1.your-objectstorage.com --bucket spotonslot-media --cors-configuration file://cors.json
+   aws s3api get-bucket-cors --endpoint-url https://fsn1.your-objectstorage.com --bucket spotonslot-media
    ```
 
-Domyślne wartości w `deploy/docker-compose.yml` wskazują już na ten bucket (`MEDIA_ENDPOINT=https://hel1.your-objectstorage.com`, `MEDIA_REGION=hel1`, `MEDIA_PUBLIC_BASE_URL=https://spotonslot-media.hel1.your-objectstorage.com`); w Coolify wpisujesz tylko klucze.
+Domyślne wartości w `deploy/docker-compose.yml` wskazują już na ten bucket (`MEDIA_ENDPOINT=https://fsn1.your-objectstorage.com`, `MEDIA_REGION=fsn1`, `MEDIA_PUBLIC_BASE_URL=https://spotonslot-media.fsn1.your-objectstorage.com`); w Coolify wpisujesz tylko klucze.
 
 ## 3. SMTP
 
@@ -165,7 +165,7 @@ Usuń domyślne rekordy parkingowe Namecheap dla `@` i `www` (*URL Redirect*, *C
 1. `https://api.spotonslot.com/actuator/health` zwraca `{"status":"UP"}`.
 2. Landing: zapis na listę oczekujących, mail potwierdzający dochodzi, link otwiera landing.
 3. Aplikacja: rejestracja, mail aktywacyjny z linkiem do `app.spotonslot.com`, logowanie, odświeżenie strony nie wylogowuje (ciasteczko działa).
-4. Profil artysty: wgranie zdjęcia (Object Storage + CORS), zdjęcie ładuje się z `spotonslot-media.hel1.your-objectstorage.com`, wyszukanie miejscowości (geokoder), mapa w wyszukiwarce.
+4. Profil artysty: wgranie zdjęcia (Object Storage + CORS), zdjęcie ładuje się z `spotonslot-media.fsn1.your-objectstorage.com`, wyszukanie miejscowości (geokoder), mapa w wyszukiwarce.
 5. Dwa konta (artysta i lokal): wiadomość dochodzi na żywo bez odświeżania (WebSocket przez proxy).
 6. Publiczny profil `/a/<slug>` otwiera się bez logowania.
 
